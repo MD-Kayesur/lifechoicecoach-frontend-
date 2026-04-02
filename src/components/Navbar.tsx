@@ -21,7 +21,7 @@ export function Navbar() {
         { name: "Dashboard", href: "/dashboard", isSection: false },
         { name: "Degree Programs", href: "/degrees", isSection: false },
         { name: "Credential Pathways", href: "/pathways", isSection: false },
-        { name: "Pricing", href: "/#pricing", isSection: true, sectionId: "pricing" },
+        { name: "Pricing", href: "/pricing", isSection: false },
     ];
 
     useEffect(() => {

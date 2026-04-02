@@ -16,7 +16,6 @@ export default function LandingPage() {
             <Hero />
             <Features />
             <HowItWorks />
-            <Pricing />
             <Footer />
         </main>
     );
