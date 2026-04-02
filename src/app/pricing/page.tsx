@@ -1,12 +1,12 @@
 "use client";
 
-import { Dashboard } from "@/components/Dashboard";
+import { Pricing } from "@/components/Countries";
 
-export default function DashboardPage() {
+export default function PricingPage() {
     return (
         <main className="min-h-screen bg-background">
             <div className="pt-20">
-                <Dashboard />
+                <Pricing />
             </div>
         </main>
     );

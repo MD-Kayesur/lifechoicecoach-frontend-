@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 export const Certificate = () => {
     return (
         <section className="py-24 bg-background text-white min-h-screen">
-            <CommonWrapper>
+            <CommonWrapper className="max-w-[1440px] mx-auto">
                 <div className="grid lg:grid-cols-[1fr_450px] gap-12 items-center">
                     {/* Visual Section */}
                     <div className="relative group">

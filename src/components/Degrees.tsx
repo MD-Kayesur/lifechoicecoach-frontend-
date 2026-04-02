@@ -26,7 +26,7 @@ export const Degrees = () => {
 
     return (
         <section className="py-24 bg-background text-white">
-            <CommonWrapper>
+            <CommonWrapper className="max-w-[1440px] mx-auto">
                 <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
                     <div className="text-[10px] text-primary font-bold uppercase tracking-[4px]">SECTION 5.0</div>
                     <h1 className="text-5xl md:text-6xl font-black tracking-tight">59 Degree Programs</h1>
