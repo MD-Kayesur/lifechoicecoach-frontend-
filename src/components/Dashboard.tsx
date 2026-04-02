@@ -19,7 +19,7 @@ export const Dashboard = () => {
 
     return (
         <section className="py-24 bg-[#050a14] min-h-screen text-white">
-            <CommonWrapper>
+            <CommonWrapper className="max-w-[1440px] mx-auto">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                     <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center text-2xl font-black">PK</div>

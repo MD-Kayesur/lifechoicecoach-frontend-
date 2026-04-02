@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 export const SampleMC = () => {
     return (
         <section className="py-24 bg-background text-white">
-            <CommonWrapper>
+            <CommonWrapper className="max-w-[1440px] mx-auto">
                 <div className="grid lg:grid-cols-[1fr_400px] gap-12">
                     {/* Main Content */}
                     <div className="space-y-12">
