@@ -6,6 +6,7 @@ import { HowItWorks } from "@/components/landingPages/HowItWorks";
 import { MicroCredential } from "@/components/landingPages/MicroCredential";
 import { IkonPassport } from "@/components/landingPages/IkonPassport";
 import { CredentialDomains } from "@/components/landingPages/CredentialDomains";
+import { IkonSteps } from "@/components/landingPages/IkonSteps";
 
 export default function LandingPage() {
     return (
@@ -14,6 +15,7 @@ export default function LandingPage() {
             <MicroCredential />
             <IkonPassport />
             <CredentialDomains />
+            <IkonSteps />
             {/* <Features /> */}
             <HowItWorks />
         </main>
