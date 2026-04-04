@@ -25,13 +25,16 @@ export const SampleMC = () => {
     ];
 
     return (
-        <section className="py-24 bg-[#020617] text-white overflow-hidden">
-            {/* Background pattern - diagonal lines */}
-            <div className="absolute inset-0 opacity-[0.05] pointer-events-none"
-                style={{
-                    backgroundImage: `repeating-linear-gradient(-45deg, #1e293b 0, #1e293b 1px, transparent 0, transparent 15px)`,
-                }}
-            />
+        <section className="py-24 bg-[#020617] text-white relative">
+            {/* Background container with overflow-hidden */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                {/* Background pattern - diagonal lines */}
+                <div className="absolute inset-0 opacity-[0.05]"
+                    style={{
+                        backgroundImage: `repeating-linear-gradient(-45deg, #1e293b 0, #1e293b 1px, transparent 0, transparent 15px)`,
+                    }}
+                />
+            </div>
 
             <CommonWrapper className="max-w-[1400px] relative z-10">
                 <div className="grid lg:grid-cols-[1fr_420px] gap-16 items-start">
@@ -91,7 +94,7 @@ export const SampleMC = () => {
                     </div>
 
                     {/* Sticky Sidebar */}
-                    <aside className="sticky top-28 space-y-6 animate-in fade-in slide-in-from-right-8 duration-1000">
+                    <aside className="sticky top-28 h-fit space-y-6 animate-in fade-in slide-in-from-right-8 duration-1000">
                         {/* Main Summary Card */}
                         <div className="relative group overflow-hidden bg-[#0a1122] border border-white/10 rounded-[2.5rem] p-8 shadow-2xl backdrop-blur-xl shadow-black/60">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[60px] -mr-16 -mt-16" />
