@@ -257,6 +257,54 @@ export const Pricing = () => {
                     <p className="mt-8 text-[10px] text-muted-foreground font-medium opacity-60">All plans include one (1) assessment attempt per micro-credential. Retakes are available as a separate purchase.</p>
                 </div>
 
+                {/* Stacking Value Proposition (Added for Pathways requirement) */}
+                <div className="mt-40 bg-primary/5 border border-white/5 rounded-[3rem] p-12 lg:p-20 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[100px] -mr-48 -mt-48 transition-transform group-hover:scale-110 duration-700" />
+                    <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
+                        <div className="space-y-8">
+                            <div className="space-y-4">
+                                <span className="text-[10px] text-primary font-black uppercase tracking-[4px]">THE STACKING VALUE</span>
+                                <h2 className="text-4xl md:text-5xl font-bold tracking-tight italic font-serif">Stack Your Way to a <br /> Professional Degree</h2>
+                                <p className="text-muted-foreground text-sm leading-relaxed max-w-lg">
+                                    Your personal plan is just the beginning. Every Micro-Credential you earn is a building block toward a full university-conferred degree from European International University, Paris.
+                                </p>
+                            </div>
+                            <div className="grid grid-cols-3 gap-6">
+                                {[
+                                    { mc: "18", label: "MCs FOR BACHELOR" },
+                                    { mc: "24", label: "MCs FOR MASTER" },
+                                    { mc: "36", label: "MCs FOR DPP" },
+                                ].map((step, i) => (
+                                    <div key={i} className="space-y-1">
+                                        <div className="text-2xl font-black text-white">{step.mc}</div>
+                                        <div className="text-[8px] text-muted-foreground font-black uppercase tracking-widest leading-tight">{step.label}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="relative">
+                            <div className="space-y-6 bg-[#0a1122] border border-white/10 p-8 rounded-[2rem] shadow-2xl">
+                                <h4 className="text-xs font-black uppercase tracking-widest text-primary italic">PATHWAY EXAMPLE</h4>
+                                <div className="space-y-4">
+                                    <div className="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5">
+                                        <span className="text-[11px] font-bold">18 × AI Prompt Engineer (MC)</span>
+                                        <span className="text-[10px] font-black text-primary">180 ECTS</span>
+                                    </div>
+                                    <div className="flex items-center justify-center py-2 h-10">
+                                        <div className="w-[1px] h-full bg-white/20 relative">
+                                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-primary" />
+                                        </div>
+                                    </div>
+                                    <div className="bg-primary/20 border border-primary/50 p-6 rounded-2xl text-center group-hover:scale-[1.02] transition-transform">
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-2">EARN DEGREE</p>
+                                        <h5 className="font-bold text-white tracking-tight">BBA in Applied AI & Automation</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Ready to Start Stacking CTA */}
                 <div className="mt-40 text-center space-y-12 animate-in fade-in zoom-in duration-1000">
                     <div className="space-y-4">
