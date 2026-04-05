@@ -305,6 +305,40 @@ export const Pricing = () => {
                     </div>
                 </div>
 
+                {/* Degree Programs Summary (Added for Degrees requirement) */}
+                <div className="mt-40 border-t border-white/5 pt-32">
+                    <div className="text-center mb-16 space-y-4">
+                        <span className="text-[10px] text-primary font-black uppercase tracking-[4px]">THE FULL CREDENTIAL INVENTORY</span>
+                        <h2 className="text-4xl md:text-5xl font-bold tracking-tight italic font-serif leading-tight">Assemble Your Future from <br /> 59 Specialized Degree Pathways</h2>
+                        <p className="text-muted-foreground text-sm max-w-2xl mx-auto italic font-medium">Standardized ECTS. University-conferred qualification. Globally recognized.</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-10 border-y border-white/5 max-w-4xl mx-auto">
+                        {[
+                            { val: "56", label: "EIU-PARIS DEGREES" },
+                            { val: "3", label: "EDUCATION DEGREES" },
+                            { val: "3", label: "BRAND CERTIFICATIONS" },
+                            { val: "100%", label: "ONLINE DELIVERY" },
+                        ].map((stat, i) => (
+                            <div key={i} className="text-center group border-r border-white/5 last:border-0">
+                                <div className="text-4xl font-black text-white group-hover:text-primary transition-colors">{stat.val}</div>
+                                <div className="text-[10px] text-muted-foreground font-black uppercase tracking-widest pt-2 opacity-60 group-hover:opacity-100 transition-opacity">{stat.label}</div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="mt-20 flex flex-wrap justify-center gap-2">
+                        {[
+                            "BBA Applied AI", "MBA Strategy", "DPP Leadership", "CBA Associate", "MBA Digital Transformation", "BBA Brand Psychology"
+                        ].map(tag => (
+                            <span key={tag} className="px-5 py-2.5 rounded-xl bg-[#0a1122]/50 border border-white/10 text-[10px] font-black text-muted-foreground uppercase tracking-widest opacity-60 hover:opacity-100 hover:border-primary/50 transition-all cursor-default">
+                                {tag}
+                            </span>
+                        ))}
+                        <span className="px-5 py-2.5 rounded-xl bg-primary/10 border border-primary/20 text-[10px] font-black text-primary uppercase tracking-widest">+53 MORE</span>
+                    </div>
+                </div>
+
                 {/* Ready to Start Stacking CTA */}
                 <div className="mt-40 text-center space-y-12 animate-in fade-in zoom-in duration-1000">
                     <div className="space-y-4">
