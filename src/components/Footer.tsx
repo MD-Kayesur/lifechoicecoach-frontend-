@@ -9,7 +9,7 @@ export const Footer = () => {
         <footer className="bg-[#020617] border-t border-white/5 pt-24 pb-12">
             <CommonWrapper className="max-w-[1400px]">
                 {/* Pre-Footer: Quality Assurance */}
-                <div className="grid lg:grid-cols-2 gap-12 items-center pb-24 border-b border-white/5 mb-24">
+                {/* <div className="grid lg:grid-cols-2 gap-12 items-center pb-24 border-b border-white/5 mb-24">
                     <div className="space-y-6">
                         <h2 className="text-3xl font-bold text-white">Quality Assured by <br /> European International University, Paris</h2>
                         <p className="text-muted-foreground text-sm leading-relaxed max-w-lg">
@@ -40,7 +40,7 @@ export const Footer = () => {
                             </div>
                         ))}
                     </div>
-                </div>
+                </div> */}
 
                 {/* Main Footer Links */}
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-24">

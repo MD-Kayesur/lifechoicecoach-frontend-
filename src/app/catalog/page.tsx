@@ -1,6 +1,6 @@
 "use client";
 
-import { Features } from "@/components/Features";
+import { Features } from "@/app/catalog/Features";
 
 export default function CatalogPage() {
     return (
