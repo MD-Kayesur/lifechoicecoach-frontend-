@@ -1,5 +1,3 @@
-"use client";
-
 import { Degrees } from "@/components/landingPages/Degrees";
 
 export default function DegreesPage() {

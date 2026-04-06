@@ -1,5 +1,3 @@
-"use client";
-
 import { Certificate } from "@/components/landingPages/Certificate";
 
 export default function CertificatePage() {

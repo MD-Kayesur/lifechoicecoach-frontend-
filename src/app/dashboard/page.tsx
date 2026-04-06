@@ -1,5 +1,3 @@
-"use client";
-
 import { Dashboard } from "@/components/landingPages/Dashboard";
 
 export default function DashboardPage() {

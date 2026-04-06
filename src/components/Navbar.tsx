@@ -44,24 +44,29 @@ export function Navbar() {
     };
 
     return (
-        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-background/80 backdrop-blur-md border-b" : "bg-transparent"}`}>
+        <nav className={`fixed top-0 left-0 right-0 z-[200] h-[62px] transition-all duration-300 flex items-center border-b border-white/10 ${scrolled ? "bg-navy/95 backdrop-blur-md" : "bg-navy/80 backdrop-blur-sm"}`}>
             <CommonWrapper>
-                <div className="flex items-center justify-between h-20">
+                <div className="flex items-center justify-between">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2">
-                        <span className="text-2xl font-black tracking-tighter text-white">
-                            IKON <span className="text-primary">SKILLS™</span>
+                    <Link href="/" className="flex items-center gap-2.5 cursor-pointer">
+                        <img
+                            src="https://ikonmalta.ac/IKON_LOGO_White_Color.png"
+                            alt="IKON"
+                            className="h-9 w-auto object-contain"
+                        />
+                        <span className="font-serif font-bold text-[18px] text-white tracking-[0.5px]">
+                            SKILLS<sup className="text-[9px] text-[#f06070] align-super">™</sup>
                         </span>
                     </Link>
 
                     {/* Desktop Nav */}
-                    <div className="hidden xl:flex items-center gap-5">
+                    <div className="hidden xl:flex items-center gap-1">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
                                 href={link.href}
                                 onClick={(e) => handleNavClick(e, link)}
-                                className={`text-[13px] font-bold uppercase tracking-wider transition-colors ${pathname === link.href ? "text-primary" : "text-muted-foreground hover:text-white"}`}
+                                className={`text-[13px] font-medium px-3 py-1.5 rounded-lg transition-all ${pathname === link.href ? "text-gold3" : "text-white/65 hover:text-white hover:bg-white/10"}`}
                             >
                                 {link.name}
                             </Link>
@@ -69,43 +74,45 @@ export function Navbar() {
                     </div>
 
                     {/* Actions */}
-                    <div className="hidden xl:flex items-center gap-4">
-                        <Button variant="ghost" className="text-white hover:bg-white/10 text-xs font-bold uppercase">
-                            Login
-                        </Button>
-                        <Button className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 text-xs font-bold uppercase tracking-wider">
+                    <div className="hidden lg:flex items-center gap-4">
+                        <a
+                            href="https://wa.me/66968412564"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-[#cb2d39] text-white text-[13px] font-bold px-[18px] py-[8px] rounded-[7px] shadow-[0_4px_0_#8a1e27] hover:bg-[#e0323f] hover:translate-y-[2px] hover:shadow-[0_2px_0_#8a1e27] active:translate-y-[4px] active:shadow-none transition-all"
+                        >
                             Enroll as IKON Practitioner
-                        </Button>
+                        </a>
                     </div>
 
                     {/* Mobile Menu Toggle */}
-                    <button className="xl:hidden text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    <button className="xl:hidden text-white p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                         {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
                 </div>
 
                 {/* Mobile Menu */}
                 {isMenuOpen && (
-                    <div className="xl:hidden bg-background/95 backdrop-blur-xl border-b py-6 animate-in slide-in-from-top-4 duration-300">
-                        <div className="flex flex-col gap-4">
-                            {navLinks.map((link) => (
-                                <Link
-                                    key={link.name}
-                                    href={link.href}
-                                    onClick={(e) => {
-                                        handleNavClick(e, link);
-                                        if (!link.isSection) setIsMenuOpen(false);
-                                    }}
-                                    className="text-lg font-medium text-muted-foreground hover:text-white px-4"
-                                >
-                                    {link.name}
-                                </Link>
-                            ))}
-                            <div className="pt-4 flex flex-col gap-3 px-4">
-                                <Button variant="outline" className="w-full">Login</Button>
-                                <Button className="w-full bg-primary text-white">Enroll as IKON Practitioner</Button>
-                            </div>
-                        </div>
+                    <div className="xl:hidden fixed top-[62px] left-0 right-0 bg-navy/98 backdrop-blur-2xl border-b border-gold/20 py-6 px-4 flex flex-col gap-2 animate-in slide-in-from-top-4 duration-300">
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.name}
+                                href={link.href}
+                                onClick={(e) => {
+                                    handleNavClick(e, link);
+                                    if (!link.isSection) setIsMenuOpen(false);
+                                }}
+                                className={`text-[14px] font-medium p-3 rounded-lg transition-all ${pathname === link.href ? "text-gold3 bg-gold/10" : "text-white/70 hover:text-white hover:bg-white/5"}`}
+                            >
+                                {link.name}
+                            </Link>
+                        ))}
+                        <a
+                            href="https://wa.me/66968412564"
+                            className="mt-4 bg-gold text-white text-center py-3 rounded-lg font-bold shadow-lg"
+                        >
+                            Enroll as IKON Practitioner
+                        </a>
                     </div>
                 )}
             </CommonWrapper>
