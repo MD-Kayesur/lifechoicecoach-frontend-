@@ -1,0 +1,70 @@
+name: CI/CD Frontend Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - kayes
+  pull_request:
+    branches:
+      - main
+      - kayes
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint check
+        run: npm run lint
+
+      # Note: Docker build already runs 'npm run build' via Dockerfile
+      # This step ensures the project compiles outside of Docker environment too
+      - name: Build Next.js
+        run: npm run build
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          # Replace 'lifechoicecoach' with your actual Docker Hub username/org if different from secret
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/lifechoicecoach-frontend:latest
+            ${{ secrets.DOCKER_USERNAME }}/lifechoicecoach-frontend:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Optional Deployment step - uncomment and configure when server is ready
+      # - name: Deploy via SSH
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.SERVER_HOST }}
+      #     username: ${{ secrets.SERVER_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     script: |
+      #       docker pull ${{ secrets.DOCKER_USERNAME }}/lifechoicecoach-frontend:latest
+      #       docker stop frontend || true
+      #       docker rm frontend || true
+      #       docker run -d --name frontend -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/lifechoicecoach-frontend:latest
