@@ -20,7 +20,7 @@ export const CredentialDomains = () => {
         <section id="domains" className="section bg-transparent relative">
             <CommonWrapper className="max-w-[1200px] px-0">
                 <div className="eyebrow">10 Credential Domains</div>
-                <h2 className="sec-h">Every professional skill.<br />One unified framework.</h2>
+                <h2 className="sec-h text-[42px]">Every professional skill.<br />One unified framework.</h2>
                 <p className="sec-lead">From AI Engineering to Brand Leadership to Teaching Excellence — IKON SKILLS™ maps the full spectrum of 21st-century professional mastery across 184 verified Micro-Credentials.</p>
 
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-[15px] mt-[44px] font-outfit">

@@ -14,7 +14,7 @@ export const IkonSteps = () => {
         <section className="hiw-bg section bg-transparent relative">
             <CommonWrapper className="max-w-[1200px] px-0">
                 <div className="eyebrow">How It Works</div>
-                <h2 className="sec-h">Four steps to Proof of Skill</h2>
+                <h2 className="sec-h text-[42px]">Four steps to Proof of Skill</h2>
 
                 <div className="steps-row relative font-outfit mt-[44px] grid grid-cols-2 lg:grid-cols-4 gap-[22px] before:content-[''] before:absolute before:top-[26px] before:left-[calc(12.5%+18px)] before:right-[calc(12.5%+18px)] before:h-[1px] before:bg-gradient-to-r before:from-transparent before:via-gold before:to-transparent lg:before:block before:hidden">
                     {steps.map((s, i) => (

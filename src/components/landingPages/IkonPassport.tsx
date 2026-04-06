@@ -10,7 +10,7 @@ export const IkonPassport = () => {
                     {/* Left content */}
                     <div>
                         <div className="p-label">Featured · IKON SKILLS™ Passport</div>
-                        <h2 className="p-h">Your IKON SKILLS™<br />Micro-Credential Passport</h2>
+                        <h2 className="p-h text-[38px]">Your IKON SKILLS™ Micro-Credential Passport</h2>
                         <p className="p-lead">Every Micro-Credential you earn is logged in your personal digital Passport — a portable, verifiable record of exactly what you can do. Show employers, clients, and institutions your Proof of Skill in seconds.</p>
 
                         <div className="space-y-[17px]">
