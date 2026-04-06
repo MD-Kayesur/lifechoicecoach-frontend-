@@ -1,13 +1,9 @@
-"use client";
-
-import { Pathways } from "@/components/Pathways";
+import { Pathways } from "@/components/landingPages/Pathways";
 
 export default function PathwaysPage() {
     return (
-        <main className="min-h-screen bg-background">
-            <div className="pt-20">
-                <Pathways />
-            </div>
+        <main className="min-h-screen bg-[#070c14] selection:bg-gold/30 selection:text-white">
+            <Pathways />
         </main>
     );
 }

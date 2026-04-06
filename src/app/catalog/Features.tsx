@@ -1,260 +1,133 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import CommonWrapper from "@/common/CommonWrapper";
-import { Search, ChevronRight } from "lucide-react";
-import { useState, useMemo, useEffect } from "react";
-
-const domains = [
-    { name: "AI & Automation", count: 15, color: "bg-red-500" },
-    { name: "Data & Analytics", count: 15, color: "bg-blue-500" },
-    { name: "Strategy & Leadership", count: 15, color: "bg-emerald-500" },
-    { name: "Project & Operations", count: 15, color: "bg-orange-500" },
-    { name: "Technology", count: 10, color: "bg-purple-500" },
-    { name: "Marketing & Growth", count: 10, color: "bg-pink-500" },
-    { name: "HR & People Dev", count: 10, color: "bg-indigo-500" },
-    { name: "Finance & ESG", count: 10, color: "bg-cyan-500" },
-    { name: "Teaching & Education", count: 48, color: "bg-amber-500" },
-    { name: "Brand Leadership", count: 36, color: "bg-rose-500" },
-];
-
-const credentialsData = [
-    {
-        id: 1,
-        domain: "AI & Automation",
-        cat: "CAT 01",
-        title: "AI Prompt Engineer",
-        skills: ["Structured prompts", "Output optimization", "Tone control", "Prompt chaining"],
-        ects: 10,
-        eqf: 6,
-    },
-    {
-        id: 2,
-        domain: "AI & Automation",
-        cat: "CAT 01",
-        title: "AI Project Manager",
-        skills: ["AI scope definition", "Business translation", "Risk management", "Timeline planning"],
-        ects: 10,
-        eqf: 7,
-    },
-    {
-        id: 3,
-        domain: "AI & Automation",
-        cat: "CAT 01",
-        title: "Generative AI Practitioner",
-        skills: ["Content generation control", "Model fine-tuning basics", "Data prompting", "Quality filtering"],
-        ects: 10,
-        eqf: 6,
-    },
-    {
-        id: 4,
-        domain: "AI & Automation",
-        cat: "CAT 01",
-        title: "Responsible AI Practitioner",
-        skills: ["Bias identification", "Fairness evaluation", "Risk documentation", "Transparency design"],
-        ects: 10,
-        eqf: 7,
-    },
-    {
-        id: 5,
-        domain: "AI & Automation",
-        cat: "CAT 01",
-        title: "AI Workflow Automation Specialist",
-        skills: ["Process mapping", "API orchestration", "Trigger-based logic", "Error handling"],
-        ects: 10,
-        eqf: 6,
-    },
-    {
-        id: 6,
-        domain: "AI & Automation",
-        cat: "CAT 01",
-        title: "Conversational AI Designer",
-        skills: ["Dialogue flow design", "Intent mapping", "Entity recognition", "UX writing"],
-        ects: 10,
-        eqf: 6,
-    },
-    {
-        id: 7,
-        domain: "Data & Analytics",
-        cat: "CAT 02",
-        title: "Data Storytelling Designer",
-        skills: ["Visualization", "Narrative", "Insights", "Dashboarding"],
-        ects: 10,
-        eqf: 6,
-    },
-    {
-        id: 8,
-        domain: "Strategy & Leadership",
-        cat: "CAT 03",
-        title: "Strategic Thinking Practitioner",
-        skills: ["Scenario planning", "Mental models", "Visioning", "Execution"],
-        ects: 10,
-        eqf: 7,
-    },
-    {
-        id: 9,
-        domain: "Brand Leadership",
-        cat: "CAT 10",
-        title: "Brand Identity Architect",
-        skills: ["Brand DNA", "Visual identity", "Touchpoint design", "Guidelines"],
-        ects: 36,
-        eqf: 8,
-    }
-];
+import { Search } from "lucide-react";
+import { MCS, DOMAINS } from "@/lib/data";
 
 export const Features = () => {
     const [searchQuery, setSearchQuery] = useState("");
-    const [activeDomain, setActiveDomain] = useState("All Domains");
+    const [activeDomain, setActiveDomain] = useState("all");
 
-    // Filtered results
-    const filteredCredentials = useMemo(() => {
-        return credentialsData.filter(card => {
-            const matchesSearch = card.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                card.domain.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesDomain = activeDomain === "All Domains" || card.domain === activeDomain;
+    // Filter logic
+    const filteredMCS = useMemo(() => {
+        return MCS.filter(mc => {
+            const matchesSearch = mc.name.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesDomain = activeDomain === "all" || mc.cat === activeDomain;
             return matchesSearch && matchesDomain;
         });
     }, [searchQuery, activeDomain]);
 
     return (
-        <section id="catalog" className="py-24 bg-[#020617] relative">
-            <CommonWrapper className="max-w-[1400px]">
-                {/* Header Section */}
-                <div className="space-y-4 mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                    <div className="text-[10px] text-primary font-bold uppercase tracking-[4px]">184 MICRO-CREDENTIALS · 10 DOMAINS</div>
-                    <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">IKON SKILLS™ Credential Catalog</h2>
-                    <p className="text-muted-foreground text-sm max-w-3xl">
+        <div id="page-catalog" className="page active pt-[62px]">
+            <div className="cat-hdr bg-[#060e1e] px-8 md:px-12 py-12 md:py-16">
+                <div className="cat-hdr-in max-w-[1200px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <div className="eyebrow text-gold3 mb-2">184 Micro-Credentials · 10 Domains</div>
+                    <h1 className="cat-h font-serif font-bold text-[34px] text-white mb-2 ml-0">IKON SKILLS™ Credential Catalog</h1>
+                    <p className="cat-sub text-sm text-white/60 leading-relaxed max-w-2xl">
                         Browse all 184 Micro-Credentials. Each credential = 10 verified competencies + 10 ECTS. Quality Assured by European International University, Paris.
                     </p>
                 </div>
+            </div>
 
-                {/* Sticky Filter Bar */}
-                <div className="sticky top-20 z-40 py-6 bg-[#020617]/95 backdrop-blur-md border-y border-white/5 mb-12">
-                    <div className="flex flex-col xl:flex-row gap-6 items-center">
-                        {/* Search */}
-                        <div className="relative w-full xl:w-[400px] group">
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search Micro-Credentials..."
-                                className="w-full h-14 bg-white/5 border border-white/10 rounded-xl px-14 text-sm text-white focus:outline-none focus:border-primary/50 transition-all placeholder:text-muted-foreground/50"
-                            />
-                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                        </div>
-
-                        {/* Top Tabs */}
-                        <div className="flex flex-wrap gap-2 w-full">
-                            <button
-                                onClick={() => setActiveDomain("All Domains")}
-                                className={`px-5 py-2 rounded-lg text-xs font-bold transition-all border ${activeDomain === "All Domains" ? "bg-primary border-primary text-white" : "bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10"}`}
-                            >
-                                All (184)
-                            </button>
-                            {domains.map(d => (
-                                <button
-                                    key={d.name}
-                                    onClick={() => setActiveDomain(d.name)}
-                                    className={`px-5 py-2 rounded-lg text-xs font-bold transition-all border ${activeDomain === d.name ? "bg-primary border-primary text-white" : "bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10"}`}
-                                >
-                                    {d.name}
-                                </button>
-                            ))}
-                        </div>
+            <div className="filters-bar bg-[#0d1a2e] border-b border-white/10 sticky top-[62px] z-50 shadow-sm px-8 md:px-12">
+                <div className="filters-in max-w-[1200px] mx-auto py-3 flex flex-wrap items-center gap-2">
+                    <div className="sw flex-1 min-w-[200px] flex items-center gap-2 bg-white/5 border-1.5 border-white/15 rounded-lg px-3 py-2">
+                        <Search className="w-4 h-4 text-white/35" />
+                        <input
+                            type="text"
+                            placeholder="Search Micro-Credentials…"
+                            className="bg-transparent border-none outline-none text-[13px] text-white w-full placeholder:text-white/35"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
                     </div>
+                    <button
+                        className={`f-btn px-3 py-1.5 rounded-lg border-1.5 text-[12px] font-medium transition-all ${activeDomain === 'all' ? 'bg-gold border-gold text-white' : 'bg-white/5 border-white/15 text-white/75 hover:bg-gold hover:border-gold hover:text-white'}`}
+                        onClick={() => setActiveDomain('all')}
+                    >
+                        All (184)
+                    </button>
+                    {DOMAINS.map(domain => (
+                        <button
+                            key={domain.id}
+                            className={`f-btn px-3 py-1.5 rounded-lg border-1.5 text-[12px] font-medium transition-all ${activeDomain === domain.id ? 'bg-gold border-gold text-white' : 'bg-white/5 border-white/15 text-white/75 hover:bg-gold hover:border-gold hover:text-white'}`}
+                            onClick={() => setActiveDomain(domain.id)}
+                        >
+                            {domain.name}
+                        </button>
+                    ))}
                 </div>
+            </div>
 
-                <div className="grid lg:grid-cols-[280px_1fr] gap-12 items-start">
-                    {/* Sticky Sidebar */}
-                    <aside className="hidden lg:block sticky top-60 space-y-8 animate-in fade-in slide-in-from-left-4">
-                        <div>
-                            <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[3px] mb-6 opacity-60">DOMAIN</h3>
-                            <div className="space-y-1">
-                                <button
-                                    onClick={() => setActiveDomain("All Domains")}
-                                    className={`w-full group flex items-center justify-between p-3 rounded-xl transition-all ${activeDomain === "All Domains" ? "bg-primary/20 text-white" : "text-muted-foreground hover:bg-white/5 hover:text-white"}`}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className={`w-2 h-2 rounded-full border border-white/10 bg-slate-500`} />
-                                        <span className="text-xs font-bold uppercase tracking-wider">All Domains</span>
-                                    </div>
-                                    <span className="text-[10px] font-bold opacity-40">184</span>
-                                </button>
-                                {domains.map((d) => (
-                                    <button
-                                        key={d.name}
-                                        onClick={() => setActiveDomain(d.name)}
-                                        className={`w-full group flex items-center justify-between p-3 rounded-xl transition-all ${activeDomain === d.name ? "bg-primary/20 text-white border-l-2 border-primary" : "text-muted-foreground hover:bg-white/5 hover:text-white"}`}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <div className={`w-2 h-2 rounded-full border border-white/10 ${d.color}`} />
-                                            <span className="text-xs font-bold uppercase tracking-wider">{d.name}</span>
-                                        </div>
-                                        <span className="text-[10px] font-bold opacity-40">{d.count}</span>
-                                    </button>
-                                ))}
+            <div className="cat-layout max-w-[1200px] mx-auto px-8 md:px-12 py-12 grid grid-cols-1 lg:grid-cols-[235px_1fr] gap-12">
+                <aside className="sp hidden lg:block">
+                    <div className="sp-sec mb-6">
+                        <div className="sp-t text-[10px] font-semibold tracking-[1.8px] uppercase text-white/45 font-mono mb-3">Domain</div>
+                        <div
+                            className={`sp-item flex items-center justify-between p-2 rounded-lg cursor-pointer transition-all mb-1 ${activeDomain === 'all' ? 'bg-gold/15' : 'hover:bg-white/5'}`}
+                            onClick={() => setActiveDomain('all')}
+                        >
+                            <div className="sp-label flex items-center gap-2 text-[13px] font-medium text-white/80">
+                                <div className="sp-dot w-2 h-2 rounded-[2px]" style={{ background: '#888' }}></div>
+                                All Domains
                             </div>
+                            <div className="sp-ct text-[10px] text-white/50 font-mono bg-white/5 px-1.5 py-0.5 rounded-md">184</div>
                         </div>
-                    </aside>
-
-                    {/* Main Grid Area */}
-                    <div className="space-y-8">
-                        <div className="flex items-center justify-between mb-8">
-                            <h2 className="text-sm font-bold text-white uppercase tracking-widest">{filteredCredentials.length} Micro-Credentials found</h2>
-                        </div>
-
-                        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-                            {filteredCredentials.length > 0 ? (
-                                filteredCredentials.map((card) => (
-                                    <div key={card.id} className="group relative bg-[#0a1122] border border-white/5 hover:border-primary/50 rounded-2xl p-6 transition-all duration-500 hover:-translate-y-1 shadow-2xl flex flex-col justify-between min-h-[340px]">
-                                        <div className="space-y-6">
-                                            <div className="flex justify-between items-start">
-                                                <div className="px-3 py-1 rounded bg-primary text-[8px] font-black text-white uppercase tracking-widest">
-                                                    {card.cat} · {card.domain}
-                                                </div>
-                                            </div>
-
-                                            <h3 className="text-lg font-bold text-white tracking-tight leading-tight group-hover:text-primary transition-colors min-h-[48px]">
-                                                {card.title}
-                                            </h3>
-
-                                            <div className="flex flex-wrap gap-1.5">
-                                                {card.skills.map(s => (
-                                                    <span key={s} className="px-2 py-1 rounded bg-white/5 text-[9px] text-muted-foreground font-medium border border-white/5">
-                                                        {s}
-                                                    </span>
-                                                ))}
-                                                <span className="px-2 py-1 rounded bg-white/5 text-[9px] text-primary font-black border border-primary/20">+6</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="pt-8 mt-auto flex justify-between items-end border-t border-white/5">
-                                            <div className="text-[12px] text-primary font-black uppercase tracking-widest">
-                                                {card.ects} ECTS
-                                            </div>
-                                            <div className="px-2 py-1 bg-primary rounded text-[10px] font-black text-white uppercase tracking-tighter shadow-lg shadow-primary/20">
-                                                EQF {card.eqf}
-                                            </div>
-                                        </div>
-
-                                        {/* Hover border glow */}
-                                        <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl pointer-events-none" />
-                                    </div>
-                                ))
-                            ) : (
-                                <div className="col-span-full py-20 text-center border-2 border-dashed border-white/5 rounded-3xl">
-                                    <p className="text-muted-foreground">No credentials found matching your criteria.</p>
-                                    <button
-                                        onClick={() => { setSearchQuery(""); setActiveDomain("All Domains"); }}
-                                        className="mt-4 text-primary font-bold text-xs uppercase tracking-widest hover:underline"
-                                    >
-                                        Clear all filters
-                                    </button>
+                        {DOMAINS.map(domain => (
+                            <div
+                                key={domain.id}
+                                className={`sp-item flex items-center justify-between p-2 rounded-lg cursor-pointer transition-all mb-1 ${activeDomain === domain.id ? 'bg-gold/15' : 'hover:bg-white/5'}`}
+                                onClick={() => setActiveDomain(domain.id)}
+                            >
+                                <div className="sp-label flex items-center gap-2 text-[13px] font-medium text-white/80">
+                                    <div className="sp-dot w-2 h-2 rounded-[2px]" style={{ background: domain.color }}></div>
+                                    {domain.name}
                                 </div>
-                            )}
+                                <div className="sp-ct text-[10px] text-white/50 font-mono bg-white/5 px-1.5 py-0.5 rounded-md">{domain.count}</div>
+                            </div>
+                        ))}
+                    </div>
+                </aside>
+
+                <main>
+                    <div className="grid-hdr flex items-center justify-between mb-4">
+                        <div className="grid-ct text-[13px] text-white/55">
+                            <strong className="text-white">{filteredMCS.length}</strong> Micro-Credentials found
                         </div>
                     </div>
-                </div>
-            </CommonWrapper>
-        </section>
+
+                    <div className="mc-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        {filteredMCS.map(mc => (
+                            <div
+                                key={mc.id}
+                                className="mc-card bg-white/5 border-1.5 border-white/10 rounded-xl p-5 cursor-pointer transition-all hover:border-gold/50 hover:-translate-y-1 hover:shadow-2xl"
+                                onClick={() => window.location.href = `/sample-mc?id=${mc.id}`}
+                            >
+                                <div className="mc-cat-tag text-[9px] font-semibold tracking-[1.2px] uppercase font-mono bg-gold text-white px-2 py-1 rounded-[4px] mb-2 inline-block">
+                                    Cat {mc.cat} · {DOMAINS.find(d => d.id === mc.cat)?.name}
+                                </div>
+                                <h3 className="mc-name text-[14px] font-bold text-white leading-tight mb-2 min-h-[36px]">
+                                    {mc.name}
+                                </h3>
+                                <div className="mc-chips flex flex-wrap gap-1 mb-3">
+                                    <span className="mc-chip text-[9px] px-1.5 py-0.5 rounded-[3px] bg-white/5 text-white/55 font-mono">10 Competencies</span>
+                                    <span className="mc-chip text-[9px] px-1.5 py-0.5 rounded-[3px] bg-white/5 text-white/55 font-mono">AI Assessment</span>
+                                    <span className="mc-chip text-[9px] px-1.5 py-0.5 rounded-[3px] bg-white/10 text-white/80 font-mono">+ Skills</span>
+                                </div>
+                                <div className="mc-foot flex items-center justify-between border-t border-white/10 pt-3">
+                                    <div className="mc-ects text-[10px] font-bold text-gold font-mono bg-gold/20 px-1.5 py-0.5 rounded-[4px]">
+                                        {mc.ects} ECTS
+                                    </div>
+                                    <div className="mc-lvl text-[9.5px] font-semibold text-white bg-gold px-2 py-[2px] rounded-[4px] font-mono">
+                                        EQF {mc.level}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </main>
+            </div>
+        </div>
     );
 };

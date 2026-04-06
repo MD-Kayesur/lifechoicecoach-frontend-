@@ -1,13 +1,11 @@
 "use client";
 
-import { Degrees } from "@/components/Degrees";
+import { Degrees } from "@/components/landingPages/Degrees";
 
 export default function DegreesPage() {
     return (
-        <main className="min-h-screen bg-background">
-            <div className="pt-20">
-                <Degrees />
-            </div>
+        <main className="min-h-screen bg-[#0a1628]">
+            <Degrees />
         </main>
     );
 }
