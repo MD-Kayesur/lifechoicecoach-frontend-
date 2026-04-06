@@ -1,7 +1,7 @@
 "use client";
 
 import CommonWrapper from "@/common/CommonWrapper";
-import { Check, Landmark, Users, Globe, Building2, Briefcase, GraduationCap } from "lucide-react";
+import { Check, Landmark, Globe, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const Pricing = () => {
@@ -216,7 +216,7 @@ export const Pricing = () => {
                     <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
                         <div className="space-y-2">
                             <span className="text-[10px] text-primary font-black uppercase tracking-widest">PLAN COMPARISON</span>
-                            <h3 className="text-3xl font-bold">What's Included in Each Plan</h3>
+                            <h3 className="text-3xl font-bold">What&apos;s Included in Each Plan</h3>
                         </div>
                     </div>
 

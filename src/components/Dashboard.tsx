@@ -5,13 +5,10 @@ import {
     LayoutDashboard,
     BookOpen,
     CreditCard,
-    Award,
     TrendingUp,
     GraduationCap,
     Settings,
     LogOut,
-    CheckCircle2,
-    Clock,
     Medal,
     ChevronRight
 } from "lucide-react";
