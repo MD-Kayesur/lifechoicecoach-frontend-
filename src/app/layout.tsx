@@ -1,13 +1,8 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Outfit, Cormorant_Garamond, JetBrains_Mono } from "next/font/google";
+import { Outfit, Cormorant_Garamond, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-sans",
-  subsets: ["latin"],
-});
 
 const outfit = Outfit({
   variable: "--font-outfit",

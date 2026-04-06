@@ -1,7 +1,7 @@
 "use client";
 
 import CommonWrapper from "@/common/CommonWrapper";
-import { GraduationCap, Award, Search, ChevronDown, Rocket, Trophy, BadgeCheck } from "lucide-react";
+import { GraduationCap, Search, BadgeCheck } from "lucide-react";
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 
