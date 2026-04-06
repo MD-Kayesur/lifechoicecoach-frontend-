@@ -5,7 +5,7 @@ export const Dashboard = () => {
         <div id="page-dashboard" className="page active pt-[62px] min-h-screen bg-[#0a1628]">
             <div className="dash-wrap max-w-[1200px] mx-auto px-8 md:px-12 py-8 grid grid-cols-1 lg:grid-cols-[225px_1fr] gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
                 {/* Sidebar */}
-                <aside className="dash-sb bg-white/5 border border-white/10 rounded-[15px] p-5 h-fit sticky top-[90px]">
+                <aside className="dash-sb bg-white/5 border border-white/10 rounded-[15px] p-5 h-fit sticky top-[70px]">
                     <div className="dash-av w-[54px] h-[54px] rounded-full bg-gradient-to-br from-[#0B1F3A] to-[#cb2d39] flex items-center justify-center font-serif text-[20px] font-bold text-white mb-3 shadow-lg">
                         EK
                     </div>

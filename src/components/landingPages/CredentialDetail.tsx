@@ -77,7 +77,7 @@ export const CredentialDetail = () => {
                     </div>
                 </div>
 
-                <aside className="sticky top-[92px] animate-in fade-in slide-in-from-right-4 duration-700">
+                <aside className="sticky top-[70px] h-fit animate-in fade-in slide-in-from-right-4 duration-700">
                     <div className="bg-gradient-to-br from-[#0f2240] to-[#0a1a30] rounded-2xl p-8 border border-gold/30 relative overflow-hidden mb-4 shadow-2xl">
                         <div className="absolute top-[-50px] right-[-50px] w-[150px] h-[150px] rounded-full bg-radial-gradient from-gold/20 to-transparent pointer-events-none"></div>
                         <div className="text-[32px] mb-3">🏅</div>

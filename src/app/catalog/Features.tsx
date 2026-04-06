@@ -71,7 +71,7 @@ export const Features = () => {
 
             <div className="cat-layout max-w-[1200px] mx-auto px-6 md:px-12 py-10 grid grid-cols-1 lg:grid-cols-[235px_1fr] gap-10">
                 {/* Sidebar */}
-                <aside className="sp hidden lg:block animate-in fade-in slide-in-from-left-4 duration-700">
+                <aside className="sp sticky top-[154px] h-fit hidden lg:block animate-in fade-in slide-in-from-left-4 duration-700">
                     <div className="sp-sec mb-8">
                         <div className="sp-t text-[10px] font-bold tracking-[2px] uppercase text-white/45 font-mono mb-4">Domain Selection</div>
                         <div
