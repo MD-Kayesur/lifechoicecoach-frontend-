@@ -6,8 +6,8 @@ export const MicroCredential = () => {
     return (
         <section className="bg-transparent section">
             <CommonWrapper className="max-w-[1200px] px-0">
-                <div className="eyebrow">What is a Micro-Credential?</div>
-                <h2 className="sec-h">Not a course. Not a certificate.<br />A <span className="text-gold">Proof of Skill.</span></h2>
+                <div className="eyebrow ">What is a Micro-Credential?</div>
+                <h2 className="sec-h text-[42px]">Not a course. Not a certificate.<br />A <span className="text-gold">Proof of Skill.</span></h2>
                 <p className="sec-lead">Every IKON SKILLS™ Micro-Credential is a precisely engineered unit of competence — 10 verified skills, AI-assessed, ECTS-valued, and immediately stackable toward full degrees at EIU-Paris.</p>
 
                 <div className="grid lg:grid-cols-2 gap-[56px] mt-[52px] items-center font-outfit">
