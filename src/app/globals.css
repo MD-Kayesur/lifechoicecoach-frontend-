@@ -7,9 +7,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-sans: var(--font-outfit);
+  --font-outfit: var(--font-outfit);
+  --font-cormorant: var(--font-cormorant);
+  --font-mono: var(--font-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -39,6 +40,18 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+
+  /* IKON Reference Colors */
+  --color-navy: #0B1F3A;
+  --color-navy2: #142E55;
+  --color-navy3: #1A3A6B;
+  --color-gold: #cb2d39;
+  --color-gold2: #e0364a;
+  --color-gold3: #f06070;
+  --color-cream: #F9F5EE;
+  --color-ivory: #FDFCF9;
+  --color-chalk: #F2EDE4;
+
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -49,51 +62,75 @@
 }
 
 :root {
-  --background: #020617;
+  --background: #0a1628;
   --foreground: #f8fafc;
-  --card: #0f172a;
+  --card: rgba(255, 255, 255, 0.05);
   --card-foreground: #f8fafc;
-  --popover: #0f172a;
+  --popover: #0d1a2e;
   --popover-foreground: #f8fafc;
-  --primary: #e11d48;
+  --primary: #cb2d39;
   --primary-foreground: #ffffff;
-  --secondary: #f59e0b;
+  --secondary: #e0364a;
   --secondary-foreground: #020617;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #1e293b;
+  --muted: #3D4556;
+  --muted-foreground: #74798A;
+  --accent: rgba(255, 255, 255, 0.07);
   --accent-foreground: #f8fafc;
   --destructive: #7f1d1d;
   --destructive-foreground: #f8fafc;
-  --border: #1e293b;
-  --input: #1e293b;
-  --ring: #e11d48;
+  --border: rgba(196, 136, 14, 0.2);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #cb2d39;
   --radius: 0.75rem;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border/50 outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-outfit;
     font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-cormorant font-bold;
   }
 }
 
-/* Custom background glows like Ikon Skills */
-.glow-red {
-  background: radial-gradient(circle, rgba(225, 29, 72, 0.15) 0%, transparent 70%);
+.hero-grid {
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(196, 136, 14, 0.05) 60px),
+                    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(196, 136, 14, 0.05) 60px);
 }
 
-.glow-blue {
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.1) 0%, transparent 70%);
+.page-bg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 80% 60% at 15% 20%, rgba(203, 45, 57, 0.08) 0%, transparent 55%),
+              radial-gradient(ellipse 60% 50% at 85% 75%, rgba(203, 45, 57, 0.06) 0%, transparent 50%),
+              repeating-linear-gradient(-45deg, transparent, transparent 38px, rgba(203, 45, 57, 0.025) 38px, rgba(203, 45, 57, 0.025) 40px),
+              linear-gradient(160deg, #0a1628 0%, #111827 40%, #0d1f35 70%, #0a1628 100%);
 }
 
-.grid-overlay {
-  background-image: linear-gradient(rgba(30, 41, 59, 0.2) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(30, 41, 59, 0.2) 1px, transparent 1px);
-  background-size: 40px 40px;
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .4; }
 }
+
+.blink {
+  animation: blink 2s infinite;
+}
+
+@keyframes f1 { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-12px) } }
+@keyframes f2 { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-9px) } }
+@keyframes f3 { 0%,100% { transform:translateY(0) } 50% { transform:translateY(7px) } }
+@keyframes f4 { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-7px) } }
+
+.animate-f1 { animation: f1 7s ease-in-out infinite; }
+.animate-f2 { animation: f2 8s ease-in-out infinite; }
+.animate-f3 { animation: f3 9s ease-in-out infinite; }
+.animate-f4 { animation: f4 6.5s ease-in-out infinite; }
 
 

@@ -1,17 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import CommonWrapper from "@/common/CommonWrapper";
+import { usePathname } from "next/navigation";
 
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const pathname = usePathname();
-    const router = useRouter();
 
     const navLinks = [
         { name: "Home", href: "/", isSection: true, sectionId: "home" },
@@ -44,71 +40,89 @@ export function Navbar() {
     };
 
     return (
-        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-background/80 backdrop-blur-md border-b" : "bg-transparent"}`}>
-            <CommonWrapper>
-                <div className="flex items-center justify-between h-20">
-                    {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2">
-                        <span className="text-2xl font-black tracking-tighter text-white">
-                            IKON <span className="text-primary">SKILLS™</span>
-                        </span>
+        <nav
+            className={`fixed top-0 left-0 right-0 z-[200] h-[62px] flex items-center justify-between px-4 md:px-[32px] transition-all duration-300 border-b border-[rgba(196,136,14,0.2)] ${scrolled ? "bg-[rgba(11,31,58,0.97)] backdrop-blur-[16px]" : "bg-[rgba(11,31,58,0.8)] backdrop-blur-[8px]"
+                }`}
+        >
+            {/* Brand */}
+            <Link href="/" className="flex items-center gap-[10px] cursor-pointer" onClick={() => setIsMenuOpen(false)}>
+                <img
+                    src="https://ikonmalta.ac/IKON_LOGO_White_Color.png"
+                    alt="IKON"
+                    className="h-9 w-auto object-contain block"
+                />
+                <span className="font-cormorant font-bold text-[18.5px] text-white tracking-[0.5px]">
+                    SKILLS<sup className="text-[9px] text-gold3 align-super ml-[2px]">™</sup>
+                </span>
+            </Link>
+
+            {/* Desktop Nav Links */}
+            <div className="hidden xl:flex items-center gap-[3px]">
+                {navLinks.map((link) => (
+                    <Link
+                        key={link.name}
+                        href={link.href}
+                        onClick={(e) => handleNavClick(e, link)}
+                        className={`text-[13px] font-medium font-outfit px-[13px] py-[6px] rounded-[6px] transition-all duration-200 ${pathname === link.href
+                                ? "text-gold3"
+                                : "text-white/65 hover:text-white hover:bg-white/7"
+                            }`}
+                    >
+                        {link.name}
                     </Link>
+                ))}
+            </div>
 
-                    {/* Desktop Nav */}
-                    <div className="hidden xl:flex items-center gap-5">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                href={link.href}
-                                onClick={(e) => handleNavClick(e, link)}
-                                className={`text-[13px] font-bold uppercase tracking-wider transition-colors ${pathname === link.href ? "text-primary" : "text-muted-foreground hover:text-white"}`}
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
-                    </div>
+            {/* Actions */}
+            <div className="flex items-center gap-4">
+                <a
+                    href="https://wa.me/66968412564"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hidden sm:block bg-gold text-white text-[13px] font-bold px-[18px] py-[8.5px] rounded-[7px] shadow-[0_4px_0_#8a1e27] hover:bg-[#e0323f] hover:translate-y-[2px] hover:shadow-[0_2px_0_#8a1e27] transition-all font-outfit"
+                >
+                    Enroll as IKON Practitioner
+                </a>
 
-                    {/* Actions */}
-                    <div className="hidden xl:flex items-center gap-4">
-                        <Button variant="ghost" className="text-white hover:bg-white/10 text-xs font-bold uppercase">
-                            Login
-                        </Button>
-                        <Button className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 text-xs font-bold uppercase tracking-wider">
-                            Enroll as IKON Practitioner
-                        </Button>
-                    </div>
+                {/* Mobile Menu Toggle */}
+                <button
+                    className="xl:hidden flex flex-col justify-center items-center gap-[5px] w-[30px] h-[30px] transition-all"
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
+                    <span className={`block w-[22px] h-[1.5px] bg-white transition-all ${isMenuOpen ? "rotate-45 translate-y-[6.5px]" : ""}`} />
+                    <span className={`block w-[22px] h-[1.5px] bg-white transition-all ${isMenuOpen ? "opacity-0" : ""}`} />
+                    <span className={`block w-[22px] h-[1.5px] bg-white transition-all ${isMenuOpen ? "-rotate-45 -translate-y-[6.5px]" : ""}`} />
+                </button>
+            </div>
 
-                    {/* Mobile Menu Toggle */}
-                    <button className="xl:hidden text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                    </button>
+            {/* Mobile Menu Overlay */}
+            {isMenuOpen && (
+                <div className="xl:hidden fixed top-[62px] left-0 right-0 bg-[rgba(11,31,58,0.98)] backdrop-blur-[24px] border-b border-[rgba(196,136,14,0.15)] py-6 px-5 flex flex-col gap-1 transition-all animate-in slide-in-from-top-2 duration-300">
+                    {navLinks.map((link) => (
+                        <Link
+                            key={link.name}
+                            href={link.href}
+                            onClick={(e) => {
+                                handleNavClick(e, link);
+                                if (!link.isSection) setIsMenuOpen(false);
+                            }}
+                            className={`text-[14.5px] font-medium font-outfit p-3.5 rounded-lg transition-all ${pathname === link.href
+                                    ? "text-gold3 bg-white/5"
+                                    : "text-white/70 hover:text-white hover:bg-white/5"
+                                }`}
+                        >
+                            {link.name}
+                        </Link>
+                    ))}
+                    <a
+                        href="https://wa.me/66968412564"
+                        className="mt-5 bg-gold text-white text-center py-3.5 rounded-lg font-bold shadow-lg text-[14.5px] font-outfit flex items-center justify-center gap-2"
+                        target="_blank"
+                    >
+                        Enroll as IKON Practitioner
+                    </a>
                 </div>
-
-                {/* Mobile Menu */}
-                {isMenuOpen && (
-                    <div className="xl:hidden bg-background/95 backdrop-blur-xl border-b py-6 animate-in slide-in-from-top-4 duration-300">
-                        <div className="flex flex-col gap-4">
-                            {navLinks.map((link) => (
-                                <Link
-                                    key={link.name}
-                                    href={link.href}
-                                    onClick={(e) => {
-                                        handleNavClick(e, link);
-                                        if (!link.isSection) setIsMenuOpen(false);
-                                    }}
-                                    className="text-lg font-medium text-muted-foreground hover:text-white px-4"
-                                >
-                                    {link.name}
-                                </Link>
-                            ))}
-                            <div className="pt-4 flex flex-col gap-3 px-4">
-                                <Button variant="outline" className="w-full">Login</Button>
-                                <Button className="w-full bg-primary text-white">Enroll as IKON Practitioner</Button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </CommonWrapper>
+            )}
         </nav>
     );
 }

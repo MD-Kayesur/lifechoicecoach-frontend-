@@ -1,260 +1,179 @@
 "use client";
 
-import CommonWrapper from "@/common/CommonWrapper";
-import { Search, ChevronRight } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
-
-const domains = [
-    { name: "AI & Automation", count: 15, color: "bg-red-500" },
-    { name: "Data & Analytics", count: 15, color: "bg-blue-500" },
-    { name: "Strategy & Leadership", count: 15, color: "bg-emerald-500" },
-    { name: "Project & Operations", count: 15, color: "bg-orange-500" },
-    { name: "Technology", count: 10, color: "bg-purple-500" },
-    { name: "Marketing & Growth", count: 10, color: "bg-pink-500" },
-    { name: "HR & People Dev", count: 10, color: "bg-indigo-500" },
-    { name: "Finance & ESG", count: 10, color: "bg-cyan-500" },
-    { name: "Teaching & Education", count: 48, color: "bg-amber-500" },
-    { name: "Brand Leadership", count: 36, color: "bg-rose-500" },
-];
-
-const credentialsData = [
-    {
-        id: 1,
-        domain: "AI & Automation",
-        cat: "CAT 01",
-        title: "AI Prompt Engineer",
-        skills: ["Structured prompts", "Output optimization", "Tone control", "Prompt chaining"],
-        ects: 10,
-        eqf: 6,
-    },
-    {
-        id: 2,
-        domain: "AI & Automation",
-        cat: "CAT 01",
-        title: "AI Project Manager",
-        skills: ["AI scope definition", "Business translation", "Risk management", "Timeline planning"],
-        ects: 10,
-        eqf: 7,
-    },
-    {
-        id: 3,
-        domain: "AI & Automation",
-        cat: "CAT 01",
-        title: "Generative AI Practitioner",
-        skills: ["Content generation control", "Model fine-tuning basics", "Data prompting", "Quality filtering"],
-        ects: 10,
-        eqf: 6,
-    },
-    {
-        id: 4,
-        domain: "AI & Automation",
-        cat: "CAT 01",
-        title: "Responsible AI Practitioner",
-        skills: ["Bias identification", "Fairness evaluation", "Risk documentation", "Transparency design"],
-        ects: 10,
-        eqf: 7,
-    },
-    {
-        id: 5,
-        domain: "AI & Automation",
-        cat: "CAT 01",
-        title: "AI Workflow Automation Specialist",
-        skills: ["Process mapping", "API orchestration", "Trigger-based logic", "Error handling"],
-        ects: 10,
-        eqf: 6,
-    },
-    {
-        id: 6,
-        domain: "AI & Automation",
-        cat: "CAT 01",
-        title: "Conversational AI Designer",
-        skills: ["Dialogue flow design", "Intent mapping", "Entity recognition", "UX writing"],
-        ects: 10,
-        eqf: 6,
-    },
-    {
-        id: 7,
-        domain: "Data & Analytics",
-        cat: "CAT 02",
-        title: "Data Storytelling Designer",
-        skills: ["Visualization", "Narrative", "Insights", "Dashboarding"],
-        ects: 10,
-        eqf: 6,
-    },
-    {
-        id: 8,
-        domain: "Strategy & Leadership",
-        cat: "CAT 03",
-        title: "Strategic Thinking Practitioner",
-        skills: ["Scenario planning", "Mental models", "Visioning", "Execution"],
-        ects: 10,
-        eqf: 7,
-    },
-    {
-        id: 9,
-        domain: "Brand Leadership",
-        cat: "CAT 10",
-        title: "Brand Identity Architect",
-        skills: ["Brand DNA", "Visual identity", "Touchpoint design", "Guidelines"],
-        ects: 36,
-        eqf: 8,
-    }
-];
+import Link from "next/link";
+import { MCS, DOMAINS } from "@/lib/data";
 
 export const Features = () => {
     const [searchQuery, setSearchQuery] = useState("");
-    const [activeDomain, setActiveDomain] = useState("All Domains");
+    const [activeDomain, setActiveDomain] = useState("all");
 
-    // Filtered results
-    const filteredCredentials = useMemo(() => {
-        return credentialsData.filter(card => {
-            const matchesSearch = card.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                card.domain.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesDomain = activeDomain === "All Domains" || card.domain === activeDomain;
+    // Filter logic
+    const filteredMCS = useMemo(() => {
+        return MCS.filter(mc => {
+            const matchesSearch = mc.name.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesDomain = activeDomain === "all" || mc.cat === activeDomain;
             return matchesSearch && matchesDomain;
         });
     }, [searchQuery, activeDomain]);
 
+    const setFilt = (id: string) => {
+        setActiveDomain(id);
+    };
+
     return (
-        <section id="catalog" className="py-24 bg-[#020617] relative">
-            <CommonWrapper className="max-w-[1400px]">
-                {/* Header Section */}
-                <div className="space-y-4 mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                    <div className="text-[10px] text-primary font-bold uppercase tracking-[4px]">184 MICRO-CREDENTIALS · 10 DOMAINS</div>
-                    <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">IKON SKILLS™ Credential Catalog</h2>
-                    <p className="text-muted-foreground text-sm max-w-3xl">
+        <div id="page-catalog" className="page active pt-[62px] min-h-screen bg-[#0a1628]">
+            {/* Catalog Header */}
+            <div className="cat-hdr bg-[#060e1e] px-6 md:px-12 py-12 md:py-16">
+                <div className="cat-hdr-in max-w-[1200px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <div className="eyebrow text-gold3 mb-2 font-mono text-[10.5px] font-bold tracking-[2px] uppercase">
+                        184 Micro-Credentials · 10 Domains
+                    </div>
+                    <h1 className="cat-h font-serif font-bold text-[34px] md:text-[42px] text-white mb-3 leading-tight ml-0">
+                        IKON SKILLS™ Credential Catalog
+                    </h1>
+                    <p className="cat-sub text-[14.5px] text-white/60 leading-relaxed max-w-2xl font-medium">
                         Browse all 184 Micro-Credentials. Each credential = 10 verified competencies + 10 ECTS. Quality Assured by European International University, Paris.
                     </p>
                 </div>
+            </div>
 
-                {/* Sticky Filter Bar */}
-                <div className="sticky top-20 z-40 py-6 bg-[#020617]/95 backdrop-blur-md border-y border-white/5 mb-12">
-                    <div className="flex flex-col xl:flex-row gap-6 items-center">
-                        {/* Search */}
-                        <div className="relative w-full xl:w-[400px] group">
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search Micro-Credentials..."
-                                className="w-full h-14 bg-white/5 border border-white/10 rounded-xl px-14 text-sm text-white focus:outline-none focus:border-primary/50 transition-all placeholder:text-muted-foreground/50"
-                            />
-                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                        </div>
-
-                        {/* Top Tabs */}
-                        <div className="flex flex-wrap gap-2 w-full">
-                            <button
-                                onClick={() => setActiveDomain("All Domains")}
-                                className={`px-5 py-2 rounded-lg text-xs font-bold transition-all border ${activeDomain === "All Domains" ? "bg-primary border-primary text-white" : "bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10"}`}
-                            >
-                                All (184)
-                            </button>
-                            {domains.map(d => (
-                                <button
-                                    key={d.name}
-                                    onClick={() => setActiveDomain(d.name)}
-                                    className={`px-5 py-2 rounded-lg text-xs font-bold transition-all border ${activeDomain === d.name ? "bg-primary border-primary text-white" : "bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10"}`}
-                                >
-                                    {d.name}
-                                </button>
-                            ))}
-                        </div>
+            {/* Filters Bar */}
+            <div className="filters-bar bg-[#0d1a2e] border-b border-white/10 sticky top-[62px] z-50 shadow-xl px-6 md:px-12">
+                <div className="filters-in max-w-[1200px] mx-auto py-3.5 flex flex-wrap items-center gap-3">
+                    <div className="sw flex-1 min-w-[200px] flex items-center gap-3 bg-white/5 border-1.5 border-white/15 rounded-lg px-3.5 py-2 group hover:border-gold/40 transition-all">
+                        <span className="text-white/35 text-[15px]">🔍</span>
+                        <input
+                            type="text"
+                            placeholder="Search Micro-Credentials…"
+                            className="bg-transparent border-none outline-none text-[13.5px] text-white w-full placeholder:text-white/35 font-medium"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
                     </div>
+                    <button
+                        className={`f-btn px-4 py-2 rounded-lg border-1.5 text-[12.5px] font-bold transition-all ${activeDomain === 'all' ? 'bg-gold border-gold text-white shadow-lg' : 'bg-white/5 border-white/15 text-white/75 hover:bg-gold hover:border-gold hover:text-white'}`}
+                        onClick={() => setFilt('all')}
+                    >
+                        All (184)
+                    </button>
+                    {DOMAINS.map(domain => (
+                        <button
+                            key={domain.id}
+                            className={`f-btn px-4 py-2 rounded-lg border-1.5 text-[12.5px] font-bold transition-all hidden xl:block ${activeDomain === domain.id ? 'bg-gold border-gold text-white shadow-lg' : 'bg-white/5 border-white/15 text-white/75 hover:bg-gold hover:border-gold hover:text-white'}`}
+                            onClick={() => setFilt(domain.id)}
+                        >
+                            {domain.name}
+                        </button>
+                    ))}
                 </div>
+            </div>
 
-                <div className="grid lg:grid-cols-[280px_1fr] gap-12 items-start">
-                    {/* Sticky Sidebar */}
-                    <aside className="hidden lg:block sticky top-60 space-y-8 animate-in fade-in slide-in-from-left-4">
-                        <div>
-                            <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[3px] mb-6 opacity-60">DOMAIN</h3>
-                            <div className="space-y-1">
-                                <button
-                                    onClick={() => setActiveDomain("All Domains")}
-                                    className={`w-full group flex items-center justify-between p-3 rounded-xl transition-all ${activeDomain === "All Domains" ? "bg-primary/20 text-white" : "text-muted-foreground hover:bg-white/5 hover:text-white"}`}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className={`w-2 h-2 rounded-full border border-white/10 bg-slate-500`} />
-                                        <span className="text-xs font-bold uppercase tracking-wider">All Domains</span>
-                                    </div>
-                                    <span className="text-[10px] font-bold opacity-40">184</span>
-                                </button>
-                                {domains.map((d) => (
-                                    <button
-                                        key={d.name}
-                                        onClick={() => setActiveDomain(d.name)}
-                                        className={`w-full group flex items-center justify-between p-3 rounded-xl transition-all ${activeDomain === d.name ? "bg-primary/20 text-white border-l-2 border-primary" : "text-muted-foreground hover:bg-white/5 hover:text-white"}`}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <div className={`w-2 h-2 rounded-full border border-white/10 ${d.color}`} />
-                                            <span className="text-xs font-bold uppercase tracking-wider">{d.name}</span>
-                                        </div>
-                                        <span className="text-[10px] font-bold opacity-40">{d.count}</span>
-                                    </button>
-                                ))}
+            <div className="cat-layout max-w-[1200px] mx-auto px-6 md:px-12 py-10 grid grid-cols-1 lg:grid-cols-[235px_1fr] gap-10">
+                {/* Sidebar */}
+                <aside className="sp sticky top-[154px] h-fit hidden lg:block animate-in fade-in slide-in-from-left-4 duration-700">
+                    <div className="sp-sec mb-8">
+                        <div className="sp-t text-[10px] font-bold tracking-[2px] uppercase text-white/45 font-mono mb-4">Domain Selection</div>
+                        <div
+                            className={`sp-item flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-all mb-1.5 group ${activeDomain === 'all' ? 'bg-gold/15 border border-gold/20' : 'hover:bg-white/5'}`}
+                            onClick={() => setFilt('all')}
+                        >
+                            <div className="sp-label flex items-center gap-3 text-[13.5px] font-bold text-white/80 group-hover:text-white transition-colors">
+                                <div className="sp-dot w-2 h-2 rounded-[3px] shadow-[0_0_8px_rgba(136,136,136,0.5)]" style={{ background: '#888' }}></div>
+                                All Domains
                             </div>
+                            <div className="sp-ct text-[10px] text-white/50 font-bold font-mono bg-white/5 px-2 py-0.5 rounded-md">184</div>
                         </div>
-                    </aside>
-
-                    {/* Main Grid Area */}
-                    <div className="space-y-8">
-                        <div className="flex items-center justify-between mb-8">
-                            <h2 className="text-sm font-bold text-white uppercase tracking-widest">{filteredCredentials.length} Micro-Credentials found</h2>
-                        </div>
-
-                        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-                            {filteredCredentials.length > 0 ? (
-                                filteredCredentials.map((card) => (
-                                    <div key={card.id} className="group relative bg-[#0a1122] border border-white/5 hover:border-primary/50 rounded-2xl p-6 transition-all duration-500 hover:-translate-y-1 shadow-2xl flex flex-col justify-between min-h-[340px]">
-                                        <div className="space-y-6">
-                                            <div className="flex justify-between items-start">
-                                                <div className="px-3 py-1 rounded bg-primary text-[8px] font-black text-white uppercase tracking-widest">
-                                                    {card.cat} · {card.domain}
-                                                </div>
-                                            </div>
-
-                                            <h3 className="text-lg font-bold text-white tracking-tight leading-tight group-hover:text-primary transition-colors min-h-[48px]">
-                                                {card.title}
-                                            </h3>
-
-                                            <div className="flex flex-wrap gap-1.5">
-                                                {card.skills.map(s => (
-                                                    <span key={s} className="px-2 py-1 rounded bg-white/5 text-[9px] text-muted-foreground font-medium border border-white/5">
-                                                        {s}
-                                                    </span>
-                                                ))}
-                                                <span className="px-2 py-1 rounded bg-white/5 text-[9px] text-primary font-black border border-primary/20">+6</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="pt-8 mt-auto flex justify-between items-end border-t border-white/5">
-                                            <div className="text-[12px] text-primary font-black uppercase tracking-widest">
-                                                {card.ects} ECTS
-                                            </div>
-                                            <div className="px-2 py-1 bg-primary rounded text-[10px] font-black text-white uppercase tracking-tighter shadow-lg shadow-primary/20">
-                                                EQF {card.eqf}
-                                            </div>
-                                        </div>
-
-                                        {/* Hover border glow */}
-                                        <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl pointer-events-none" />
-                                    </div>
-                                ))
-                            ) : (
-                                <div className="col-span-full py-20 text-center border-2 border-dashed border-white/5 rounded-3xl">
-                                    <p className="text-muted-foreground">No credentials found matching your criteria.</p>
-                                    <button
-                                        onClick={() => { setSearchQuery(""); setActiveDomain("All Domains"); }}
-                                        className="mt-4 text-primary font-bold text-xs uppercase tracking-widest hover:underline"
-                                    >
-                                        Clear all filters
-                                    </button>
+                        {DOMAINS.map(domain => (
+                            <div
+                                key={domain.id}
+                                className={`sp-item flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-all mb-1.5 group ${activeDomain === domain.id ? 'bg-gold/15 border border-gold/20' : 'hover:bg-white/5'}`}
+                                onClick={() => setFilt(domain.id)}
+                            >
+                                <div className="sp-label flex items-center gap-3 text-[13.5px] font-bold text-white/80 group-hover:text-white transition-colors">
+                                    <div className="sp-dot w-2 h-2 rounded-[3px]" style={{ background: domain.color, boxShadow: `0 0 8px ${domain.color}80` }}></div>
+                                    {domain.name}
                                 </div>
-                            )}
+                                <div className="sp-ct text-[10px] text-white/50 font-bold font-mono bg-white/5 px-2 py-0.5 rounded-md">{domain.count}</div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="qa-mini bg-white/3 border border-white/8 rounded-2xl p-5 mt-10">
+                        <div className="text-[10px] font-bold text-gold font-mono uppercase tracking-[1px] mb-3">Quality Assurance</div>
+                        <div className="text-[12px] text-white/50 leading-relaxed font-medium">
+                            All 184 credentials are quality assured by EIU-Paris (UAI 0756213W).
                         </div>
                     </div>
-                </div>
-            </CommonWrapper>
-        </section>
+                </aside>
+
+                {/* Grid */}
+                <main className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
+                    <div className="grid-hdr flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+                        <div className="grid-ct text-[14px] text-white/55 font-medium">
+                            Showing <strong className="text-white text-[15px]">{filteredMCS.length}</strong> Micro-Credentials
+                        </div>
+                        <div className="grid-sort text-[12px] text-white/40 font-mono hidden md:block">
+                            PLATFORM_VR :: 2.4.0
+                        </div>
+                    </div>
+
+                    <div className="mc-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                        {filteredMCS.map(mc => (
+                            <Link
+                                key={mc.id}
+                                href={`/sample-mc?id=${mc.id}`}
+                                className="mc-card bg-white/5 border-1.5 border-white/10 rounded-2xl p-6 cursor-pointer transition-all hover:border-gold/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] group flex flex-col h-full"
+                            >
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="mc-cat-tag text-[9.5px] font-bold tracking-[1.2px] uppercase font-mono bg-gold text-white px-2.5 py-1 rounded-[5px] shadow-lg shadow-gold/20">
+                                        Cat {mc.cat}
+                                    </div>
+                                    <div className="mc-lvl text-[10px] font-bold text-white bg-white/10 px-2 py-0.5 rounded-[4px] font-mono border border-white/5">
+                                        EQF {mc.level}
+                                    </div>
+                                </div>
+
+                                <h3 className="mc-name text-[15px] font-bold text-white leading-tight mb-3 group-hover:text-gold3 transition-colors flex-grow min-h-[40px]">
+                                    {mc.name}
+                                </h3>
+
+                                <p className="text-[12px] text-white/45 mb-4 line-clamp-2 leading-relaxed">
+                                    Verified competency in {DOMAINS.find(d => d.id === mc.cat)?.name}. 10 ECTS Value.
+                                </p>
+
+                                <div className="mc-chips flex flex-wrap gap-1.5 mb-5">
+                                    <span className="mc-chip text-[9px] px-2 py-0.5 rounded-[4px] bg-white/5 text-white/45 font-bold font-mono uppercase tracking-[0.5px]">10 Skills</span>
+                                    <span className="mc-chip text-[9px] px-2 py-0.5 rounded-[4px] bg-white/5 text-white/45 font-bold font-mono uppercase tracking-[0.5px]">AI Assessed</span>
+                                </div>
+
+                                <div className="mc-foot flex items-center justify-between border-t border-white/10 pt-4 mt-auto">
+                                    <div className="mc-ects text-[11px] font-bold text-gold3 font-mono bg-gold/15 px-2 py-0.5 rounded-[5px]">
+                                        {mc.ects} ECTS
+                                    </div>
+                                    <div className="text-[11px] font-bold text-white/40 group-hover:text-white transition-colors">
+                                        More Info →
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+
+                    {filteredMCS.length === 0 && (
+                        <div className="py-20 text-center bg-white/3 rounded-3xl border border-dashed border-white/10">
+                            <div className="text-4xl mb-4">🔍</div>
+                            <h3 className="text-white text-lg font-bold mb-2">No credentials found</h3>
+                            <p className="text-white/40 text-sm">Try adjusting your search or domain filters.</p>
+                            <button
+                                onClick={() => { setSearchQuery(""); setActiveDomain("all"); }}
+                                className="mt-6 text-gold font-bold text-sm hover:underline"
+                            >
+                                Reset all filters
+                            </button>
+                        </div>
+                    )}
+                </main>
+            </div>
+        </div>
     );
 };

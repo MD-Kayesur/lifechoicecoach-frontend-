@@ -1,0 +1,212 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import { DEGREES, CERTS } from "@/lib/data";
+
+export const Degrees = () => {
+    const [activeFilter, setActiveFilter] = useState("all");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [expandedDegrees, setExpandedDegrees] = useState<number[]>([]);
+
+    const toggleDegree = (id: number) => {
+        setExpandedDegrees(prev =>
+            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+        );
+    };
+
+    const filteredDegrees = useMemo(() => {
+        const query = searchQuery.toLowerCase().trim();
+        return DEGREES.filter(deg => {
+            const levelMatch = activeFilter === 'all' || deg.level === activeFilter;
+            const searchMatch = !query ||
+                deg.name.toLowerCase().includes(query) ||
+                deg.mcs.some(mc => mc.toLowerCase().includes(query));
+            return levelMatch && searchMatch;
+        });
+    }, [activeFilter, searchQuery]);
+
+    const filteredCerts = useMemo(() => {
+        const query = searchQuery.toLowerCase().trim();
+        return CERTS.filter(cert => {
+            const levelMatch = activeFilter === 'all' || activeFilter === 'Cert';
+            const searchMatch = !query ||
+                cert.name.toLowerCase().includes(query) ||
+                cert.mcs.some(mc => mc.toLowerCase().includes(query));
+            return levelMatch && searchMatch;
+        });
+    }, [activeFilter, searchQuery]);
+
+    const groups = [
+        { id: 'Bachelor', label: 'Bachelor Degrees', items: filteredDegrees.filter(d => d.level === 'Bachelor') },
+        { id: 'Master', label: 'Master Degrees', items: filteredDegrees.filter(d => d.level === 'Master') },
+        { id: 'Doctorate', label: 'Doctorate Degrees', items: filteredDegrees.filter(d => d.level === 'Doctorate') },
+        { id: 'Cert', label: 'Brand Strategy Certifications', items: filteredCerts }
+    ];
+
+    return (
+        <div id="page-degrees" className="page active pt-[62px] min-h-screen bg-[#070c14] relative overflow-hidden font-outfit">
+            {/* ═══════ ABSTRACT BACKGROUND ═══════ */}
+            <div className="bg-canvas fixed inset-0 z-0 pointer-events-none overflow-hidden">
+                <div className="bg-grid absolute inset-0 bg-[linear-gradient(rgba(203,45,57,.04)_1px,transparent_1px),linear-gradient(90deg,rgba(203,45,57,.04)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
+                <div className="bg-dots absolute inset-0 bg-[radial-gradient(circle,rgba(203,45,57,.08)_1px,transparent_1px)] bg-[size:30px_30px] bg-[15px_15px] opacity-50"></div>
+                <div className="bg-lines absolute inset-0 overflow-hidden opacity-[0.03] before:content-[''] before:absolute before:w-[200%] before:height-[1px] before:bg-[linear-gradient(90deg,transparent,var(--gold),transparent)] before:top-[30%] before:left-[-50%] before:rotate-[-15deg] before:shadow-[0_80px_0_rgba(203,45,57,.5),0_160px_0_rgba(203,45,57,.3),0_240px_0_rgba(203,45,57,.2),0_-80px_0_rgba(203,45,57,.4),0_-160px_0_rgba(203,45,57,.2)]"></div>
+                <div className="bg-shape bg-shape-1 absolute w-[600px] h-[600px] border border-gold/10 rounded-full top-[-200px] right-[-100px] blur-[1px] opacity-4 animate-[spin_40s_linear_infinite]"></div>
+                <div className="bg-shape bg-shape-2 absolute w-[400px] h-[400px] border border-gold/10 rounded-full top-[20%] left-[-150px] blur-[1px] opacity-3 animate-[spin_55s_linear_infinite_reverse]"></div>
+                <div className="bg-shape bg-shape-3 absolute w-[300px] h-[300px] border border-gold/10 rounded-full bottom-[10%] right-[5%] blur-[1px] opacity-3 animate-[spin_35s_linear_infinite]"></div>
+            </div>
+
+            <div className="page-content relative z-1">
+                {/* HERO */}
+                <div className="cp-hero bg-[linear-gradient(135deg,#040810_0%,#070C14_50%,#0A1020_100%)] px-10 py-20 text-center relative overflow-hidden border-b border-gold/30">
+                    <div className="hero-badge inline-block bg-gold/12 border border-gold/40 text-gold text-[11px] font-semibold tracking-[2px] uppercase px-4.5 py-1.5 rounded-full mb-6">
+                        IKON SKILLS™ Stackable Degrees
+                    </div>
+                    <h1 className="font-sora font-extrabold text-white text-[28px] md:text-[52px] leading-[1.1] mb-4 tracking-[-.5px]">
+                        59 Degree Programs.<br /><span className="text-gold">Built from Micro-Credentials.</span>
+                    </h1>
+                    <p className="text-[#94A3B8] text-[16px] max-w-[680px] mx-auto mb-10 leading-[1.7]">
+                        Every degree is assembled from verified IKON SKILLS™ Micro-Credentials. Stack your credentials. Earn your qualification. No traditional lectures required.
+                    </p>
+                    <div className="hero-stats flex justify-center gap-10 flex-wrap mb-10">
+                        {[
+                            { n: '59', l: 'Degree Programs' },
+                            { n: '56', l: 'EIU-Paris Degrees' },
+                            { n: '3', l: 'Education Degrees' },
+                            { n: '3', l: 'Brand Certifications' }
+                        ].map((stat, i) => (
+                            <div key={i} className="hero-stat text-center">
+                                <div className="num font-mono text-[32px] font-extrabold text-gold">{stat.n}</div>
+                                <div className="lbl text-[11px] text-[#94A3B8] uppercase tracking-[1px] mt-1">{stat.l}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* FILTERS */}
+                <div className="filters-section px-10 pt-8 max-w-[1400px] mx-auto">
+                    <div className="filters-row flex gap-2.5 flex-wrap items-center mb-4">
+                        <button
+                            className={`filter-btn bg-white/5 border border-white/12 text-[#94A3B8] px-4.5 py-2 rounded-lg text-[13px] font-medium transition-all hover:bg-white/10 hover:text-white ${activeFilter === 'all' ? 'bg-[#a02030] border-gold text-white' : ''}`}
+                            onClick={() => setActiveFilter('all')}
+                        >
+                            All (59)
+                        </button>
+                        <button
+                            className={`filter-btn bg-white/5 border border-white/12 text-[#94A3B8] px-4.5 py-2 rounded-lg text-[13px] font-medium transition-all hover:bg-white/10 hover:text-white ${activeFilter === 'Bachelor' ? 'bg-[#1E6B8C]/40 border-[#1E6B8C] text-white' : ''}`}
+                            onClick={() => setActiveFilter('Bachelor')}
+                        >
+                            Bachelor (22)
+                        </button>
+                        <button
+                            className={`filter-btn bg-white/5 border border-white/12 text-[#94A3B8] px-4.5 py-2 rounded-lg text-[13px] font-medium transition-all hover:bg-white/10 hover:text-white ${activeFilter === 'Master' ? 'bg-gold/30 border-gold text-[#cb2d39]' : ''}`}
+                            onClick={() => setActiveFilter('Master')}
+                        >
+                            Master (22)
+                        </button>
+                        <button
+                            className={`filter-btn bg-white/5 border border-white/12 text-[#94A3B8] px-4.5 py-2 rounded-lg text-[13px] font-medium transition-all hover:bg-white/10 hover:text-white ${activeFilter === 'Doctorate' ? 'bg-[#8a1a26]/40 border-gold text-[#FF8080]' : ''}`}
+                            onClick={() => setActiveFilter('Doctorate')}
+                        >
+                            Doctorate (12)
+                        </button>
+                        <button
+                            className={`filter-btn bg-white/5 border border-white/12 text-[#94A3B8] px-4.5 py-2 rounded-lg text-[13px] font-medium transition-all hover:bg-white/10 hover:text-white ${activeFilter === 'Cert' ? 'bg-[#4a1e6b]/40 border-[#9B59B6] text-[#C39BD3]' : ''}`}
+                            onClick={() => setActiveFilter('Cert')}
+                        >
+                            Certifications (3)
+                        </button>
+                        <div className="search-box flex-1 min-w-[220px] max-w-[360px]">
+                            <input
+                                type="text"
+                                placeholder="Search degrees or micro-credentials..."
+                                className="w-full bg-white/6 border border-white/12 text-white px-4 py-2 rounded-lg text-[13px] outline-none focus:border-gold/50 placeholder:text-[#64748B]"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="results-count px-10 pb-3 text-[13px] text-[#64748B] max-w-[1400px] mx-auto">
+                    Showing {groups.reduce((acc, g) => acc + g.items.length, 0)} of 59 credentials
+                </div>
+
+                {/* DEGREES GRID */}
+                <div className="degrees-section px-10 pb-15 max-w-[1400px] mx-auto">
+                    {groups.map(group => group.items.length > 0 && (
+                        <div key={group.id} className="level-group mb-12">
+                            <div className="level-header flex items-center gap-4 mb-5 pb-3 border-b border-white/8">
+                                <span className={`level-badge text-[11px] font-bold tracking-[2px] uppercase px-3 py-1 rounded-[4px] ${group.id === 'Bachelor' ? 'bg-[#1E6B8C]/30 text-[#7EC8E3] border border-[#1E6B8C]/50' :
+                                        group.id === 'Master' ? 'bg-gold/20 text-gold border border-gold/40' :
+                                            group.id === 'Doctorate' ? 'bg-[#8a1a26]/20 text-[#FF8080] border border-[#8a1a26]/40' :
+                                                'bg-[#9B59B6]/20 text-[#C39BD3] border border-[#9B59B6]/40'
+                                    }`}>
+                                    {group.id === 'Cert' ? 'Professional Certification' : group.id}
+                                </span>
+                                <span className="level-title text-[18px] font-bold text-white">{group.label}</span>
+                                <span className="level-count ml-auto text-[13px] text-[#64748B]">{group.items.length} Programs</span>
+                            </div>
+
+                            <div className="degrees-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {group.items.map((deg: any) => (
+                                    <div
+                                        key={deg.id}
+                                        className={`degree-card bg-white/3 border border-white/8 rounded-xl overflow-hidden transition-all hover:bg-white/6 hover:border-white/20 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border-l-3 ${group.id === 'Bachelor' ? 'border-l-[#1E6B8C]' :
+                                                group.id === 'Master' ? 'border-l-[#a02030]' :
+                                                    group.id === 'Doctorate' ? 'border-l-[#8a1a26]' :
+                                                        'border-l-[#9B59B6]'
+                                            } ${expandedDegrees.includes(deg.id) ? 'expanded' : ''}`}
+                                    >
+                                        <div className="card-header p-4 pb-3.5 flex items-start gap-3">
+                                            <span className="card-num font-mono text-[11px] font-semibold text-[#64748B] bg-white/5 px-1.5 py-0.5 rounded-[4px]">
+                                                {typeof deg.id === 'string' ? deg.id : String(deg.id).padStart(2, '0')}
+                                            </span>
+                                            <span className="card-name text-[13.5px] font-bold text-white leading-[1.4] flex-1">{deg.name}</span>
+                                            {deg.partner && (
+                                                <span className="card-partner text-[10px] font-bold text-[#C39BD3] bg-[#9B59B6]/15 border border-[#9B59B6]/30 px-1.5 py-0.5 rounded-[4px]">{deg.partner}</span>
+                                            )}
+                                        </div>
+                                        <div className="card-meta px-4 pb-3.5 flex gap-4 flex-wrap">
+                                            <div className="card-meta-item text-[11px] text-[#64748B]"><span className="text-[#94A3B8] font-semibold">{deg.mc_count}</span> MCs to Stack</div>
+                                            <div className="card-meta-item text-[11px] text-[#64748B]"><span className="text-[#94A3B8] font-semibold">{deg.ects}</span> ECTS</div>
+                                            <div className="card-meta-item text-[11px] text-[#64748B]">EQF <span className="text-[#94A3B8] font-semibold">{deg.eqf}</span></div>
+                                            <div className="card-meta-item text-[11px] text-[#64748B]">Issued by <span className="text-[#94A3B8] font-semibold">EIU-Paris</span></div>
+                                        </div>
+                                        <div
+                                            className="card-toggle p-2.5 px-4.5 border-t border-white/6 flex items-center justify-between text-[12px] text-gold font-bold cursor-pointer select-none hover:text-white transition-colors"
+                                            onClick={() => toggleDegree(deg.id)}
+                                        >
+                                            <span>{expandedDegrees.includes(deg.id) ? 'Hide Micro-Credentials' : `View ${deg.mcs.length} Micro-Credentials`}</span>
+                                            <svg className={`w-4 h-4 transition-transform duration-300 ${expandedDegrees.includes(deg.id) ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9" /></svg>
+                                        </div>
+
+                                        {expandedDegrees.includes(deg.id) && (
+                                            <div className="mc-list p-4.5 pt-0 border-t border-white/6 animate-in slide-in-from-top-1.5 duration-250">
+                                                <div className="mc-intro text-[11px] text-[#64748B] py-3 flex items-center gap-2 before:content-[''] before:inline-block before:w-5 before:h-[1px] before:bg-[#a02030]">
+                                                    Required Micro-Credentials to earn this degree
+                                                </div>
+                                                <div className="mc-items flex flex-col gap-1">
+                                                    {deg.mcs.map((mc: string, idx: number) => (
+                                                        <div key={idx} className="mc-item flex items-center gap-2 py-1.5 px-2.5 bg-white/3 rounded-md text-[12px] text-[#E2E8F0] border border-transparent transition-all hover:bg-gold/8 hover:border-gold/20 hover:text-white group">
+                                                            <span className="mc-num font-mono text-[10px] text-[#64748B] w-5">{String(idx + 1).padStart(2, '0')}</span>
+                                                            <div className={`mc-dot w-1.5 h-1.5 rounded-full ${group.id === 'Bachelor' ? 'bg-[#1E6B8C]' :
+                                                                    group.id === 'Master' ? 'bg-[#a02030]' :
+                                                                        group.id === 'Doctorate' ? 'bg-[#8a1a26]' :
+                                                                            'bg-[#9B59B6]'
+                                                                }`}></div>
+                                                            {mc}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
