@@ -7,6 +7,8 @@ on:
   pull_request:
     branches:
       - main
+      - development
+      - kayes
 
 jobs:
   build-and-push:
