@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery, BaseQueryFn } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL || "https://api.ikonskills.ac";
+const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://3.111.49.240:8005";
 
 const rawBaseQuery = fetchBaseQuery({
     baseUrl: baseURL,
@@ -10,6 +10,13 @@ const rawBaseQuery = fetchBaseQuery({
         if (token) {
             headers.set("authorization", `Bearer ${token}`);
         }
+
+        // Attempt to get CSRF token from cookies if present
+        const csrfToken = Cookies.get("csrftoken");
+        if (csrfToken) {
+            headers.set("X-CSRFTOKEN", csrfToken);
+        }
+
         return headers;
     },
 });

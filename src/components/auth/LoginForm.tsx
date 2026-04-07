@@ -3,55 +3,96 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Fingerprint, Apple, Globe, LayoutGrid, Mail } from "lucide-react";
+import { Eye, EyeOff, Fingerprint, Apple, Globe, LayoutGrid, Mail, Loader2 } from "lucide-react";
 import Image from "next/image";
 import logo from "../../../public/logo/logo.png";
+import { useLoginMutation } from "@/redux/features/auth/authApi";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "@/store/Slices/AuthSlice/authSlice";
+import Cookies from "js-cookie";
 
 export function LoginForm() {
     const router = useRouter();
+    const dispatch = useDispatch();
+    const [login, { isLoading }] = useLoginMutation();
+
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Here you would typically handle authentication
-        // For now, we'll just redirect to the dashboard as requested
-        router.push("/user/dashboard");
+        setError(null);
+
+        try {
+            const result = await login({ email, password }).unwrap();
+
+            if (result.data || result.access) {
+                const userData = result.data?.user || (result as any).user;
+                const token = result.data?.accessToken || result.access;
+                const refreshToken = result.data?.refreshToken || result.refresh;
+
+                // Save to Redux
+                dispatch(setCredentials({
+                    user: userData,
+                    token: token || ""
+                }));
+
+                // Save to Cookies
+                if (token) Cookies.set("accessToken", token, { expires: 7 });
+                if (refreshToken) Cookies.set("refreshToken", refreshToken, { expires: 30 });
+
+                router.push("/dashboard");
+            } else {
+                setError("Login failed. Please check your credentials.");
+            }
+        } catch (err: any) {
+            console.error("Login error:", err);
+            setError(err?.data?.detail || err?.data?.message || "An error occurred during login. Please try again.");
+        }
     };
 
     return (
-        <div className=" animate-in fade-in slide-in-from-right-4 duration-700">
-            <div className="space-y-4 mb-6">
-                <Link href="/" className="inline-block transform hover:scale-105 transition-transform">
-                    <Image src={logo} alt="Logo" width={150} height={50} className="w-60 h-auto" />
+        <div className="animate-in fade-in slide-in-from-right-4 duration-700">
+            <div className="mb-8">
+                <Link href="/" className="inline-block transform hover:scale-105 transition-transform mb-6">
+                    <Image src={logo} alt="Logo" width={150} height={150} className="w-56 h-auto" />
                 </Link>
-                <div className="space-y-2 pt-4">
-                    <h1 className="text-3xl font-black text-[#0D241C] tracking-tight">Welcome Back</h1>
-                    <p className="text-sm font-bold text-gray-500">Enter your details to access your account.</p>
+                <div className="space-y-2">
+                    <h1 className="text-3xl font-black text-white tracking-tight">Welcome Back</h1>
+                    <p className="text-base font-medium text-white/50">Enter your credentials to access your account</p>
                 </div>
             </div>
 
             <form className="space-y-6" onSubmit={handleLogin}>
-                {/* Email Field */}
-                <div className="space-y-2">
-                    <label className="text-[14px] font-black uppercase tracking-widest text-[#0D241C] ml-1">Email Address</label>
+                {error && (
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-[12px] text-sm font-bold">
+                        {error}
+                    </div>
+                )}
+
+                <div className="space-y-1.5">
+                    <label className="text-[12px] font-black uppercase tracking-widest text-[#cb2d39] ml-1">Email Address</label>
                     <div className="relative group">
                         <input
                             type="email"
                             placeholder="name@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full bg-[#fafafa] border border-gray-100 rounded-[16px] py-4 px-6 text-sm font-bold placeholder:text-gray-300 focus:outline-none focus:border-[#F6C557] focus:ring-4 focus:ring-[#F6C557]/5 transition-all"
+                            required
+                            className="w-full bg-white/5 border border-white/10 rounded-[16px] py-4 px-6 text-sm font-bold text-white placeholder:text-white/20 focus:outline-none focus:border-[#cb2d39] transition-all"
                         />
-                        <Mail className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-[#F6C557] transition-colors" />
+                        <Mail className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 transition-colors group-focus-within:text-[#cb2d39]" />
                     </div>
                 </div>
 
-                {/* Password Field */}
-                <div className="space-y-2">
-                    <div className="flex justify-between items-center px-1">
-                        <label className="text-[14px] font-black uppercase tracking-widest text-[#0D241C]">Password</label>
+                <div className="space-y-1.5">
+                    <div className="flex items-center justify-between px-1">
+                        <label className="text-[12px] font-black uppercase tracking-widest text-[#cb2d39]">Password</label>
+                        <Link href="/forgot-password" className="text-xs font-black text-white/40 hover:text-[#cb2d39] transition-colors">
+                            Forgot?
+                        </Link>
                     </div>
                     <div className="relative group">
                         <input
@@ -59,45 +100,45 @@ export function LoginForm() {
                             placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full bg-[#fafafa] border border-gray-100 rounded-[16px] py-4 px-6 text-sm font-bold placeholder:text-gray-300 focus:outline-none focus:border-[#F6C557] focus:ring-4 focus:ring-[#F6C557]/5 transition-all"
+                            required
+                            className="w-full bg-white/5 border border-white/10 rounded-[16px] py-4 px-6 text-sm font-bold text-white placeholder:text-white/20 focus:outline-none focus:border-[#cb2d39] transition-all"
                         />
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-300 hover:text-[#0D241C] transition-colors focus:outline-none"
+                            className="absolute right-5 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors"
                         >
                             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                     </div>
-                    <div className="text-right pt-1">
-                        <Link href="/forgot-password" className="text-[14px] font-black text-[#F6C557] hover:underline underline-offset-4 decoration-2">
-                            Forgot password?
-                        </Link>
-                    </div>
+                </div>
+
+                <div className="flex items-center gap-2 px-1">
+                    <input
+                        type="checkbox"
+                        id="remember"
+                        className="w-4 h-4 accent-[#cb2d39] rounded border-white/20 bg-white/5"
+                    />
+                    <label htmlFor="remember" className="text-xs font-bold text-white/40 cursor-pointer">Remember me for 30 days</label>
                 </div>
 
                 <button
                     type="submit"
-                    className="w-full py-6 bg-[#F6C557] hover:bg-[#eab33d] text-[#11674e] font-black text-sm uppercase tracking-[2px] rounded-[24px] shadow-xl shadow-[#F6C557]/20 transition-all hover:scale-[1.01] active:scale-[0.98]"
+                    disabled={isLoading}
+                    className="w-full py-6 bg-[#cb2d39] hover:bg-[#a3242e] disabled:opacity-50 text-white font-black text-sm uppercase tracking-[2px] rounded-[24px] shadow-xl shadow-[#cb2d39]/20 transition-all hover:scale-[1.01] active:scale-[0.98] flex items-center justify-center gap-2"
                 >
-                    LOG IN
+                    {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                    {isLoading ? "Signing in..." : "LOG IN"}
                 </button>
-
-                <div className="flex items-center justify-center gap-2 py-2">
-                    <button className="flex items-center gap-2 text-[#F6C557] hover:opacity-80 transition-opacity">
-                        <Fingerprint className="w-6 h-6" />
-                        <span className="text-[11px] font-black uppercase tracking-[1px]">Use Face ID</span>
-                    </button>
-                </div>
             </form>
 
-            <div className="space-y-6 pt-4">
+            <div className="space-y-6 pt-8">
                 <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-gray-100"></div>
+                        <div className="w-full border-t border-white/10"></div>
                     </div>
                     <div className="relative flex justify-center">
-                        <span className="bg-white px-6 text-[14px] font-black uppercase tracking-[2px] text-gray-300">or continue with</span>
+                        <span className="bg-transparent px-4 text-[10px] font-black uppercase tracking-[2px] text-white/30 backdrop-blur-md">or continue with</span>
                     </div>
                 </div>
 
@@ -109,15 +150,12 @@ export function LoginForm() {
                 </div>
             </div>
 
-            <div className="text-center space-y-4 pt-4">
-                <p className="text-base font-bold text-gray-400">
+            <div className="text-center pt-8">
+                <p className="text-sm font-bold text-white/40">
                     Don't have an account?{" "}
-                    <Link href="/signup" className="text-[#11674E] font-black hover:underline underline-offset-4 decoration-2 decoration-[#11674E]">
+                    <Link href="/signup" className="text-[#cb2d39] font-black hover:underline underline-offset-4 decoration-2 decoration-[#cb2d39]/30 transition-all">
                         Create account
                     </Link>
-                </p>
-                <p className="text-[14px] font-bold text-gray-400 leading-relaxed px-10">
-                    By continuing you accept our <Link href="/terms" className="text-gray-500 hover:text-[#11674E] hover:underline transition-all">terms</Link> and <Link href="/privacy" className="text-gray-500 hover:text-[#11674E] hover:underline transition-all">privacy</Link> policies.
                 </p>
             </div>
         </div>

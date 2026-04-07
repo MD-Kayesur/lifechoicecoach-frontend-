@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 
 interface AuthState {
     user: any | null;
@@ -28,6 +29,9 @@ const authSlice = createSlice({
             state.user = null;
             state.token = null;
             state.isAuthenticated = false;
+            // Clear cookies
+            Cookies.remove("accessToken");
+            Cookies.remove("refreshToken");
         },
     },
 });

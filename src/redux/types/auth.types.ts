@@ -4,11 +4,16 @@ export interface User {
     email: string;
     role?: string;
     avatar?: string;
+    first_name?: string;
+    last_name?: string;
+    phone_number?: string;
 }
 
 export interface AuthTokens {
     accessToken: string;
     refreshToken: string;
+    access?: string;
+    refresh?: string;
 }
 
 export interface AuthState {
@@ -23,22 +28,48 @@ export interface LoginRequest {
     password: string;
 }
 
+export interface OtpRequest {
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone_number: string;
+    password: string;
+    password2: string;
+}
+
+export interface OtpVerifyRequest {
+    email: string;
+    otp: string;
+}
+
+export interface OtpResendRequest {
+    email: string;
+}
+
 export interface ApiResponseBase {
-    message: string;
+    status?: string;
+    message?: string;
+    detail?: string;
 }
 
 export interface LoginResponse extends ApiResponseBase {
-    data: {
+    data?: {
+        user: User;
+        accessToken: string;
+        refreshToken: string;
+    };
+    access?: string;
+    refresh?: string;
+}
+
+export interface RegisterResponse extends ApiResponseBase {
+    data?: {
         user: User;
         accessToken: string;
         refreshToken: string;
     };
 }
 
-export interface RegisterResponse extends ApiResponseBase {
-    data: {
-        user: User;
-        accessToken: string;
-        refreshToken: string;
-    };
+export interface OtpResponse extends ApiResponseBase {
+    success?: boolean;
 }
