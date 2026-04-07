@@ -11,8 +11,8 @@ export const IkonSteps = () => {
     ];
 
     return (
-        <section className="hiw-bg section bg-transparent relative">
-            <CommonWrapper className="max-w-[1200px] px-0">
+        <section className="hiw-bg section  relative my-20 bg-[#252533] py-20">
+            <CommonWrapper className="max-w-[1200px] px-0 ">
                 <div className="eyebrow">How It Works</div>
                 <h2 className="sec-h text-[42px]">Four steps to Proof of Skill</h2>
 

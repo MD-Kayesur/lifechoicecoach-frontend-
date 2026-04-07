@@ -1,6 +1,7 @@
 "use client";
 
 import { Hero } from "@/components/landingPages/Hero";
+import { TrustBar } from "@/components/landingPages/TrustBar";
 import { Features } from "@/app/catalog/Features";
 import { HowItWorks } from "@/components/landingPages/HowItWorks";
 import { MicroCredential } from "@/components/landingPages/MicroCredential";
@@ -13,6 +14,7 @@ export default function LandingPage() {
     return (
         <main className="min-h-screen bg-background">
             <Hero />
+            <TrustBar />
             <MicroCredential />
             <IkonPassport />
             <CredentialDomains />

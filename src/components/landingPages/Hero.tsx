@@ -1,15 +1,17 @@
 "use client";
 
 import CommonWrapper from "@/common/CommonWrapper";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export const Hero = () => {
+    const router = useRouter();
     return (
         <section id="home" className="relative min-h-[100vh] flex items-center overflow-hidden bg-transparent">
             {/* Background Grid & Effects */}
             <div className="absolute inset-0 hero-grid pointer-events-none opacity-40" />
-            <div className="absolute top-[-200px] right-[-150px] w-[700px] h-[700px] rounded-full bg-[radial-gradient(circle,rgba(203,45,57,0.13)_0%,transparent_65%)] pointer-events-none" />
-            <div className="absolute bottom-[-120px] left-[-80px] w-[450px] h-[450px] rounded-full bg-[radial-gradient(circle,rgba(26,58,107,0.5)_0%,transparent_70%)] pointer-events-none" />
+            <div className="absolute top-[-150px] right-[-150px] w-[1000px] h-[1000px] rounded-full
+             bg-[radial-gradient(circle,rgba(231, 156, 27, 0.13)_0%,transparent_65%)] pointer-events-none" />
+            <div className="absolute bottom-[-350px] left-[-200px] w-[1000px] h-[1000px] rounded-full bg-[radial-gradient(circle,rgba(26,58,107,0.5)_0%,transparent_70%)] pointer-events-none" />
 
             <CommonWrapper className="relative z-10 max-w-[1200px] px-[48px] py-[80px]">
                 <div className="grid lg:grid-cols-[1fr_460px] gap-[72px] items-center">
@@ -35,7 +37,10 @@ export const Hero = () => {
                         </p>
 
                         <div className="flex flex-wrap gap-[14px] mb-[48px]">
-                            <button className="bg-primary text-white font-bold text-[14px] px-[28px] py-[13px] rounded-[8px] hover:bg-gold2 transition-all cursor-pointer shadow-[0_6px_0_#8a1e27,0_8px_16px_rgba(0,0,0,0.35)] active:translate-y-[5px] active:shadow-[0_1px_0_#8a1e27] hover:translate-y-[3px] hover:shadow-[0_3px_0_#8a1e27]">
+                            <button
+                                onClick={() => router.push("/catalog")}
+                                className="bg-primary text-white font-bold text-[14px] px-[28px] py-[13px] rounded-[8px] hover:bg-gold2 transition-all cursor-pointer shadow-[0_6px_0_#8a1e27,0_8px_16px_rgba(0,0,0,0.35)] active:translate-y-[5px] active:shadow-[0_1px_0_#8a1e27] hover:translate-y-[3px] hover:shadow-[0_3px_0_#8a1e27]"
+                            >
                                 Explore All 184 Credentials
                             </button>
                             <button className="bg-primary text-white font-bold text-[14px] px-[28px] py-[13px] rounded-[8px] hover:bg-gold2 transition-all cursor-pointer shadow-[0_6px_0_#8a1e27,0_8px_16px_rgba(0,0,0,0.35)] active:translate-y-[5px] active:shadow-[0_1px_0_#8a1e27] hover:translate-y-[3px] hover:shadow-[0_3px_0_#8a1e27]">
