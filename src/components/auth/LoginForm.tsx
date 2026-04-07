@@ -101,10 +101,8 @@ export function LoginForm() {
                             <span className="w-1.5 h-1.5 rounded-full bg-[#cb2d39]"></span>
                             Password
                         </label>
-                        <Link href="/forgot-password" className="text-xs font-black text-white/30 hover:text-[#cb2d39] transition-colors tracking-wide">
-                            Forgot?
-                        </Link>
                     </div>
+                      
                     <div className="relative group">
                         <input
                             type={showPassword ? "text" : "password"}
@@ -122,6 +120,9 @@ export function LoginForm() {
                             {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
                         </button>
                     </div>
+                      <Link href="/forgot-password" className="text-xs font-black text-white/30 hover:text-[#cb2d39] transition-colors tracking-wide">
+                            Forgot Password?
+                        </Link>
                 </div>
 
                 <div className="flex items-center gap-2.5 px-1.5 py-1">
