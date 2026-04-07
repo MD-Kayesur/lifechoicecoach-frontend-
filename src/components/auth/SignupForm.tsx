@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, User, Apple, Globe, LayoutGrid, Mail, Phone, Lock, Loader2, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
-import logo from "../../../public/logo/logo.png";
 import { useRequestOtpMutation, useVerifyOtpMutation, useResendOtpMutation } from "@/redux/features/auth/authApi";
 
 import { useDispatch } from "react-redux";
@@ -102,32 +100,35 @@ export function SignupForm() {
 
     if (step === 2) {
         return (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-700">
-                <div className="mb-8">
-                    <button onClick={() => setStep(1)} className="flex items-center gap-2 text-white/40 hover:text-white mb-6 transition-colors group">
-                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                        <span className="text-sm font-bold">Back to Signup</span>
+            <div className="animate-in fade-in slide-in-from-right-4 duration-1000">
+                <div className="mb-10">
+                    <button onClick={() => setStep(1)} className="flex items-center gap-3 text-white/30 hover:text-white mb-8 transition-all group font-black uppercase text-[11px] tracking-[2px]">
+                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1.5 transition-transform" />
+                        Back to Identity Check
                     </button>
-                    <div className="space-y-2">
-                        <h1 className="text-3xl font-black text-white tracking-tight">Verify Email</h1>
-                        <p className="text-base font-medium text-white/50">Enter the 6-digit code sent to <span className="text-gold3">{formData.email}</span></p>
+                    <div className="space-y-3">
+                        <h1 className="text-4xl font-black text-white tracking-tight leading-tight">Verify Identity</h1>
+                        <p className="text-base font-medium text-white/50">A 6-digit secure code was sent to <br /><span className="text-[#f06070] font-bold">{formData.email}</span></p>
                     </div>
                 </div>
 
-                <form className="space-y-6" onSubmit={handleVerifyOtp}>
+                <form className="space-y-8" onSubmit={handleVerifyOtp}>
                     {error && (
-                        <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-[12px] text-sm font-bold">
+                        <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-5 py-4 rounded-[16px] text-[13px] font-bold">
                             {error}
                         </div>
                     )}
                     {successMessage && !error && (
-                        <div className="bg-green-500/10 border border-green-500/20 text-green-400 px-4 py-3 rounded-[12px] text-sm font-bold">
+                        <div className="bg-green-500/10 border border-green-500/30 text-green-400 px-5 py-4 rounded-[16px] text-[13px] font-bold">
                             {successMessage}
                         </div>
                     )}
 
-                    <div className="space-y-2">
-                        <label className="text-[12px] font-black uppercase tracking-widest text-gold3 ml-1">Verification Code</label>
+                    <div className="space-y-3">
+                        <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5 flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#cb2d39]"></span>
+                            Verification Code
+                        </label>
                         <input
                             type="text"
                             maxLength={6}
@@ -135,27 +136,27 @@ export function SignupForm() {
                             value={otp}
                             onChange={(e) => setOtp(e.target.value)}
                             required
-                            className="w-full bg-white/5 border border-white/10 rounded-[16px] py-4 px-6 text-2xl tracking-[12px] text-center font-black text-white placeholder:text-white/10 focus:outline-none focus:border-gold transition-all"
+                            className="w-full bg-white/5 border border-white/10 rounded-[20px] py-6 px-6 text-3xl tracking-[15px] text-center font-black text-white placeholder:text-white/10 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] focus:shadow-[0_0_30px_rgba(203,45,57,0.15)] transition-all duration-300"
                         />
                     </div>
 
                     <button
                         type="submit"
                         disabled={isVerifying}
-                        className="w-full py-6 bg-gold hover:bg-gold2 disabled:opacity-50 text-white font-black text-sm uppercase tracking-[2px] rounded-[24px] shadow-xl shadow-gold/20 transition-all flex items-center justify-center gap-2"
+                        className="w-full py-5 bg-[#cb2d39] hover:bg-[#e0364a] disabled:opacity-50 text-white font-black text-[15px] uppercase tracking-[3px] rounded-[24px] shadow-[0_10px_25px_rgba(203,45,57,0.3)] hover:shadow-[0_15px_35px_rgba(203,45,57,0.4)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"
                     >
-                        {isVerifying && <Loader2 className="w-4 h-4 animate-spin" />}
-                        {isVerifying ? "VERIFYING..." : "VERIFY OTP"}
+                        {isVerifying && <Loader2 className="w-5 h-5 animate-spin" />}
+                        {isVerifying ? "VERIFYING IDENTITY..." : "CONFIRM OTP"}
                     </button>
 
-                    <div className="text-center">
+                    <div className="text-center pt-2">
                         <button
                             type="button"
                             onClick={handleResendOtp}
                             disabled={isResending}
-                            className="text-sm font-black text-gold3 hover:text-white transition-colors disabled:opacity-50"
+                            className="text-[13px] font-black text-[#f06070] hover:text-white transition-colors disabled:opacity-50 tracking-wide"
                         >
-                            {isResending ? "Resending..." : "Didn't receive code? Resend"}
+                            {isResending ? "RESENDING CODE..." : "Didn't receive the code? Resend"}
                         </button>
                     </div>
                 </form>
@@ -164,27 +165,34 @@ export function SignupForm() {
     }
 
     return (
-        <div className="animate-in fade-in slide-in-from-right-4 duration-700">
-            <div className="mb-8">
-                <Link href="/" className="inline-block transform hover:scale-105 transition-transform mb-6">
-                    <Image src={logo} alt="Logo" width={150} height={150} className="w-56 h-auto" />
+        <div className="animate-in fade-in slide-in-from-right-4 duration-1000">
+            <div className="mb-10 text-center flex flex-col items-center">
+                <Link href="/" className="flex items-center gap-[10px] transform hover:scale-105 transition-all duration-300 mb-6 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                    <img
+                        src="https://ikonmalta.ac/IKON_LOGO_White_Color.png"
+                        alt="IKON"
+                        className="h-14 w-auto object-contain block"
+                    />
+                    <span className="font-cormorant font-bold text-[28px] text-white tracking-[1px] flex items-start">
+                        SKILLS<sup className="text-[12px] text-[#f06070] ml-[2px] mt-1">™</sup>
+                    </span>
                 </Link>
-                <div className="space-y-2">
-                    <h1 className="text-3xl font-black text-white tracking-tight">Create Account</h1>
-                    <p className="text-base font-medium text-white/50">Start your journey with IKON today</p>
+                <div className="space-y-3">
+                    <h1 className="text-4xl font-black text-white tracking-tight leading-tight">Create Account</h1>
+                    <p className="text-base font-medium text-white/50 px-4">Begin your journey as an IKON Practitioner today.</p>
                 </div>
             </div>
 
-            <form className="space-y-4" onSubmit={handleSignupRequest}>
+            <form className="space-y-5" onSubmit={handleSignupRequest}>
                 {error && (
-                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-[12px] text-sm font-bold">
+                    <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-5 py-4 rounded-[16px] text-[13px] font-bold">
                         {error}
                     </div>
                 )}
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                        <label className="text-[12px] font-black uppercase tracking-widest text-gold3 ml-1">First Name</label>
+                        <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5">First Name</label>
                         <input
                             type="text"
                             name="first_name"
@@ -192,11 +200,11 @@ export function SignupForm() {
                             value={formData.first_name}
                             onChange={handleInputChange}
                             required
-                            className="w-full bg-white/5 border border-white/10 rounded-[16px] py-4 px-6 text-sm font-bold text-white placeholder:text-white/20 focus:outline-none focus:border-gold transition-all"
+                            className="w-full bg-white/5 border border-white/10 rounded-[18px] py-4 px-6 text-[14px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] transition-all"
                         />
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[12px] font-black uppercase tracking-widest text-gold3 ml-1">Last Name</label>
+                        <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5">Last Name</label>
                         <input
                             type="text"
                             name="last_name"
@@ -204,13 +212,13 @@ export function SignupForm() {
                             value={formData.last_name}
                             onChange={handleInputChange}
                             required
-                            className="w-full bg-white/5 border border-white/10 rounded-[16px] py-4 px-6 text-sm font-bold text-white placeholder:text-white/20 focus:outline-none focus:border-gold transition-all"
+                            className="w-full bg-white/5 border border-white/10 rounded-[18px] py-4 px-6 text-[14px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] transition-all"
                         />
                     </div>
                 </div>
 
                 <div className="space-y-1.5">
-                    <label className="text-[12px] font-black uppercase tracking-widest text-gold3 ml-1">Email Address</label>
+                    <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5">Email Address</label>
                     <div className="relative group">
                         <input
                             type="email"
@@ -219,14 +227,14 @@ export function SignupForm() {
                             value={formData.email}
                             onChange={handleInputChange}
                             required
-                            className="w-full bg-white/5 border border-white/10 rounded-[16px] py-4 px-6 text-sm font-bold text-white placeholder:text-white/20 focus:outline-none focus:border-gold transition-all"
+                            className="w-full bg-white/5 border border-white/10 rounded-[18px] py-4 px-6 text-[14px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] transition-all"
                         />
-                        <Mail className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-gold transition-colors" />
+                        <Mail className="absolute right-6 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-white/15 group-focus-within:text-[#cb2d39] transition-all" />
                     </div>
                 </div>
 
                 <div className="space-y-1.5">
-                    <label className="text-[12px] font-black uppercase tracking-widest text-gold3 ml-1">Phone Number</label>
+                    <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5">Phone Number</label>
                     <div className="relative group">
                         <input
                             type="tel"
@@ -235,15 +243,15 @@ export function SignupForm() {
                             value={formData.phone_number}
                             onChange={handleInputChange}
                             required
-                            className="w-full bg-white/5 border border-white/10 rounded-[16px] py-4 px-6 text-sm font-bold text-white placeholder:text-white/20 focus:outline-none focus:border-gold transition-all"
+                            className="w-full bg-white/5 border border-white/10 rounded-[18px] py-4 px-6 text-[14px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] transition-all"
                         />
-                        <Phone className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-gold transition-colors" />
+                        <Phone className="absolute right-6 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-white/15 group-focus-within:text-[#cb2d39] transition-all" />
                     </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                        <label className="text-[12px] font-black uppercase tracking-widest text-gold3 ml-1">Password</label>
+                        <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5">Password</label>
                         <input
                             type={showPassword ? "text" : "password"}
                             name="password"
@@ -252,11 +260,11 @@ export function SignupForm() {
                             onChange={handleInputChange}
                             required
                             minLength={8}
-                            className="w-full bg-white/5 border border-white/10 rounded-[16px] py-4 px-6 text-sm font-bold text-white placeholder:text-white/20 focus:outline-none focus:border-gold transition-all"
+                            className="w-full bg-white/5 border border-white/10 rounded-[18px] py-4 px-6 text-[14px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] transition-all"
                         />
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[12px] font-black uppercase tracking-widest text-gold3 ml-1">Confirm</label>
+                        <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5">Confirm</label>
                         <input
                             type={showPassword ? "text" : "password"}
                             name="password2"
@@ -265,54 +273,54 @@ export function SignupForm() {
                             onChange={handleInputChange}
                             required
                             minLength={8}
-                            className="w-full bg-white/5 border border-white/10 rounded-[16px] py-4 px-6 text-sm font-bold text-white placeholder:text-white/20 focus:outline-none focus:border-gold transition-all"
+                            className="w-full bg-white/5 border border-white/10 rounded-[18px] py-4 px-6 text-[14px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] transition-all"
                         />
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 px-1">
+                <div className="flex items-center gap-2.5 px-1.5 py-1">
                     <input
                         type="checkbox"
                         id="show-pass"
                         checked={showPassword}
                         onChange={() => setShowPassword(!showPassword)}
-                        className="w-4 h-4 accent-gold"
+                        className="w-4.5 h-4.5 rounded-[6px] border border-white/20 bg-white/5 checked:bg-[#cb2d39] checked:border-[#cb2d39] appearance-none cursor-pointer transition-all"
                     />
-                    <label htmlFor="show-pass" className="text-xs font-bold text-white/40 cursor-pointer">Show Passwords</label>
+                    <label htmlFor="show-pass" className="text-[13px] font-bold text-white/30 cursor-pointer hover:text-white/50 transition-colors">Show Passwords</label>
                 </div>
 
                 <button
                     type="submit"
                     disabled={isRequesting}
-                    className="w-full py-6 mt-4 bg-gold hover:bg-gold2 disabled:opacity-50 text-white font-black text-sm uppercase tracking-[2px] rounded-[24px] shadow-xl shadow-gold/20 transition-all hover:scale-[1.01] active:scale-[0.98] flex items-center justify-center gap-2"
+                    className="w-full py-5 mt-2 bg-[#cb2d39] hover:bg-[#e0364a] disabled:opacity-50 text-white font-black text-[15px] uppercase tracking-[3px] rounded-[24px] shadow-[0_10px_25px_rgba(203,45,57,0.3)] hover:shadow-[0_15px_35px_rgba(203,45,57,0.4)] transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-3"
                 >
-                    {isRequesting && <Loader2 className="w-4 h-4 animate-spin" />}
-                    {isRequesting ? "REQUESTING OTP..." : "SIGN UP"}
+                    {isRequesting && <Loader2 className="w-5 h-5 animate-spin" />}
+                    {isRequesting ? "PREPARING PROFILE..." : "START REGISTRATION"}
                 </button>
             </form>
 
-            <div className="space-y-6 pt-8">
+            <div className="space-y-8 pt-10">
                 <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-white/10"></div>
+                        <div className="w-full border-t border-white/5"></div>
                     </div>
                     <div className="relative flex justify-center">
-                        <span className="bg-transparent px-4 text-[10px] font-black uppercase tracking-[2px] text-white/30 backdrop-blur-md">or continue with</span>
+                        <span className="bg-transparent px-5 text-[10px] font-black uppercase tracking-[3px] text-white/20 backdrop-blur-md">Alternative Entry</span>
                     </div>
                 </div>
 
-                <div className="flex items-center justify-center gap-4">
-                    <SocialButton icon={<Apple className="w-5 h-5 fill-current" />} />
-                    <SocialButton icon={<Globe className="w-5 h-5" />} />
-                    <SocialButton icon={<Mail className="w-5 h-5" />} />
-                    <SocialButton icon={<LayoutGrid className="w-5 h-5" />} />
+                <div className="flex items-center justify-center gap-5">
+                    <SocialButton icon={<Apple className="w-5.5 h-5.5 fill-current" />} />
+                    <SocialButton icon={<Globe className="w-5.5 h-5.5" />} />
+                    <SocialButton icon={<Mail className="w-5.5 h-5.5" />} />
+                    <SocialButton icon={<LayoutGrid className="w-5.5 h-5.5" />} />
                 </div>
             </div>
 
-            <div className="text-center pt-8">
-                <p className="text-sm font-bold text-white/40">
-                    Already have an account?{" "}
-                    <Link href="/login" className="text-gold3 font-black hover:underline underline-offset-4 decoration-2 decoration-gold3/30 transition-all">
+            <div className="text-center pt-10">
+                <p className="text-[15px] font-bold text-white/30">
+                    Already an IKON Practitioner?{" "}
+                    <Link href="/login" className="text-[#f06070] font-black hover:text-white hover:underline underline-offset-[6px] decoration-[3px] transition-all decoration-[#f06070]/20">
                         Log In
                     </Link>
                 </p>
@@ -323,7 +331,7 @@ export function SignupForm() {
 
 function SocialButton({ icon }: { icon: React.ReactNode }) {
     return (
-        <button className="w-12 h-12 cursor-pointer rounded-full border border-white/10 flex items-center justify-center text-white/60 hover:bg-white/10 hover:border-white/20 transition-all shadow-sm">
+        <button className="w-14 h-14 cursor-pointer rounded-2xl border border-white/5 bg-white/[0.03] flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.08] hover:border-[#cb2d39]/40 hover:shadow-[0_0_20px_rgba(203,45,57,0.1)] transition-all duration-300 shadow-sm overflow-hidden">
             {icon}
         </button>
     );

@@ -3,9 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Fingerprint, Apple, Globe, LayoutGrid, Mail, Loader2 } from "lucide-react";
-import Image from "next/image";
-import logo from "../../../public/logo/logo.png";
+import { Eye, EyeOff, Apple, Globe, LayoutGrid, Mail, Loader2 } from "lucide-react";
 import { useLoginMutation } from "@/redux/features/auth/authApi";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/store/Slices/AuthSlice/authSlice";
@@ -54,26 +52,36 @@ export function LoginForm() {
     };
 
     return (
-        <div className="animate-in fade-in slide-in-from-right-4 duration-700">
-            <div className="mb-8">
-                <Link href="/" className="inline-block transform hover:scale-105 transition-transform mb-6">
-                    <Image src={logo} alt="Logo" width={150} height={150} className="w-56 h-auto" />
+        <div className="animate-in fade-in slide-in-from-right-4 duration-1000">
+            <div className="mb-10 text-center flex flex-col items-center">
+                <Link href="/" className="flex items-center gap-[10px] transform hover:scale-105 transition-all duration-300 mb-6 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                    <img
+                        src="https://ikonmalta.ac/IKON_LOGO_White_Color.png"
+                        alt="IKON"
+                        className="h-14 w-auto object-contain block"
+                    />
+                    <span className="font-cormorant font-bold text-[28px] text-white tracking-[1px] flex items-start">
+                        SKILLS<sup className="text-[12px] text-[#f06070] ml-[2px] mt-1">™</sup>
+                    </span>
                 </Link>
-                <div className="space-y-2">
-                    <h1 className="text-3xl font-black text-white tracking-tight">Welcome Back</h1>
-                    <p className="text-base font-medium text-white/50">Enter your credentials to access your account</p>
+                <div className="space-y-3">
+                    <h1 className="text-4xl font-black text-white tracking-tight leading-tight">Welcome Back</h1>
+                    <p className="text-base font-medium text-white/50 px-4">Access your IKON Skill Passport and learning resources.</p>
                 </div>
             </div>
 
             <form className="space-y-6" onSubmit={handleLogin}>
                 {error && (
-                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-[12px] text-sm font-bold">
+                    <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-5 py-4 rounded-[16px] text-[13px] font-bold animate-in zoom-in-95 duration-300">
                         {error}
                     </div>
                 )}
 
-                <div className="space-y-1.5">
-                    <label className="text-[12px] font-black uppercase tracking-widest text-[#cb2d39] ml-1">Email Address</label>
+                <div className="space-y-2">
+                    <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5 flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#cb2d39]"></span>
+                        Email Address
+                    </label>
                     <div className="relative group">
                         <input
                             type="email"
@@ -81,16 +89,19 @@ export function LoginForm() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            className="w-full bg-white/5 border border-white/10 rounded-[16px] py-4 px-6 text-sm font-bold text-white placeholder:text-white/20 focus:outline-none focus:border-[#cb2d39] transition-all"
+                            className="w-full bg-white/5 border border-white/10 rounded-[20px] py-4.5 px-6 text-[15px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] focus:shadow-[0_0_25px_rgba(203,45,57,0.15)] transition-all duration-300"
                         />
-                        <Mail className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 transition-colors group-focus-within:text-[#cb2d39]" />
+                        <Mail className="absolute right-6 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-white/15 group-focus-within:text-[#cb2d39] transition-all duration-300" />
                     </div>
                 </div>
 
-                <div className="space-y-1.5">
-                    <div className="flex items-center justify-between px-1">
-                        <label className="text-[12px] font-black uppercase tracking-widest text-[#cb2d39]">Password</label>
-                        <Link href="/forgot-password" className="text-xs font-black text-white/40 hover:text-[#cb2d39] transition-colors">
+                <div className="space-y-2">
+                    <div className="flex items-center justify-between px-1.5">
+                        <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#cb2d39]"></span>
+                            Password
+                        </label>
+                        <Link href="/forgot-password" className="text-xs font-black text-white/30 hover:text-[#cb2d39] transition-colors tracking-wide">
                             Forgot?
                         </Link>
                     </div>
@@ -101,59 +112,64 @@ export function LoginForm() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            className="w-full bg-white/5 border border-white/10 rounded-[16px] py-4 px-6 text-sm font-bold text-white placeholder:text-white/20 focus:outline-none focus:border-[#cb2d39] transition-all"
+                            className="w-full bg-white/5 border border-white/10 rounded-[20px] py-4.5 px-6 text-[15px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] focus:shadow-[0_0_25px_rgba(203,45,57,0.15)] transition-all duration-300"
                         />
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-5 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors"
+                            className="absolute right-6 top-1/2 -translate-y-1/2 text-white/15 hover:text-white transition-all duration-300"
                         >
-                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
                         </button>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 px-1">
-                    <input
-                        type="checkbox"
-                        id="remember"
-                        className="w-4 h-4 accent-[#cb2d39] rounded border-white/20 bg-white/5"
-                    />
-                    <label htmlFor="remember" className="text-xs font-bold text-white/40 cursor-pointer">Remember me for 30 days</label>
+                <div className="flex items-center gap-2.5 px-1.5 py-1">
+                    <div className="relative flex items-center">
+                        <input
+                            type="checkbox"
+                            id="remember"
+                            className="peer w-4.5 h-4.5 rounded-[6px] border border-white/20 bg-white/5 checked:bg-[#cb2d39] checked:border-[#cb2d39] appearance-none cursor-pointer transition-all"
+                        />
+                        <div className="absolute opacity-0 peer-checked:opacity-100 pointer-events-none text-white left-1">
+                            <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                    </div>
+                    <label htmlFor="remember" className="text-[13px] font-bold text-white/30 cursor-pointer hover:text-white/50 transition-colors">Remember for 30 days</label>
                 </div>
 
                 <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full py-6 bg-[#cb2d39] hover:bg-[#a3242e] disabled:opacity-50 text-white font-black text-sm uppercase tracking-[2px] rounded-[24px] shadow-xl shadow-[#cb2d39]/20 transition-all hover:scale-[1.01] active:scale-[0.98] flex items-center justify-center gap-2"
+                    className="w-full py-5 bg-[#cb2d39] hover:bg-[#e0364a] disabled:opacity-50 text-white font-black text-[15px] uppercase tracking-[3px] rounded-[24px] shadow-[0_10px_25px_rgba(203,45,57,0.3)] hover:shadow-[0_15px_35px_rgba(203,45,57,0.4)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"
                 >
-                    {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-                    {isLoading ? "Signing in..." : "LOG IN"}
+                    {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+                    {isLoading ? "AUTHENTICATING..." : "LOG IN"}
                 </button>
             </form>
 
-            <div className="space-y-6 pt-8">
+            <div className="space-y-8 pt-10">
                 <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-white/10"></div>
+                        <div className="w-full border-t border-white/5"></div>
                     </div>
                     <div className="relative flex justify-center">
-                        <span className="bg-transparent px-4 text-[10px] font-black uppercase tracking-[2px] text-white/30 backdrop-blur-md">or continue with</span>
+                        <span className="bg-transparent px-5 text-[10px] font-black uppercase tracking-[3px] text-white/20 backdrop-blur-md">Secure Login Options</span>
                     </div>
                 </div>
 
-                <div className="flex items-center justify-center gap-4">
-                    <SocialButton icon={<Apple className="w-5 h-5 fill-current" />} />
-                    <SocialButton icon={<Globe className="w-5 h-5" />} />
-                    <SocialButton icon={<Mail className="w-5 h-5" />} />
-                    <SocialButton icon={<LayoutGrid className="w-5 h-5" />} />
+                <div className="flex items-center justify-center gap-5">
+                    <SocialButton icon={<Apple className="w-5.5 h-5.5 fill-current" />} />
+                    <SocialButton icon={<Globe className="w-5.5 h-5.5" />} />
+                    <SocialButton icon={<Mail className="w-5.5 h-5.5" />} />
+                    <SocialButton icon={<LayoutGrid className="w-5.5 h-5.5" />} />
                 </div>
             </div>
 
-            <div className="text-center pt-8">
-                <p className="text-sm font-bold text-white/40">
-                    Don't have an account?{" "}
-                    <Link href="/signup" className="text-[#cb2d39] font-black hover:underline underline-offset-4 decoration-2 decoration-[#cb2d39]/30 transition-all">
+            <div className="text-center pt-10">
+                <p className="text-[15px] font-bold text-white/30">
+                    Not an IKON Practitioner?{" "}
+                    <Link href="/signup" className="text-[#f06070] font-black hover:text-white hover:underline underline-offset-[6px] decoration-[3px] transition-all decoration-[#f06070]/20">
                         Create account
                     </Link>
                 </p>
@@ -164,7 +180,7 @@ export function LoginForm() {
 
 function SocialButton({ icon }: { icon: React.ReactNode }) {
     return (
-        <button className="w-12 h-12 cursor-pointer rounded-full border border-gray-100 flex items-center justify-center text-[#0D241C] hover:bg-[#fafafa] hover:border-[#F6C557]/30 transition-all shadow-sm">
+        <button className="w-14 h-14 cursor-pointer rounded-2xl border border-white/5 bg-white/[0.03] flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.08] hover:border-[#cb2d39]/40 hover:shadow-[0_0_20px_rgba(203,45,57,0.1)] transition-all duration-300 shadow-sm overflow-hidden">
             {icon}
         </button>
     );
