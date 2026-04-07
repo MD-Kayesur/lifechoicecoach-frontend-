@@ -46,6 +46,11 @@ export interface OtpResendRequest {
     email: string;
 }
 
+export interface ChangePasswordRequest {
+    new_password: string;
+    confirm_password: string;
+}
+
 export interface ApiResponseBase {
     status?: string;
     message?: string;

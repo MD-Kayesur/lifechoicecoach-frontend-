@@ -7,6 +7,8 @@ import type {
     OtpResponse,
     OtpVerifyRequest,
     OtpResendRequest,
+    ApiResponseBase,
+    ChangePasswordRequest,
 } from "@/redux/types/auth.types";
 
 export const authApi = baseApi.injectEndpoints({
@@ -116,6 +118,19 @@ export const authApi = baseApi.injectEndpoints({
             }),
             providesTags: ["User"],
         }),
+
+        changePassword: builder.mutation<ApiResponseBase, ChangePasswordRequest>({
+            query: (data) => {
+                const formData = new FormData();
+                formData.append("new_password", data.new_password);
+                formData.append("confirm_password", data.confirm_password);
+                return {
+                    url: "/auth/change-password/",
+                    method: "PATCH",
+                    body: formData,
+                };
+            },
+        }),
     }),
 });
 
@@ -127,4 +142,5 @@ export const {
     useLoginMutation,
     useLogoutMutation,
     useGetMeQuery,
+    useChangePasswordMutation,
 } = authApi;
