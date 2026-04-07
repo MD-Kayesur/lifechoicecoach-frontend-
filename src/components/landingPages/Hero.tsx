@@ -8,7 +8,13 @@ export const Hero = () => {
     return (
         <section id="home" className="relative min-h-[100vh] flex items-center overflow-hidden bg-transparent">
             {/* Background Grid & Effects */}
-            <div className="absolute inset-0 hero-grid pointer-events-none opacity-40" />
+            <div className="absolute inset-0 pointer-events-none opacity-40"
+                style={{
+                    backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)`,
+                    backgroundSize: '4rem 4rem',
+                    maskImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%)'
+                }}
+            />
             <div className="absolute top-[-150px] right-[-150px] w-[1000px] h-[1000px] rounded-full
              bg-[radial-gradient(circle,rgba(231, 156, 27, 0.13)_0%,transparent_65%)] pointer-events-none" />
             <div className="absolute bottom-[-350px] left-[-200px] w-[1000px] h-[1000px] rounded-full bg-[radial-gradient(circle,rgba(26,58,107,0.5)_0%,transparent_70%)] pointer-events-none" />

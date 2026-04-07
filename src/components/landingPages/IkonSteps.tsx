@@ -11,11 +11,11 @@ export const IkonSteps = () => {
     ];
 
     return (
-        <section className="hiw-bg section  relative my-20 bg-[#252533] py-20">
+        <section className="hiw-bg section  relative my-20 bg-gray-900  py-20">
             <CommonWrapper className="max-w-[1200px] px-0 ">
                 <div className="eyebrow">How It Works</div>
                 <h2 className="sec-h text-[42px]">Four steps to Proof of Skill</h2>
-
+                <div className="absolute bottom-[-150px] right-[500px]  w-[700px] h-[700px] rounded-full bg-[radial-gradient(circle,rgba(26,58,107,0.5)_0%,transparent_70%)] pointer-events-none" />
                 <div className="steps-row relative font-outfit mt-[44px] grid grid-cols-2 lg:grid-cols-4 gap-[22px] before:content-[''] before:absolute before:top-[26px] before:left-[calc(12.5%+18px)] before:right-[calc(12.5%+18px)] before:h-[1px] before:bg-gradient-to-r before:from-transparent before:via-gold before:to-transparent lg:before:block before:hidden">
                     {steps.map((s, i) => (
                         <div key={i} className="step text-center group">
