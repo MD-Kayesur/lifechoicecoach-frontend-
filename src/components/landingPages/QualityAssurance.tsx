@@ -13,13 +13,13 @@ export const QualityAssurance = () => {
     ];
 
     return (
-        <section className="qa-bg section bg-transparent relative">
+        <section className="qa-bg section bg-transparent relative my-20">
             <CommonWrapper className="max-w-[1200px] px-0">
                 <div className="grid lg:grid-cols-2 gap-[80px] items-start font-outfit">
                     {/* Left content */}
                     <div>
                         <div className="eyebrow ml-0">Quality Assurance</div>
-                        <h2 className="sec-h text-left ml-0 mb-[30px]">Quality Assured by<br />European International<br />University, Paris</h2>
+                        <h2 className="sec-h text-left ml-0 mb-[30px] text-[42px]">Quality Assured by<br />European International<br />University, Paris</h2>
                         <p className="text-[14px] text-white/65 leading-[1.7] max-w-[500px] mb-[45px]">All IKON SKILLS™ Micro-Credentials are quality assured by European International University, Paris (EIU-Paris) — a globally recognised higher education institution. The accreditations and rankings listed here belong to EIU-Paris and underpin the academic standing of every credential issued on this platform.</p>
 
                         <div className="p-[22px] border-t border-white/7">

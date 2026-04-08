@@ -25,6 +25,8 @@ export const metadata: Metadata = {
   description: "Master verified skills and stack them into university degrees with IKON SKILLS.",
 };
 
+import ReduxProviderWrapper from "@/redux/readux-provider/reduxProviderWrapper";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -36,12 +38,12 @@ export default function RootLayout({
       className={`${outfit.variable} ${cormorant.variable} ${jetbrains.variable} font-sans h-full antialiased`}
     >
       <body className="min-h-screen flex flex-col bg-background text-foreground">
-        <div className="page-bg-overlay" />
-        <Navbar />
-        <div className="relative z-10 flex-1">
-          {children}
-        </div>
-        <Footer />
+        <ReduxProviderWrapper>
+          <div className="page-bg-overlay" />
+          <Navbar />
+          <div className="relative z-10 flex-1">{children}</div>
+          <Footer />
+        </ReduxProviderWrapper>
       </body>
     </html>
   );

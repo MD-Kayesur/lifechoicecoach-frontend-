@@ -17,7 +17,7 @@ export const CredentialDomains = () => {
     ];
 
     return (
-        <section id="domains" className="section bg-transparent relative">
+        <section id="domains" className="section bg-transparent relative my-20">
             <CommonWrapper className="max-w-[1200px] px-0">
                 <div className="eyebrow">10 Credential Domains</div>
                 <h2 className="sec-h text-[42px]">Every professional skill.<br />One unified framework.</h2>

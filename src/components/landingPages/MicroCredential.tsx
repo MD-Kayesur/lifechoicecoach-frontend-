@@ -4,7 +4,7 @@ import CommonWrapper from "@/common/CommonWrapper";
 
 export const MicroCredential = () => {
     return (
-        <section className="bg-transparent section">
+        <section className="bg-transparent section my-20">
             <CommonWrapper className="max-w-[1200px] px-0">
                 <div className="eyebrow ">What is a Micro-Credential?</div>
                 <h2 className="sec-h text-[42px]">Not a course. Not a certificate.<br />A <span className="text-gold">Proof of Skill.</span></h2>
