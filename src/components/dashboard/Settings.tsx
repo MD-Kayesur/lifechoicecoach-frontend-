@@ -1,10 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 import { ChangePasswordModal } from "@/components/dashboard/ChangePassword";
 
 export const Settings = () => {
+    const { user } = useSelector((state: RootState) => state.auth);
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+
+    const fullName = user?.name || (user?.first_name ? `${user.first_name} ${user.last_name || ''}` : "Guest User");
 
     return (
         <div className="animate-in fade-in duration-500">
@@ -14,9 +19,9 @@ export const Settings = () => {
                     <div className="text-[14px] font-bold text-white mb-6 tracking-wide">User Profile & Identity</div>
                     <div className="space-y-4">
                         {[
-                            { l: 'Full Name', v: 'Edward Krishnan' },
-                            { l: 'Official Identity', v: 'Founder & CEO, IKON' },
-                            { l: 'Registered Email', v: 'edward@ikonskills.ac' },
+                            { l: 'Full Name', v: fullName },
+                            { l: 'Official Identity', v: user?.role || 'IKON Student' },
+                            { l: 'Registered Email', v: user?.email || 'N/A' },
                             { l: 'Passport Active Since', v: '2024' },
                         ].map((item, i) => (
                             <div key={i} className="flex justify-between items-center py-3 border-b border-white/5 last:border-0 hover:bg-white/3 px-3 transition-colors rounded-lg group/item">

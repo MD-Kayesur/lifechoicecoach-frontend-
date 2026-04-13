@@ -7,6 +7,7 @@ export interface User {
     first_name?: string;
     last_name?: string;
     phone_number?: string;
+    dp_image?: string;
 }
 
 export interface AuthTokens {

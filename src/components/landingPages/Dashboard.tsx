@@ -15,6 +15,7 @@ import { MyCredentials } from "@/components/dashboard/MyCredentials";
 import { Progress } from "@/components/dashboard/Progress";
 import { DegreePathways } from "@/components/dashboard/DegreePathways";
 import { Settings } from "@/components/dashboard/Settings";
+import { Profile } from "@/components/dashboard/Profile";
 
 export const Dashboard = () => {
     const router = useRouter();
@@ -30,7 +31,8 @@ export const Dashboard = () => {
         { icon: '🏅', label: 'My Credentials' },
         { icon: '📈', label: 'Progress' },
         { icon: '🎓', label: 'Degree Pathways' },
-        { icon: '⚙️', label: 'Settings' }
+        { icon: '⚙️', label: 'Settings' },
+        { icon: '👤', label: 'Profile' }
     ];
 
     const handleLogout = async () => {
@@ -53,6 +55,7 @@ export const Dashboard = () => {
             case "Progress": return <Progress />;
             case "Degree Pathways": return <DegreePathways />;
             case "Settings": return <Settings />;
+            case "Profile": return <Profile />;
             default: return <Overview />;
         }
     };
