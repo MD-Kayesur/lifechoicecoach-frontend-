@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery, BaseQueryFn } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://3.111.49.240:8000/swagger/";
+const baseURL = process.env.NEXT_PUBLIC_API_URL ;
 
 const rawBaseQuery = fetchBaseQuery({
     baseUrl: baseURL,
