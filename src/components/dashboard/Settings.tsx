@@ -1,6 +1,11 @@
 "use client";
 
+import { useState } from "react";
+import { ChangePasswordModal } from "@/components/dashboard/ChangePassword";
+
 export const Settings = () => {
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+
     return (
         <div className="animate-in fade-in duration-500">
             <div className="text-[14.5px] font-bold text-white mb-3 tracking-wide">Account & Portal Settings</div>
@@ -34,7 +39,7 @@ export const Settings = () => {
             </div>
 
             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative overflow-hidden group hover:border-white/20">
-                <div className="text-[14px] font-bold text-white mb-6 tracking-wide">General Portal Settings</div>
+                <div className="text-[14px] font-bold text-white mb-6 tracking-wide">General Portal Settings & Security</div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
                     {[
                         { title: 'Email Notifications', desc: 'Receive updates on newly added MCs and progress.' },
@@ -53,11 +58,32 @@ export const Settings = () => {
                         </div>
                     ))}
                 </div>
+
+                <div className="mt-10 pt-8 border-t border-white/5">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div>
+                            <div className="text-white text-[15px] font-bold mb-1">Security Credentials</div>
+                            <div className="text-white/40 text-[12px]">Manage your login password and active sessions.</div>
+                        </div>
+                        <button
+                            onClick={() => setIsPasswordModalOpen(true)}
+                            className="bg-white/5 text-white text-[12px] font-bold px-6 py-3 rounded-xl border border-white/10 hover:bg-white/10 transition-all flex items-center gap-2 w-fit"
+                        >
+                            <span>🔑</span> Change Password
+                        </button>
+                    </div>
+                </div>
+
                 <div className="mt-12 flex gap-4 border-t border-white/5 pt-8">
                     <button className="bg-gold text-white text-[13px] font-bold px-8 py-3 rounded-xl shadow-lg border border-gold/20 hover:bg-gold2 transition-all">Save Changes</button>
                     <button className="bg-white/5 text-white/50 text-[13px] font-bold px-8 py-3 rounded-xl border border-white/10 hover:text-white transition-colors">Discard Draft</button>
                 </div>
             </div>
+
+            <ChangePasswordModal
+                isOpen={isPasswordModalOpen}
+                onClose={() => setIsPasswordModalOpen(false)}
+            />
         </div>
     );
 };
