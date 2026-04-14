@@ -9,6 +9,18 @@ export const profileApi = baseApi.injectEndpoints({
                 url: "/auth/profile/me/",
                 method: "GET",
             }),
+            transformResponse: (response: any): ProfileResponse => {
+                const userData = response.user?.user || response.user || response.data?.user;
+                const profileData = response.user?.profile || response.profile || response.data?.profile;
+
+                return {
+                    ...response,
+                    profile: {
+                        ...userData,
+                        ...profileData
+                    }
+                };
+            },
             providesTags: ["User"],
         }),
 

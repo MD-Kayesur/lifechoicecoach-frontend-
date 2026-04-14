@@ -41,6 +41,25 @@ export const authApi = baseApi.injectEndpoints({
                     body: formData,
                 };
             },
+            transformResponse: (response: any): RegisterResponse => {
+                const userData = response.user?.user || response.user || response.data?.user;
+                const profileData = response.user?.profile || response.profile;
+                const tokens = response.user?.tokens || response.tokens || response.data;
+                const access = response.access || tokens?.access || tokens?.access_token || tokens?.accessToken;
+                const refresh = response.refresh || tokens?.refresh || tokens?.refresh_token || tokens?.refreshToken;
+
+                return {
+                    ...response,
+                    data: {
+                        user: {
+                            ...userData,
+                            ...profileData
+                        },
+                        accessToken: access,
+                        refreshToken: refresh
+                    }
+                };
+            },
             invalidatesTags: ["User"],
         }),
 
@@ -65,14 +84,25 @@ export const authApi = baseApi.injectEndpoints({
                 method: "POST",
                 body: userData,
             }),
-            transformResponse: (response: any): RegisterResponse => ({
-                ...response,
-                data: {
-                    ...response.data,
-                    accessToken: response.data?.access_token || response.data?.accessToken,
-                    refreshToken: response.data?.refresh_token || response.data?.refreshToken,
-                },
-            }),
+            transformResponse: (response: any): RegisterResponse => {
+                const userData = response.user?.user || response.user || response.data?.user;
+                const profileData = response.user?.profile || response.profile;
+                const tokens = response.user?.tokens || response.tokens || response.data;
+                const access = response.access || tokens?.access || tokens?.access_token || tokens?.accessToken;
+                const refresh = response.refresh || tokens?.refresh || tokens?.refresh_token || tokens?.refreshToken;
+
+                return {
+                    ...response,
+                    data: {
+                        user: {
+                            ...userData,
+                            ...profileData
+                        },
+                        accessToken: access,
+                        refreshToken: refresh
+                    }
+                };
+            },
             invalidatesTags: ["User"],
         }),
 
@@ -87,19 +117,25 @@ export const authApi = baseApi.injectEndpoints({
                     body: formData,
                 };
             },
-            transformResponse: (response: any): LoginResponse => ({
-                ...response,
-                data: response.data ? {
-                    ...response.data,
-                    user: response.data.user,
-                    accessToken: response.data.access_token || response.data.accessToken || response.access,
-                    refreshToken: response.data.refresh_token || response.data.refreshToken || response.refresh,
-                } : {
-                    user: response.user,
-                    accessToken: response.access,
-                    refreshToken: response.refresh,
-                },
-            }),
+            transformResponse: (response: any): LoginResponse => {
+                const userData = response.user?.user || response.user || response.data?.user;
+                const profileData = response.user?.profile || response.profile;
+                const tokens = response.user?.tokens || response.tokens || response.data;
+                const access = response.access || tokens?.access || tokens?.access_token || tokens?.accessToken;
+                const refresh = response.refresh || tokens?.refresh || tokens?.refresh_token || tokens?.refreshToken;
+
+                return {
+                    ...response,
+                    data: {
+                        user: {
+                            ...userData,
+                            ...profileData
+                        },
+                        accessToken: access,
+                        refreshToken: refresh
+                    }
+                };
+            },
             invalidatesTags: ["User"],
         }),
 
@@ -111,12 +147,21 @@ export const authApi = baseApi.injectEndpoints({
             invalidatesTags: ["User"],
         }),
 
-        getMe: builder.query({
+        getMe: builder.query<any, void>({
             query: () => ({
-                url: "/users/me",
+                url: "/auth/profile/me/",
                 method: "GET",
             }),
             providesTags: ["User"],
+        }),
+
+        updateProfileAuth: builder.mutation<any, FormData>({
+            query: (formData) => ({
+                url: "/auth/profile/me/",
+                method: "PATCH",
+                body: formData,
+            }),
+            invalidatesTags: ["User"],
         }),
 
         changePassword: builder.mutation<ApiResponseBase, ChangePasswordRequest>({
@@ -142,5 +187,6 @@ export const {
     useLoginMutation,
     useLogoutMutation,
     useGetMeQuery,
+    useUpdateProfileAuthMutation,
     useChangePasswordMutation,
 } = authApi;
