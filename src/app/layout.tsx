@@ -26,6 +26,7 @@ export const metadata: Metadata = {
 };
 
 import ReduxProviderWrapper from "@/redux/readux-provider/reduxProviderWrapper";
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
@@ -39,6 +40,7 @@ export default function RootLayout({
     >
       <body className="min-h-screen flex flex-col bg-background text-foreground">
         <ReduxProviderWrapper>
+          <Toaster position="top-right" richColors />
           <div className="page-bg-overlay" />
           <Navbar />
           <div className="relative z-10 flex-1">{children}</div>

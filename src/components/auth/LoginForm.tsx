@@ -8,6 +8,7 @@ import { useLoginMutation } from "@/redux/features/auth/authApi";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/store/Slices/AuthSlice/authSlice";
 import Cookies from "js-cookie";
+import { SocialLogin } from "./SocialLogin/SocialLogin";
 
 export function LoginForm() {
     const router = useRouter();
@@ -102,7 +103,7 @@ export function LoginForm() {
                             Password
                         </label>
                     </div>
-                      
+
                     <div className="relative group">
                         <input
                             type={showPassword ? "text" : "password"}
@@ -120,9 +121,9 @@ export function LoginForm() {
                             {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
                         </button>
                     </div>
-                      <Link href="/forgot-password" className="text-xs font-black text-white/30 hover:text-[#cb2d39] transition-colors tracking-wide">
-                            Forgot Password?
-                        </Link>
+                    <Link href="/forgot-password" className="text-xs font-black text-white/30 hover:text-[#cb2d39] transition-colors tracking-wide">
+                        Forgot Password?
+                    </Link>
                 </div>
 
                 <div className="flex items-center gap-2.5 px-1.5 py-1">
@@ -159,11 +160,8 @@ export function LoginForm() {
                     </div>
                 </div>
 
-                <div className="flex items-center justify-center gap-5">
-                    <SocialButton icon={<Apple className="w-5.5 h-5.5 fill-current" />} />
-                    <SocialButton icon={<Globe className="w-5.5 h-5.5" />} />
-                    <SocialButton icon={<Mail className="w-5.5 h-5.5" />} />
-                    <SocialButton icon={<LayoutGrid className="w-5.5 h-5.5" />} />
+                <div className="flex items-center justify-center">
+                    <SocialLogin />
                 </div>
             </div>
 
@@ -179,10 +177,4 @@ export function LoginForm() {
     );
 }
 
-function SocialButton({ icon }: { icon: React.ReactNode }) {
-    return (
-        <button className="w-14 h-14 cursor-pointer rounded-2xl border border-white/5 bg-white/[0.03] flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.08] hover:border-[#cb2d39]/40 hover:shadow-[0_0_20px_rgba(203,45,57,0.1)] transition-all duration-300 shadow-sm overflow-hidden">
-            {icon}
-        </button>
-    );
-}
+

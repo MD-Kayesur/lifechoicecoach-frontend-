@@ -1,6 +1,18 @@
 "use client";
 
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { ChangePasswordModal } from "@/components/dashboard/ChangePassword";
+
+import Link from "next/link";
+
 export const Settings = () => {
+    const { user } = useSelector((state: RootState) => state.auth);
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+
+    const fullName = user?.name || (user?.first_name ? `${user.first_name} ${user.last_name || ''}` : "Guest User");
+
     return (
         <div className="animate-in fade-in duration-500">
             <div className="text-[14.5px] font-bold text-white mb-3 tracking-wide">Account & Portal Settings</div>
@@ -9,9 +21,9 @@ export const Settings = () => {
                     <div className="text-[14px] font-bold text-white mb-6 tracking-wide">User Profile & Identity</div>
                     <div className="space-y-4">
                         {[
-                            { l: 'Full Name', v: 'Edward Krishnan' },
-                            { l: 'Official Identity', v: 'Founder & CEO, IKON' },
-                            { l: 'Registered Email', v: 'edward@ikonskills.ac' },
+                            { l: 'Full Name', v: fullName },
+                            { l: 'Official Identity', v: user?.role || 'IKON Student' },
+                            { l: 'Registered Email', v: user?.email || 'N/A' },
                             { l: 'Passport Active Since', v: '2024' },
                         ].map((item, i) => (
                             <div key={i} className="flex justify-between items-center py-3 border-b border-white/5 last:border-0 hover:bg-white/3 px-3 transition-colors rounded-lg group/item">
@@ -28,13 +40,13 @@ export const Settings = () => {
                         <div className="text-gold text-[11px] font-mono font-bold uppercase tracking-[2px] mb-1">Current Tier</div>
                         <div className="text-white text-[24px] font-bold font-serif mb-2">IKON Practitioner</div>
                         <div className="text-white/50 text-[12px] mb-6 max-w-[200px]">Unlimited access to all 184 Micro-Credentials.</div>
-                        <button className="bg-white/10 text-white text-[12px] font-bold px-6 py-2 rounded-xl border border-white/10">Manage Subscription</button>
+                        <Link href="/pricing" className="bg-white/10 text-white text-[12px] font-bold px-6 py-2 rounded-xl border border-white/10 hover:bg-white/20 transition-all">Manage Subscription</Link>
                     </div>
                 </div>
             </div>
 
             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative overflow-hidden group hover:border-white/20">
-                <div className="text-[14px] font-bold text-white mb-6 tracking-wide">General Portal Settings</div>
+                <div className="text-[14px] font-bold text-white mb-6 tracking-wide">General Portal Settings & Security</div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
                     {[
                         { title: 'Email Notifications', desc: 'Receive updates on newly added MCs and progress.' },
@@ -53,11 +65,32 @@ export const Settings = () => {
                         </div>
                     ))}
                 </div>
+
+                <div className="mt-10 pt-8 border-t border-white/5">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div>
+                            <div className="text-white text-[15px] font-bold mb-1">Security Credentials</div>
+                            <div className="text-white/40 text-[12px]">Manage your login password and active sessions.</div>
+                        </div>
+                        <button
+                            onClick={() => setIsPasswordModalOpen(true)}
+                            className="bg-white/5 text-white text-[12px] font-bold px-6 py-3 rounded-xl border border-white/10 hover:bg-white/10 transition-all flex items-center gap-2 w-fit"
+                        >
+                            <span>🔑</span> Change Password
+                        </button>
+                    </div>
+                </div>
+
                 <div className="mt-12 flex gap-4 border-t border-white/5 pt-8">
                     <button className="bg-gold text-white text-[13px] font-bold px-8 py-3 rounded-xl shadow-lg border border-gold/20 hover:bg-gold2 transition-all">Save Changes</button>
                     <button className="bg-white/5 text-white/50 text-[13px] font-bold px-8 py-3 rounded-xl border border-white/10 hover:text-white transition-colors">Discard Draft</button>
                 </div>
             </div>
+
+            <ChangePasswordModal
+                isOpen={isPasswordModalOpen}
+                onClose={() => setIsPasswordModalOpen(false)}
+            />
         </div>
     );
 };

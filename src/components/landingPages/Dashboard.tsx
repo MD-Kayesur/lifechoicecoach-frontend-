@@ -7,6 +7,7 @@ import { logout } from "@/store/Slices/AuthSlice/authSlice";
 import { useLogoutMutation } from "@/redux/features/auth/authApi";
 import { RootState } from "@/store/store";
 import { LogOut, Loader2 } from "lucide-react";
+import Cookies from "js-cookie";
 
 import { Overview } from "@/components/dashboard/Overview";
 import { MyLearning } from "@/components/dashboard/MyLearning";
@@ -15,6 +16,7 @@ import { MyCredentials } from "@/components/dashboard/MyCredentials";
 import { Progress } from "@/components/dashboard/Progress";
 import { DegreePathways } from "@/components/dashboard/DegreePathways";
 import { Settings } from "@/components/dashboard/Settings";
+import { Profile } from "@/components/dashboard/Profile";
 
 export const Dashboard = () => {
     const router = useRouter();
@@ -30,12 +32,18 @@ export const Dashboard = () => {
         { icon: '🏅', label: 'My Credentials' },
         { icon: '📈', label: 'Progress' },
         { icon: '🎓', label: 'Degree Pathways' },
-        { icon: '⚙️', label: 'Settings' }
+        { icon: '⚙️', label: 'Settings' },
+        { icon: '👤', label: 'Profile' }
     ];
 
     const handleLogout = async () => {
         try {
-            await logoutApi().unwrap();
+            const refreshToken = Cookies.get("refresh") || Cookies.get("refreshToken");
+            if (refreshToken) {
+                await logoutApi({ refresh: refreshToken }).unwrap();
+            } else {
+                await logoutApi({}).unwrap();
+            }
         } catch (error) {
             console.error("Logout API failed:", error);
         } finally {
@@ -53,6 +61,7 @@ export const Dashboard = () => {
             case "Progress": return <Progress />;
             case "Degree Pathways": return <DegreePathways />;
             case "Settings": return <Settings />;
+            case "Profile": return <Profile />;
             default: return <Overview />;
         }
     };

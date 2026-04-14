@@ -10,6 +10,7 @@ import { useRequestOtpMutation, useVerifyOtpMutation, useResendOtpMutation } fro
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/store/Slices/AuthSlice/authSlice";
 import Cookies from "js-cookie";
+import { SocialLogin } from "./SocialLogin/SocialLogin";
 
 export function SignupForm() {
     const router = useRouter();
@@ -65,23 +66,23 @@ export function SignupForm() {
         try {
             const result = await verifyOtp({ email: formData.email, otp }).unwrap();
 
-            // Log user in automatically after verification
-            const userData = result.data?.user || (result as any).user;
-            const token = result.data?.accessToken || (result as any).access;
-            const refreshToken = result.data?.refreshToken || (result as any).refresh;
+            // Log user in automatically after verification using transformed data
+            if (result.data) {
+                const { user: userData, accessToken: token, refreshToken } = result.data;
 
-            dispatch(setCredentials({
-                user: userData,
-                token: token || ""
-            }));
+                dispatch(setCredentials({
+                    user: userData,
+                    token: token || ""
+                }));
 
-            if (token) Cookies.set("accessToken", token, { expires: 7 });
-            if (refreshToken) Cookies.set("refreshToken", refreshToken, { expires: 30 });
+                if (token) Cookies.set("accessToken", token, { expires: 7 });
+                if (refreshToken) Cookies.set("refreshToken", refreshToken, { expires: 30 });
 
-            setSuccessMessage("Account created successfully! Redirecting to dashboard...");
-            setTimeout(() => {
-                router.push("/dashboard");
-            }, 1500);
+                setSuccessMessage("Account created successfully! Redirecting to dashboard...");
+                setTimeout(() => {
+                    router.push("/dashboard");
+                }, 1500);
+            }
         } catch (err: any) {
             console.error("OTP verification error:", err);
             setError(err?.data?.detail || err?.data?.message || "OTP verification failed.");
@@ -249,32 +250,32 @@ export function SignupForm() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-5">
                     <div className="space-y-1.5">
                         <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5">Password</label>
-                        <input
-                            type={showPassword ? "text" : "password"}
-                            name="password"
-                            placeholder="••••••••"
-                            value={formData.password}
-                            onChange={handleInputChange}
-                            required
-                            minLength={8}
-                            className="w-full bg-white/5 border border-white/10 rounded-[18px] py-4 px-6 text-[14px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] transition-all"
-                        />
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                name="password"
+                                placeholder="••••••••"
+                                value={formData.password}
+                                onChange={handleInputChange}
+                                required
+                                minLength={8}
+                                className="w-full bg-white/5 border border-white/10 rounded-[18px] py-4 px-6 text-[14px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] transition-all"
+                            />
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5">Confirm</label>
-                        <input
+                        <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5">Confirm Password</label>
+                            <input
                             type={showPassword ? "text" : "password"}
-                            name="password2"
-                            placeholder="••••••••"
-                            value={formData.password2}
-                            onChange={handleInputChange}
-                            required
-                            minLength={8}
-                            className="w-full bg-white/5 border border-white/10 rounded-[18px] py-4 px-6 text-[14px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] transition-all"
-                        />
+                                name="password2"
+                                placeholder="••••••••"
+                                value={formData.password2}
+                                onChange={handleInputChange}
+                                required
+                                minLength={8}
+                                className="w-full bg-white/5 border border-white/10 rounded-[18px] py-4 px-6 text-[14px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] transition-all"
+                            />
                     </div>
                 </div>
 
@@ -309,11 +310,8 @@ export function SignupForm() {
                     </div>
                 </div>
 
-                <div className="flex items-center justify-center gap-5">
-                    <SocialButton icon={<Apple className="w-5.5 h-5.5 fill-current" />} />
-                    <SocialButton icon={<Globe className="w-5.5 h-5.5" />} />
-                    <SocialButton icon={<Mail className="w-5.5 h-5.5" />} />
-                    <SocialButton icon={<LayoutGrid className="w-5.5 h-5.5" />} />
+                <div className="flex items-center justify-center">
+                    <SocialLogin />
                 </div>
             </div>
 
@@ -329,10 +327,4 @@ export function SignupForm() {
     );
 }
 
-function SocialButton({ icon }: { icon: React.ReactNode }) {
-    return (
-        <button className="w-14 h-14 cursor-pointer rounded-2xl border border-white/5 bg-white/[0.03] flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.08] hover:border-[#cb2d39]/40 hover:shadow-[0_0_20px_rgba(203,45,57,0.1)] transition-all duration-300 shadow-sm overflow-hidden">
-            {icon}
-        </button>
-    );
-}
+

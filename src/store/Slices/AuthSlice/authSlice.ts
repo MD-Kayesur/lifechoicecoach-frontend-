@@ -7,10 +7,12 @@ interface AuthState {
     isAuthenticated: boolean;
 }
 
+const token = Cookies.get("accessToken");
+
 const initialState: AuthState = {
     user: null,
-    token: null,
-    isAuthenticated: false,
+    token: token || null,
+    isAuthenticated: !!token,
 };
 
 const authSlice = createSlice({
@@ -25,6 +27,9 @@ const authSlice = createSlice({
             state.token = action.payload.token;
             state.isAuthenticated = true;
         },
+        setUser: (state, action: PayloadAction<any>) => {
+            state.user = action.payload;
+        },
         logout: (state) => {
             state.user = null;
             state.token = null;
@@ -36,5 +41,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { setCredentials, setUser, logout } = authSlice.actions;
 export default authSlice.reducer;
