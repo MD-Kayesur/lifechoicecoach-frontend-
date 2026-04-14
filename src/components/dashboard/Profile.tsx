@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
+import { ChangePasswordModal } from "./ChangePassword";
 
 // --- Edit Profile Modal ---
 interface EditProfileModalProps {
@@ -192,6 +193,7 @@ export const Profile = () => {
     const [deleteProfile, { isLoading: isDeleting }] = useDeleteProfileMutation();
     console.log(profileData);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
 
     // Fallback to user from Redux if profile fetch fails
     const profile = profileData?.profile || user;
@@ -324,14 +326,17 @@ export const Profile = () => {
                     </div>
 
                     {/* Account Security Info (Placeholder/Static) */}
-                    <div className="bg-white/5 border border-white/10 rounded-3xl p-6 flex items-center justify-between group hover:border-gold/30 transition-all cursor-pointer">
+                    <div
+                        onClick={() => setIsChangePasswordModalOpen(true)}
+                        className="bg-white/5 border border-white/10 rounded-3xl p-6 flex items-center justify-between group hover:border-gold/30 transition-all cursor-pointer"
+                    >
                         <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center text-gold">
                                 <ShieldCheck size={20} />
                             </div>
                             <div>
                                 <h5 className="text-white font-bold text-[13px]">Account Security</h5>
-                                <p className="text-white/30 text-[11px]">Last password change was 2 months ago.</p>
+                                <p className="text-white/30 text-[11px]">Last password change was recently.</p>
                             </div>
                         </div>
                         <Edit size={16} className="text-white/20 group-hover:text-white transition-all" />
@@ -344,6 +349,13 @@ export const Profile = () => {
                     isOpen={isEditModalOpen}
                     onClose={() => setIsEditModalOpen(false)}
                     initialData={profile}
+                />
+            )}
+
+            {isChangePasswordModalOpen && (
+                <ChangePasswordModal
+                    isOpen={isChangePasswordModalOpen}
+                    onClose={() => setIsChangePasswordModalOpen(false)}
                 />
             )}
         </div>
