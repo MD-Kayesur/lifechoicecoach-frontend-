@@ -10,6 +10,7 @@ import { useRequestOtpMutation, useVerifyOtpMutation, useResendOtpMutation } fro
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/store/Slices/AuthSlice/authSlice";
 import Cookies from "js-cookie";
+import { SocialLogin } from "./SocialLogin/SocialLogin";
 
 export function SignupForm() {
     const router = useRouter();
@@ -309,11 +310,8 @@ export function SignupForm() {
                     </div>
                 </div>
 
-                <div className="flex items-center justify-center gap-5">
-                    <SocialButton icon={<Apple className="w-5.5 h-5.5 fill-current" />} />
-                    <SocialButton icon={<Globe className="w-5.5 h-5.5" />} />
-                    <SocialButton icon={<Mail className="w-5.5 h-5.5" />} />
-                    <SocialButton icon={<LayoutGrid className="w-5.5 h-5.5" />} />
+                <div className="flex items-center justify-center">
+                    <SocialLogin />
                 </div>
             </div>
 
@@ -329,10 +327,4 @@ export function SignupForm() {
     );
 }
 
-function SocialButton({ icon }: { icon: React.ReactNode }) {
-    return (
-        <button className="w-14 h-14 cursor-pointer rounded-2xl border border-white/5 bg-white/[0.03] flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.08] hover:border-[#cb2d39]/40 hover:shadow-[0_0_20px_rgba(203,45,57,0.1)] transition-all duration-300 shadow-sm overflow-hidden">
-            {icon}
-        </button>
-    );
-}
+

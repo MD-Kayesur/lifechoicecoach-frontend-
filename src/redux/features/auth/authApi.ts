@@ -165,6 +165,34 @@ export const authApi = baseApi.injectEndpoints({
             invalidatesTags: ["User"],
         }),
 
+        socialLogin: builder.mutation<LoginResponse, FormData>({
+            query: (formData) => ({
+                url: "/auth/social/social-login/",
+                method: "POST",
+                body: formData,
+            }),
+            transformResponse: (response: any): LoginResponse => {
+                const userData = response.user?.user || response.user || response.data?.user;
+                const profileData = response.user?.profile || response.profile;
+                const tokens = response.user?.tokens || response.tokens || response.data;
+                const access = response.access || tokens?.access || tokens?.access_token || tokens?.accessToken;
+                const refresh = response.refresh || tokens?.refresh || tokens?.refresh_token || tokens?.refreshToken;
+
+                return {
+                    ...response,
+                    data: {
+                        user: {
+                            ...userData,
+                            ...profileData
+                        },
+                        accessToken: access,
+                        refreshToken: refresh
+                    }
+                };
+            },
+            invalidatesTags: ["User"],
+        }),
+
         changePassword: builder.mutation<ApiResponseBase, ChangePasswordRequest>({
             query: (data) => {
                 const formData = new FormData();
@@ -189,5 +217,6 @@ export const {
     useLogoutMutation,
     useGetMeQuery,
     useUpdateProfileAuthMutation,
+    useSocialLoginMutation,
     useChangePasswordMutation,
 } = authApi;
