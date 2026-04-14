@@ -250,7 +250,7 @@ export function SignupForm() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-5">
                     <div className="space-y-1.5">
                         <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5">Password</label>
                         <input
@@ -265,7 +265,7 @@ export function SignupForm() {
                         />
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5">Confirm</label>
+                        <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5">Confirm Password</label>
                         <input
                             type={showPassword ? "text" : "password"}
                             name="password2"
