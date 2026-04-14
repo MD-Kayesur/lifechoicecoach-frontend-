@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useChangePasswordMutation } from "@/redux/features/auth/authApi";
-import { Loader2, KeyRound, CheckCircle2, AlertCircle, X } from "lucide-react";
+import { Loader2, KeyRound, CheckCircle2, AlertCircle, X, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { createPortal } from "react-dom";
 
@@ -13,6 +13,8 @@ interface ChangePasswordModalProps {
 
 export const ChangePasswordModal = ({ isOpen, onClose }: ChangePasswordModalProps) => {
     const [mounted, setMounted] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [formData, setFormData] = useState({
         new_password: "",
         confirm_password: "",
@@ -27,6 +29,8 @@ export const ChangePasswordModal = ({ isOpen, onClose }: ChangePasswordModalProp
     useEffect(() => {
         if (isOpen) {
             setFormData({ new_password: "", confirm_password: "" });
+            setShowPassword(false);
+            setShowConfirmPassword(false);
             document.body.style.overflow = "hidden";
         } else {
             document.body.style.overflow = "unset";
@@ -100,29 +104,47 @@ export const ChangePasswordModal = ({ isOpen, onClose }: ChangePasswordModalProp
                                 <label className="text-white/50 text-[10px] font-mono font-bold uppercase tracking-[1px] ml-1">
                                     New Password
                                 </label>
-                                <input
-                                    type="password"
-                                    required
-                                    autoFocus
-                                    value={formData.new_password}
-                                    onChange={(e) => setFormData({ ...formData, new_password: e.target.value })}
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-[14px] focus:outline-none focus:border-gold/50 focus:bg-white/[0.08] transition-all"
-                                    placeholder="Enter your new password"
-                                />
+                                <div className="relative">
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        required
+                                        autoFocus
+                                        value={formData.new_password}
+                                        onChange={(e) => setFormData({ ...formData, new_password: e.target.value })}
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-10 text-white text-[14px] focus:outline-none focus:border-gold/50 focus:bg-white/[0.08] transition-all"
+                                        placeholder="Enter your new password"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors"
+                                    >
+                                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                    </button>
+                                </div>
                             </div>
 
                             <div className="space-y-1.5">
                                 <label className="text-white/50 text-[10px] font-mono font-bold uppercase tracking-[1px] ml-1">
                                     Confirm New Password
                                 </label>
-                                <input
-                                    type="password"
-                                    required
-                                    value={formData.confirm_password}
-                                    onChange={(e) => setFormData({ ...formData, confirm_password: e.target.value })}
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-[14px] focus:outline-none focus:border-gold/50 focus:bg-white/[0.08] transition-all"
-                                    placeholder="Confirm your new password"
-                                />
+                                <div className="relative">
+                                    <input
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        required
+                                        value={formData.confirm_password}
+                                        onChange={(e) => setFormData({ ...formData, confirm_password: e.target.value })}
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-10 text-white text-[14px] focus:outline-none focus:border-gold/50 focus:bg-white/[0.08] transition-all"
+                                        placeholder="Confirm your new password"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors"
+                                    >
+                                        {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
