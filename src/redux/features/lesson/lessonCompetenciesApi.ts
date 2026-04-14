@@ -26,7 +26,7 @@ export interface Domain {
     total_competencies: number;
     context_Focus: string;
     total_credentials: number;
-    micro_credentials: microcredential[];
+    micro_credentials: MicroCredential[];
 }
 
 // Fixed type mapping for consistency with API response structure
