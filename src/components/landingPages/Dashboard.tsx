@@ -7,6 +7,7 @@ import { logout } from "@/store/Slices/AuthSlice/authSlice";
 import { useLogoutMutation } from "@/redux/features/auth/authApi";
 import { RootState } from "@/store/store";
 import { LogOut, Loader2 } from "lucide-react";
+import Cookies from "js-cookie";
 
 import { Overview } from "@/components/dashboard/Overview";
 import { MyLearning } from "@/components/dashboard/MyLearning";
@@ -37,7 +38,12 @@ export const Dashboard = () => {
 
     const handleLogout = async () => {
         try {
-            await logoutApi().unwrap();
+            const refreshToken = Cookies.get("refresh") || Cookies.get("refreshToken");
+            if (refreshToken) {
+                await logoutApi({ refresh: refreshToken }).unwrap();
+            } else {
+                await logoutApi({}).unwrap();
+            }
         } catch (error) {
             console.error("Logout API failed:", error);
         } finally {
