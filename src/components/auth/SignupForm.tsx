@@ -65,23 +65,23 @@ export function SignupForm() {
         try {
             const result = await verifyOtp({ email: formData.email, otp }).unwrap();
 
-            // Log user in automatically after verification
-            const userData = result.data?.user || (result as any).user;
-            const token = result.data?.accessToken || (result as any).access;
-            const refreshToken = result.data?.refreshToken || (result as any).refresh;
+            // Log user in automatically after verification using transformed data
+            if (result.data) {
+                const { user: userData, accessToken: token, refreshToken } = result.data;
 
-            dispatch(setCredentials({
-                user: userData,
-                token: token || ""
-            }));
+                dispatch(setCredentials({
+                    user: userData,
+                    token: token || ""
+                }));
 
-            if (token) Cookies.set("accessToken", token, { expires: 7 });
-            if (refreshToken) Cookies.set("refreshToken", refreshToken, { expires: 30 });
+                if (token) Cookies.set("accessToken", token, { expires: 7 });
+                if (refreshToken) Cookies.set("refreshToken", refreshToken, { expires: 30 });
 
-            setSuccessMessage("Account created successfully! Redirecting to dashboard...");
-            setTimeout(() => {
-                router.push("/dashboard");
-            }, 1500);
+                setSuccessMessage("Account created successfully! Redirecting to dashboard...");
+                setTimeout(() => {
+                    router.push("/dashboard");
+                }, 1500);
+            }
         } catch (err: any) {
             console.error("OTP verification error:", err);
             setError(err?.data?.detail || err?.data?.message || "OTP verification failed.");

@@ -7,10 +7,12 @@ interface AuthState {
     isAuthenticated: boolean;
 }
 
+const token = Cookies.get("accessToken");
+
 const initialState: AuthState = {
     user: null,
-    token: null,
-    isAuthenticated: false,
+    token: token || null,
+    isAuthenticated: !!token,
 };
 
 const authSlice = createSlice({
