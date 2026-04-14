@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { ChangePasswordModal } from "@/components/dashboard/ChangePassword";
 
+import Link from "next/link";
+
 export const Settings = () => {
     const { user } = useSelector((state: RootState) => state.auth);
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
@@ -38,7 +40,7 @@ export const Settings = () => {
                         <div className="text-gold text-[11px] font-mono font-bold uppercase tracking-[2px] mb-1">Current Tier</div>
                         <div className="text-white text-[24px] font-bold font-serif mb-2">IKON Practitioner</div>
                         <div className="text-white/50 text-[12px] mb-6 max-w-[200px]">Unlimited access to all 184 Micro-Credentials.</div>
-                        <button className="bg-white/10 text-white text-[12px] font-bold px-6 py-2 rounded-xl border border-white/10">Manage Subscription</button>
+                        <Link href="/pricing" className="bg-white/10 text-white text-[12px] font-bold px-6 py-2 rounded-xl border border-white/10 hover:bg-white/20 transition-all">Manage Subscription</Link>
                     </div>
                 </div>
             </div>

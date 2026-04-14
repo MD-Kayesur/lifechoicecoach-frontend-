@@ -136,6 +136,7 @@ export const Pricing = () => {
                 </div>
 
                 {/* Section 1.1: Consumer Pricing */}
+                
                 <div className="mb-32">
                     <div className="mb-12">
                         <span className="text-[10px] text-primary font-black uppercase tracking-widest">SECTION 1.1</span>
