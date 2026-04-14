@@ -12,6 +12,7 @@ import type {
 } from "@/redux/types/auth.types";
 
 export const authApi = baseApi.injectEndpoints({
+    overrideExisting: true,
     endpoints: (builder) => ({
         // OTP Registration Step 1: Request OTP
         requestOtp: builder.mutation<OtpResponse, OtpRequest>({
