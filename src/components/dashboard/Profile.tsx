@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useGetProfileQuery, useUpdateProfileMutation } from "@/redux/features/profile/profileApi";
+import { useGetProfileQuery, useUpdateProfileMutation, useDeleteProfileMutation } from "@/redux/features/profile/profileApi";
 import { RootState } from "@/store/store";
-import { setUser } from "@/store/Slices/AuthSlice/authSlice";
-import { Loader2, Camera, User, Phone, Save, X, Edit, Mail, Calendar, BadgeCheck, ShieldCheck, AlertCircle } from "lucide-react";
+import { setUser, logout } from "@/store/Slices/AuthSlice/authSlice";
+import { Loader2, Camera, User, Phone, Save, X, Edit, Mail, Calendar, BadgeCheck, ShieldCheck, AlertCircle, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 // --- Edit Profile Modal ---
 interface EditProfileModalProps {
@@ -183,14 +185,48 @@ const EditProfileModal = ({ isOpen, onClose, initialData }: EditProfileModalProp
 
 // --- Main Profile Component ---
 export const Profile = () => {
+    const router = useRouter();
+    const dispatch = useDispatch();
     const { user } = useSelector((state: RootState) => state.auth);
     const { data: profileData, isLoading: isProfileLoading, error } = useGetProfileQuery();
+    const [deleteProfile, { isLoading: isDeleting }] = useDeleteProfileMutation();
     console.log(profileData);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     // Fallback to user from Redux if profile fetch fails
     const profile = profileData?.profile || user;
     const fullName = profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}` : (user?.name || "Member");
+
+    const handleDeleteAccount = async () => {
+        const result = await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this! Your account will be permanently deleted.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#f06070",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+            background: "#0D1F3A",
+            color: "#fff",
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await deleteProfile().unwrap();
+                Swal.fire({
+                    title: "Deleted!",
+                    text: "Your account has been deleted.",
+                    icon: "success",
+                    background: "#0D1F3A",
+                    color: "#fff",
+                });
+                dispatch(logout());
+                router.push("/login");
+            } catch (error: any) {
+                toast.error(error.data?.message || "Failed to delete account");
+            }
+        }
+    };
 
     if (isProfileLoading) {
         return (
@@ -217,13 +253,23 @@ export const Profile = () => {
                     <h2 className="text-[20px] font-bold text-white tracking-wide">My Profile</h2>
                     <p className="text-white/40 text-[12px]">Manage your personal Information and settings.</p>
                 </div>
-                <button
-                    onClick={() => setIsEditModalOpen(true)}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-gold/10 border border-gold/30 rounded-xl text-gold hover:bg-gold/20 transition-all font-bold text-[13px]"
-                >
-                    <Edit size={16} />
-                    Edit Profile
-                </button>
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={handleDeleteAccount}
+                        disabled={isDeleting}
+                        className="flex items-center gap-2 px-5 py-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 hover:bg-red-500/20 transition-all font-bold text-[13px] disabled:opacity-50"
+                    >
+                        {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 size={16} />}
+                        Delete Account
+                    </button>
+                    <button
+                        onClick={() => setIsEditModalOpen(true)}
+                        className="flex items-center gap-2 px-5 py-2.5 bg-gold/10 border border-gold/30 rounded-xl text-gold hover:bg-gold/20 transition-all font-bold text-[13px]"
+                    >
+                        <Edit size={16} />
+                        Edit Profile
+                    </button>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8">
