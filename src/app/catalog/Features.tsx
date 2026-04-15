@@ -2,20 +2,34 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { MCS, DOMAINS } from "@/lib/data";
+import { DOMAINS } from "@/lib/data";
+import { useGetLessonCompetenciesQuery } from "@/redux/features/lesson/lessonCompetenciesApi";
 
 export const Features = () => {
     const [searchQuery, setSearchQuery] = useState("");
-    const [activeDomain, setActiveDomain] = useState("all");
+    const [activeDomain, setActiveDomain] = useState<string>("all");
 
-    // Filter logic
+    // Fetch data from API
+    const { data: apiResponse, isLoading, isError } = useGetLessonCompetenciesQuery({
+        search: searchQuery || undefined,
+        domain_id: activeDomain === "all" ? undefined : Number(activeDomain)
+    });
+console.log(apiResponse);
+    // Flatten domains and their micro-credentials from API response
     const filteredMCS = useMemo(() => {
-        return MCS.filter(mc => {
-            const matchesSearch = mc.name.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesDomain = activeDomain === "all" || mc.cat === activeDomain;
-            return matchesSearch && matchesDomain;
-        });
-    }, [searchQuery, activeDomain]);
+        if (!apiResponse?.data?.domains) return [];
+
+        return apiResponse.data.domains.flatMap(domain =>
+            domain.micro_credentials.map(mc => ({
+                id: mc.id.toString(),
+                cat: domain.id.toString(), // Using domain ID as category
+                name: mc.micro_credential,
+                level: mc.level || "6", // Fallback level
+                ects: 10, // Assuming 10 ECTS as per description
+                domain_name: domain.domain,
+            }))
+        );
+    }, [apiResponse]);
 
     const setFilt = (id: string) => {
         setActiveDomain(id);
@@ -55,8 +69,10 @@ export const Features = () => {
                         className={`f-btn px-4 py-2 rounded-lg border-1.5 text-[12.5px] font-bold transition-all ${activeDomain === 'all' ? 'bg-gold border-gold text-white shadow-lg' : 'bg-white/5 border-white/15 text-white/75 hover:bg-gold hover:border-gold hover:text-white'}`}
                         onClick={() => setFilt('all')}
                     >
-                        All (184)
+                        All
                     </button>
+                    {/* We still use the static DOMAINS for the horizontal filter bar to keep it consistent, 
+                        but we could use domainsFromApi if we want it fully dynamic */}
                     {DOMAINS.map(domain => (
                         <button
                             key={domain.id}
@@ -119,44 +135,68 @@ export const Features = () => {
                     </div>
 
                     <div className="mc-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                        {filteredMCS.map(mc => (
-                            <Link
-                                key={mc.id}
-                                href={`/sample-mc?id=${mc.id}`}
-                                className="mc-card bg-white/5 border-1.5 border-white/10 rounded-2xl p-6 cursor-pointer transition-all hover:border-gold/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] group flex flex-col h-full"
-                            >
-                                <div className="flex justify-between items-start mb-4">
-                                    <div className="mc-cat-tag text-[9.5px] font-bold tracking-[1.2px] uppercase font-mono bg-gold text-white px-2.5 py-1 rounded-[5px] shadow-lg shadow-gold/20">
-                                        Cat {mc.cat}
+                        {isLoading ? (
+                            // Loading Skeleton
+                            Array.from({ length: 6 }).map((_, i) => (
+                                <div key={i} className="mc-card bg-white/5 border-1.5 border-white/10 rounded-2xl p-6 h-[280px] animate-pulse">
+                                    <div className="flex justify-between mb-4">
+                                        <div className="h-6 w-16 bg-white/10 rounded"></div>
+                                        <div className="h-6 w-12 bg-white/10 rounded"></div>
                                     </div>
-                                    <div className="mc-lvl text-[10px] font-bold text-white bg-white/10 px-2 py-0.5 rounded-[4px] font-mono border border-white/5">
-                                        EQF {mc.level}
-                                    </div>
-                                </div>
-
-                                <h3 className="mc-name text-[15px] font-bold text-white leading-tight mb-3 group-hover:text-gold3 transition-colors flex-grow min-h-[40px]">
-                                    {mc.name}
-                                </h3>
-
-                                <p className="text-[12px] text-white/45 mb-4 line-clamp-2 leading-relaxed">
-                                    Verified competency in {DOMAINS.find(d => d.id === mc.cat)?.name}. 10 ECTS Value.
-                                </p>
-
-                                <div className="mc-chips flex flex-wrap gap-1.5 mb-5">
-                                    <span className="mc-chip text-[9px] px-2 py-0.5 rounded-[4px] bg-white/5 text-white/45 font-bold font-mono uppercase tracking-[0.5px]">10 Skills</span>
-                                    <span className="mc-chip text-[9px] px-2 py-0.5 rounded-[4px] bg-white/5 text-white/45 font-bold font-mono uppercase tracking-[0.5px]">AI Assessed</span>
-                                </div>
-
-                                <div className="mc-foot flex items-center justify-between border-t border-white/10 pt-4 mt-auto">
-                                    <div className="mc-ects text-[11px] font-bold text-gold3 font-mono bg-gold/15 px-2 py-0.5 rounded-[5px]">
-                                        {mc.ects} ECTS
-                                    </div>
-                                    <div className="text-[11px] font-bold text-white/40 group-hover:text-white transition-colors">
-                                        More Info →
+                                    <div className="h-6 w-3/4 bg-white/10 rounded mb-3"></div>
+                                    <div className="h-4 w-full bg-white/10 rounded mb-2"></div>
+                                    <div className="h-4 w-2/3 bg-white/10 rounded mb-4"></div>
+                                    <div className="mt-auto pt-4 border-t border-white/10 flex justify-between">
+                                        <div className="h-5 w-14 bg-white/10 rounded"></div>
+                                        <div className="h-5 w-20 bg-white/10 rounded"></div>
                                     </div>
                                 </div>
-                            </Link>
-                        ))}
+                            ))
+                        ) : isError ? (
+                            <div className="col-span-full py-10 text-center">
+                                <p className="text-red-400">Failed to load micro-credentials. Please try again.</p>
+                            </div>
+                        ) : (
+                            filteredMCS.map(mc => (
+                                <Link
+                                    key={mc.id}
+                                    href={`/sample-mc?id=${mc.id}`}
+                                    className="mc-card bg-white/5 border-1.5 border-white/10 rounded-2xl p-6 cursor-pointer transition-all hover:border-gold/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] group flex flex-col h-full"
+                                >
+                                    <h1>{mc.id}</h1>
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className="mc-cat-tag text-[9.5px] font-bold tracking-[1.2px] uppercase font-mono bg-gold text-white px-2.5 py-1 rounded-[5px] shadow-lg shadow-gold/20">
+                                            {mc.domain_name}
+                                        </div>
+                                        <div className="mc-lvl text-[10px] font-bold text-white bg-white/10 px-2 py-0.5 rounded-[4px] font-mono border border-white/5">
+                                            EQF {mc.level}
+                                        </div>
+                                    </div>
+
+                                    <h3 className="mc-name text-[15px] font-bold text-white leading-tight mb-3 group-hover:text-gold3 transition-colors flex-grow min-h-[40px]">
+                                        {mc.name}
+                                    </h3>
+
+                                    <p className="text-[12px] text-white/45 mb-4 line-clamp-2 leading-relaxed">
+                                        Verified competency in {mc.domain_name}. 10 ECTS Value.
+                                    </p>
+
+                                    <div className="mc-chips flex flex-wrap gap-1.5 mb-5">
+                                        <span className="mc-chip text-[9px] px-2 py-0.5 rounded-[4px] bg-white/5 text-white/45 font-bold font-mono uppercase tracking-[0.5px]">10 Skills</span>
+                                        <span className="mc-chip text-[9px] px-2 py-0.5 rounded-[4px] bg-white/5 text-white/45 font-bold font-mono uppercase tracking-[0.5px]">AI Assessed</span>
+                                    </div>
+
+                                    <div className="mc-foot flex items-center justify-between border-t border-white/10 pt-4 mt-auto">
+                                        <div className="mc-ects text-[11px] font-bold text-gold3 font-mono bg-gold/15 px-2 py-0.5 rounded-[5px]">
+                                            {mc.ects} ECTS
+                                        </div>
+                                        <div className="text-[11px] font-bold text-white/40 group-hover:text-white transition-colors">
+                                            More Info →
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))
+                        )}
                     </div>
 
                     {filteredMCS.length === 0 && (
