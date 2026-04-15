@@ -14,7 +14,6 @@ export const Features = () => {
         search: searchQuery || undefined,
         domain_id: activeDomain === "all" ? undefined : Number(activeDomain)
     });
-console.log(apiResponse);
     // Flatten domains and their micro-credentials from API response
     const filteredMCS = useMemo(() => {
         if (!apiResponse?.data?.domains) return [];
@@ -41,13 +40,13 @@ console.log(apiResponse);
             <div className="cat-hdr bg-[#060e1e] px-6 md:px-12 py-12 md:py-16">
                 <div className="cat-hdr-in max-w-[1200px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <div className="eyebrow text-gold3 mb-2 font-mono text-[10.5px] font-bold tracking-[2px] uppercase">
-                        184 Micro-Credentials · 10 Domains
+                        IKON Micro-Credentials · {apiResponse?.data?.domains?.length || 0} Domains
                     </div>
                     <h1 className="cat-h font-serif font-bold text-[34px] md:text-[42px] text-white mb-3 leading-tight ml-0">
                         IKON SKILLS™ Credential Catalog
                     </h1>
                     <p className="cat-sub text-[14.5px] text-white/60 leading-relaxed max-w-2xl font-medium">
-                        Browse all 184 Micro-Credentials. Each credential = 10 verified competencies + 10 ECTS. Quality Assured by European International University, Paris.
+                        Browse our verified Micro-Credentials. Each credential represents 10 verified competencies and carries 10 ECTS value. Quality Assured by EIU-Paris.
                     </p>
                 </div>
             </div>
@@ -71,8 +70,6 @@ console.log(apiResponse);
                     >
                         All
                     </button>
-                    {/* We still use the static DOMAINS for the horizontal filter bar to keep it consistent, 
-                        but we could use domainsFromApi if we want it fully dynamic */}
                     {DOMAINS.map(domain => (
                         <button
                             key={domain.id}
@@ -98,7 +95,6 @@ console.log(apiResponse);
                                 <div className="sp-dot w-2 h-2 rounded-[3px] shadow-[0_0_8px_rgba(136,136,136,0.5)]" style={{ background: '#888' }}></div>
                                 All Domains
                             </div>
-                            <div className="sp-ct text-[10px] text-white/50 font-bold font-mono bg-white/5 px-2 py-0.5 rounded-md">184</div>
                         </div>
                         {DOMAINS.map(domain => (
                             <div
@@ -107,10 +103,9 @@ console.log(apiResponse);
                                 onClick={() => setFilt(domain.id)}
                             >
                                 <div className="sp-label flex items-center gap-3 text-[13.5px] font-bold text-white/80 group-hover:text-white transition-colors">
-                                    <div className="sp-dot w-2 h-2 rounded-[3px]" style={{ background: domain.color, boxShadow: `0 0 8px ${domain.color}80` }}></div>
+                                    <div className="sp-dot w-2 h-2 rounded-[3px]" style={{ background: domain.color || '#cb2d39', boxShadow: `0 0 8px ${domain.color || '#cb2d39'}80` }}></div>
                                     {domain.name}
                                 </div>
-                                <div className="sp-ct text-[10px] text-white/50 font-bold font-mono bg-white/5 px-2 py-0.5 rounded-md">{domain.count}</div>
                             </div>
                         ))}
                     </div>
@@ -118,7 +113,7 @@ console.log(apiResponse);
                     <div className="qa-mini bg-white/3 border border-white/8 rounded-2xl p-5 mt-10">
                         <div className="text-[10px] font-bold text-gold font-mono uppercase tracking-[1px] mb-3">Quality Assurance</div>
                         <div className="text-[12px] text-white/50 leading-relaxed font-medium">
-                            All 184 credentials are quality assured by EIU-Paris (UAI 0756213W).
+                            All credentials are quality assured by EIU-Paris (UAI 0756213W).
                         </div>
                     </div>
                 </aside>
@@ -128,9 +123,6 @@ console.log(apiResponse);
                     <div className="grid-hdr flex items-center justify-between mb-6 pb-4 border-b border-white/5">
                         <div className="grid-ct text-[14px] text-white/55 font-medium">
                             Showing <strong className="text-white text-[15px]">{filteredMCS.length}</strong> Micro-Credentials
-                        </div>
-                        <div className="grid-sort text-[12px] text-white/40 font-mono hidden md:block">
-                            PLATFORM_VR :: 2.4.0
                         </div>
                     </div>
 
@@ -153,8 +145,8 @@ console.log(apiResponse);
                                 </div>
                             ))
                         ) : isError ? (
-                            <div className="col-span-full py-10 text-center">
-                                <p className="text-red-400">Failed to load micro-credentials. Please try again.</p>
+                            <div className="col-span-full py-20 text-center bg-white/3 rounded-3xl border border-dashed border-white/10">
+                                <p className="text-red-400 font-medium">Failed to load micro-credentials. Please check your connection or try again.</p>
                             </div>
                         ) : (
                             filteredMCS.map(mc => (
