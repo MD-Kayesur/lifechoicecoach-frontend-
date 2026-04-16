@@ -72,7 +72,7 @@ export const Neuroscience = () => {
                  bg-[radial-gradient(circle,rgba(203,45,57,0.1)_0%,transparent_65%)] pointer-events-none" />
                 <div className="absolute bottom-[-200px] left-[-100px] w-[900px] h-[900px] rounded-full bg-[radial-gradient(circle,rgba(26,58,107,0.3)_0%,transparent_70%)] pointer-events-none" />
 
-                <CommonWrapper className="relative z-10 w-full max-w-[1200px] px-[48px] py-[80px]">
+                <CommonWrapper className="relative z-10 w-full max-w-[1200px] px-5 md:px-[48px] py-[80px]">
                     <div className="space-y-8">
                         <div>
                             <div className="inline-flex items-center gap-[8px] bg-primary border-none px-[16px] py-[6px] rounded-full mb-[26px] shadow-[0_4px_0_#8a1e27,0_6px_10px_rgba(0,0,0,0.35)]">
@@ -104,9 +104,9 @@ export const Neuroscience = () => {
             </section>
 
             {/* Section 1: Starting Point */}
-            <section className="py-[100px] border-t border-white/5 bg-[#050a14]/30">
-                <CommonWrapper className="max-w-[1200px] px-[48px]">
-                    <div className="grid lg:grid-cols-[1fr_420px] gap-[80px] items-start">
+            <section className="py-[60px] md:py-[100px] border-t border-white/5 bg-[#050a14]/30">
+                <CommonWrapper className="max-w-[1200px] px-5 md:px-[48px]">
+                    <div className="grid lg:grid-cols-[1fr_420px] gap-10 md:gap-[80px] items-start">
                         <div className="space-y-8">
                             <div className="space-y-4">
                                 <div className="text-[10.5px] text-primary/80 font-bold uppercase tracking-[4px] font-mono">THE STARTING POINT</div>
@@ -150,8 +150,8 @@ export const Neuroscience = () => {
             </section>
 
             {/* Section 2: Practitioners */}
-            <section className="py-[100px] relative">
-                <CommonWrapper className="max-w-[1200px] px-[48px]">
+            <section className="py-[60px] md:py-[100px] relative">
+                <CommonWrapper className="max-w-[1200px] px-5 md:px-[48px]">
                     <div className="text-center mb-16 space-y-4">
                         <div className="text-[10.5px] text-primary/80 font-bold uppercase tracking-[4px] font-mono">THE 10 IKON PRACTITIONERS</div>
                         <h2 className="font-cormorant font-bold text-[clamp(28px,3.2vw,44px)] leading-[1.2] text-white">Same Start Time. <span className="text-gold2 italic">Ten Different Brains.</span></h2>
@@ -172,7 +172,7 @@ export const Neuroscience = () => {
                         ))}
                     </div>
 
-                    <div className="mt-16 p-[40px] rounded-[24px] bg-primary/5 border border-primary/10 text-center max-w-4xl mx-auto">
+                    <div className="mt-16 p-6 md:p-[40px] rounded-[24px] bg-primary/5 border border-primary/10 text-center max-w-4xl mx-auto">
                         <p className="text-white/70 italic leading-[1.8] font-outfit text-[17px]">
                             Each of these ten practitioners gets a completely different experience, even though they are learning the exact same Core Competencies. Here is why this is not just a feature. <span className="text-white font-bold">It is a reflection of how the human brain actually learns.</span>
                         </p>
@@ -181,8 +181,8 @@ export const Neuroscience = () => {
             </section>
 
             {/* Section 3: Brain Science */}
-            <section id="science" className="py-[120px] relative overflow-hidden bg-[#020617]">
-                <CommonWrapper className="max-w-[1200px] px-[48px]">
+            <section id="science" className="py-[80px] md:py-[120px] relative overflow-hidden bg-[#020617]">
+                <CommonWrapper className="max-w-[1200px] px-5 md:px-[48px]">
                     <div className="mb-20 space-y-4">
                         <div className="text-[10.5px] text-primary/80 font-bold uppercase tracking-[4px] font-mono">THE BRAIN SCIENCE</div>
                         <h2 className="font-cormorant font-bold text-[clamp(32px,3.5vw,52px)] leading-[1.15] text-white capitalize">
@@ -212,9 +212,9 @@ export const Neuroscience = () => {
             </section>
 
             {/* Section 4: Learning Loop */}
-            <section className="py-[120px] relative overflow-hidden bg-[#020617] border-t border-white/5">
+            <section className="py-[80px] md:py-[120px] relative overflow-hidden bg-[#020617] border-t border-white/5">
                 <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
-                <CommonWrapper className="max-w-[1200px] px-[48px]">
+                <CommonWrapper className="max-w-[1200px] px-5 md:px-[48px]">
                     <div className="text-center mb-24 space-y-4">
                         <div className="text-[10.5px] text-primary/80 font-bold uppercase tracking-[4px] font-mono">THE LEARNING LOOP</div>
                         <h2 className="font-cormorant font-bold text-[clamp(28px,3.2vw,48px)] leading-[1.2] text-white">
@@ -261,7 +261,7 @@ export const Neuroscience = () => {
                         </div>
                     </div>
 
-                    <div className="mt-20 p-[60px] rounded-[32px] bg-white/[0.03] border border-white/10 relative overflow-hidden max-w-5xl mx-auto group backdrop-blur-[4px]">
+                    <div className="mt-20 p-8 md:p-[60px] rounded-[32px] bg-white/[0.03] border border-white/10 relative overflow-hidden max-w-5xl mx-auto group backdrop-blur-[4px]">
                         <div className="absolute top-0 left-0 p-8 text-primary/5 select-none group-hover:text-primary/10 transition-all">
                             <span className="text-8xl font-serif">“</span>
                         </div>
@@ -273,8 +273,8 @@ export const Neuroscience = () => {
             </section>
 
             {/* Section 5: Concept Attainment */}
-            <section className="py-[120px] bg-[#050a14]/20 border-t border-white/5">
-                <CommonWrapper className="max-w-[1200px] px-[48px]">
+            <section className="py-[80px] md:py-[120px] bg-[#050a14]/20 border-t border-white/5">
+                <CommonWrapper className="max-w-[1200px] px-5 md:px-[48px]">
                     <div className="max-w-[850px] mb-20 space-y-4">
                         <div className="text-[10.5px] text-primary/80 font-bold uppercase tracking-[4px] font-mono">CONCEPT ATTAINMENT</div>
                         <h2 className="font-cormorant font-bold text-[clamp(28px,3.2vw,48px)] leading-[1.2] text-white">Teaching Until the Brain <br /><span className="text-gold2 italic">Actually Gets It</span></h2>
@@ -319,9 +319,9 @@ export const Neuroscience = () => {
             </section>
 
             {/* Section 6: AI Integrity Engine */}
-            <section className="py-[120px] relative overflow-hidden bg-[#020617] border-t border-white/5">
+            <section className="py-[80px] md:py-[120px] relative overflow-hidden bg-[#020617] border-t border-white/5">
                 <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[180px] pointer-events-none" />
-                <CommonWrapper className="max-w-[1200px] px-[48px]">
+                <CommonWrapper className="max-w-[1200px] px-5 md:px-[48px]">
                     <div className="text-center mb-24 space-y-4">
                         <div className="text-[10.5px] text-primary/80 font-bold uppercase tracking-[4px] font-mono">AI INTEGRITY ENGINE</div>
                         <h2 className="font-cormorant font-bold text-[clamp(28px,3.2vw,48px)] leading-[1.2] text-white">The AI Knows You. <span className="text-gold2 italic">From the First Response.</span></h2>
@@ -383,8 +383,8 @@ export const Neuroscience = () => {
             </section>
 
             {/* Section 7: Proof of Skill Promise */}
-            <section className="py-[120px] bg-[#020617] border-t border-white/5 overflow-hidden">
-                <CommonWrapper className="max-w-[1200px] px-[48px]">
+            <section className="py-[80px] md:py-[120px] bg-[#020617] border-t border-white/5 overflow-hidden">
+                <CommonWrapper className="max-w-[1200px] px-5 md:px-[48px]">
                     <div className="max-w-4xl mb-20 space-y-4">
                         <div className="text-[10.5px] text-primary/80 font-bold uppercase tracking-[4px] font-mono">THE PROOF OF SKILL PROMISE</div>
                         <h2 className="font-cormorant font-bold text-[clamp(28px,3.2vw,48px)] leading-[1.2] text-white">Why 75% Proven Competency <br /><span className="text-gold2 italic">Means Something Real</span></h2>
