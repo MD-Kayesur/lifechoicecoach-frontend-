@@ -9,6 +9,7 @@ import { RootState } from "@/store/store";
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const pathname = usePathname();
     const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
@@ -25,6 +26,7 @@ export function Navbar() {
     ];
 
     useEffect(() => {
+        setMounted(true);
         const handleScroll = () => {
             setScrolled(window.scrollY > 20);
         };
@@ -88,20 +90,24 @@ export function Navbar() {
                     Enroll as IKON Practitioner
                 </a>
 
-                {!isAuthenticated ? (
-                    <Link
-                        href="/login"
-                        className="hidden sm:block bg-white/10 hover:bg-white/20 text-white text-[13px] font-bold px-[20px] py-[8.5px] rounded-[7px] border border-white/20 transition-all font-outfit backdrop-blur-sm"
-                    >
-                        Log In
-                    </Link>
-                ) : (
-                    <Link
-                        href="/dashboard"
-                        className="hidden sm:block bg-[#11674E] hover:bg-[#0d503c] text-white text-[13px] font-bold px-[20px] py-[8.5px] rounded-[7px] shadow-[0_4px_0_#0a3d2e] hover:translate-y-[2px] hover:shadow-[0_2px_0_#0a3d2e] transition-all font-outfit"
-                    >
-                        Dashboard
-                    </Link>
+                {mounted && (
+                    <>
+                        {!isAuthenticated ? (
+                            <Link
+                                href="/login"
+                                className="hidden sm:block bg-white/10 hover:bg-white/20 text-white text-[13px] font-bold px-[20px] py-[8.5px] rounded-[7px] border border-white/20 transition-all font-outfit backdrop-blur-sm"
+                            >
+                                Log In
+                            </Link>
+                        ) : (
+                            <Link
+                                href="/dashboard"
+                                className="hidden sm:block bg-[#11674E] hover:bg-[#0d503c] text-white text-[13px] font-bold px-[20px] py-[8.5px] rounded-[7px] shadow-[0_4px_0_#0a3d2e] hover:translate-y-[2px] hover:shadow-[0_2px_0_#0a3d2e] transition-all font-outfit"
+                            >
+                                Dashboard
+                            </Link>
+                        )}
+                    </>
                 )}
 
                 {/* Mobile Menu Toggle */}
@@ -135,23 +141,28 @@ export function Navbar() {
                         </Link>
                     ))}
 
-                    {!isAuthenticated ? (
-                        <Link
-                            href="/login"
-                            onClick={() => setIsMenuOpen(false)}
-                            className="mt-4 bg-white/10 text-white text-center py-3.5 rounded-lg font-bold border border-white/20 text-[14.5px] font-outfit"
-                        >
-                            Log In
-                        </Link>
-                    ) : (
-                        <Link
-                            href="/dashboard"
-                            onClick={() => setIsMenuOpen(false)}
-                            className="mt-4 bg-[#11674E] text-white text-center py-3.5 rounded-lg font-bold text-[14.5px] font-outfit shadow-lg"
-                        >
-                            Go to Dashboard
-                        </Link>
+                    {mounted && (
+                        <>
+                            {!isAuthenticated ? (
+                                <Link
+                                    href="/login"
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="mt-4 bg-white/10 text-white text-center py-3.5 rounded-lg font-bold border border-white/20 text-[14.5px] font-outfit"
+                                >
+                                    Log In
+                                </Link>
+                            ) : (
+                                <Link
+                                    href="/dashboard"
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="mt-4 bg-[#11674E] text-white text-center py-3.5 rounded-lg font-bold text-[14.5px] font-outfit shadow-lg"
+                                >
+                                    Go to Dashboard
+                                </Link>
+                            )}
+                        </>
                     )}
+
 
                     <a
                         href="https://wa.me/66968412564"

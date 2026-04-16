@@ -5,9 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { ChangePasswordModal } from "@/components/dashboard/ChangePassword";
 
-import Link from "next/link";
-
-export const Settings = () => {
+export const Settings = ({ onTabChange }: { onTabChange?: (tab: string) => void }) => {
     const { user } = useSelector((state: RootState) => state.auth);
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
@@ -38,12 +36,18 @@ export const Settings = () => {
                     <div className="flex flex-col items-center justify-center py-6 text-center">
                         <div className="text-[32px] mb-3">🏅</div>
                         <div className="text-gold text-[11px] font-mono font-bold uppercase tracking-[2px] mb-1">Current Tier</div>
-                        <div className="text-white text-[24px] font-bold font-serif mb-2">IKON Practitioner</div>
+                        <div className="text-white text-[24px] font-bold font-serif mb-2">{user?.role === 'admin' ? 'Lifetime Access' : 'IKON Practitioner'}</div>
                         <div className="text-white/50 text-[12px] mb-6 max-w-[200px]">Unlimited access to all 184 Micro-Credentials.</div>
-                        <Link href="/pricing" className="bg-white/10 text-white text-[12px] font-bold px-6 py-2 rounded-xl border border-white/10 hover:bg-white/20 transition-all">Manage Subscription</Link>
+                        <button
+                            onClick={() => onTabChange && onTabChange('Subscription')}
+                            className="bg-white/10 text-white text-[12px] font-bold px-6 py-2 rounded-xl border border-white/10 hover:bg-white/20 transition-all"
+                        >
+                            Manage Subscription
+                        </button>
                     </div>
                 </div>
             </div>
+
 
             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative overflow-hidden group hover:border-white/20">
                 <div className="text-[14px] font-bold text-white mb-6 tracking-wide">General Portal Settings & Security</div>

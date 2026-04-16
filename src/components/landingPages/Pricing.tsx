@@ -1,6 +1,67 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useGetSubscriptionPlansQuery, SubscriptionPlan } from "@/redux/features/enrollment/subscriptionsplansApi";
+import { Loader2 } from "lucide-react";
+
 export const Pricing = () => {
+    const { data: plansData, isLoading, isError } = useGetSubscriptionPlansQuery();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // Default features if none provided by API
+    const defaultFeatures = [
+        'Full learning access per MC',
+        'AI-powered assessment',
+        'Digital credential per MC',
+        'Assessment attempts included',
+        'Practitioner Dashboard access'
+    ];
+
+    // Safely extract plans array from different potential API response shapes
+    const plansArray = Array.isArray(plansData)
+        ? plansData
+        : (plansData as any)?.results || (plansData as any)?.data || [];
+
+    const plans = plansArray.map((plan: SubscriptionPlan) => ({
+        id: plan.id,
+        name: plan.name,
+        price: typeof plan.price === 'number' ? `$${plan.price.toFixed(2)}` : plan.price,
+        per: plan.duration_months ? (plan.duration_months >= 12 ? '/ year' : `/ ${plan.duration_months} months`) : '/ month',
+        cap: plan.description || 'Unlimited Access',
+        feats: plan.features && plan.features.length > 0 ? plan.features : defaultFeatures,
+        featured: plan.name.toLowerCase().includes('practitioner') || plan.name.toLowerCase().includes('popular')
+    }));
+
+
+    if (!mounted || isLoading) {
+        return (
+            <div className="min-h-screen bg-[#0a1628] flex items-center justify-center">
+                <Loader2 className="w-10 h-10 text-gold animate-spin" />
+            </div>
+        );
+    }
+
+
+    if (isError) {
+        return (
+            <div className="min-h-screen bg-[#0a1628] flex items-center justify-center text-white">
+                <div className="text-center">
+                    <p className="text-xl mb-4">Failed to load subscription plans.</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="bg-gold text-white px-6 py-2 rounded-xl"
+                    >
+                        Retry
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div id="page-pricing" className="page active pt-[62px] min-h-screen bg-[#0a1628]">
             <section className="pr-hero bg-[#060e1e] py-16 md:py-24 px-8 md:px-12 text-center relative overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-1000">
@@ -23,13 +84,8 @@ export const Pricing = () => {
                     </p>
 
                     <div className="pr-plans-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                        {[
-                            { name: 'Starter', price: '$9.99', per: '/ month', cap: 'Up to 3 MCs / month', feats: ['Full learning access per MC', 'AI-powered assessment', 'Digital credential per MC', '1 assessment attempt per MC', 'Practitioner Dashboard access'] },
-                            { name: 'Practitioner', price: '$24.99', per: '/ month', cap: 'Up to 10 MCs / month', feats: ['Full learning access per MC', 'AI-powered assessment', 'Digital credential per MC', '3 assessment attempts per MC', 'Priority Dashboard support'], featured: true },
-                            { name: 'Degree Track', price: '$49.99', per: '/ month', cap: 'Unlimited MCs / month', feats: ['Full portfolio access', 'Unlimited AI assessments', 'Degree credit stacking', 'Career pathway mentoring', 'Global alumni access'] },
-                            { name: 'Lifetime', price: '$499', per: 'One-time', cap: 'Unlimited Forever', feats: ['Unlock the entire platform', 'All current & future MCs', 'Institutional verification', 'Lifetime dashboard access', 'Founding member status'] }
-                        ].map((plan, i) => (
-                            <div key={i} className={`pr-plan bg-white/5 border-1.5 border-white/10 rounded-2xl overflow-hidden flex flex-col transition-all group relative hover:-translate-y-2 hover:shadow-2xl hover:shadow-gold/10 ${plan.featured ? 'border-gold shadow-2xl shadow-gold/15' : 'hover:border-gold/30'}`}>
+                        {plans.map((plan: any, i: number) => (
+                            <div key={plan.id || i} className={`pr-plan bg-white/5 border-1.5 border-white/10 rounded-2xl overflow-hidden flex flex-col transition-all group relative hover:-translate-y-2 hover:shadow-2xl hover:shadow-gold/10 ${plan.featured ? 'border-gold shadow-2xl shadow-gold/15' : 'hover:border-gold/30'}`}>
                                 {plan.featured && (
                                     <div className="pr-plan-ribbon absolute top-[16px] right-[-28px] bg-gold text-white text-[9px] font-black tracking-[1px] uppercase py-1 px-8 rotate-45 shadow-lg">Popular</div>
                                 )}
@@ -43,7 +99,7 @@ export const Pricing = () => {
                                 </div>
                                 <div className="pr-plan-body p-6 flex-1">
                                     <ul className="pr-feat-list space-y-3">
-                                        {plan.feats.map((feat, fi) => (
+                                        {plan.feats.map((feat: string, fi: number) => (
                                             <li key={fi} className="text-[13px] text-white/75 flex gap-2.5 items-start leading-tight group-hover:text-white transition-colors">
                                                 <span className="text-gold font-bold">✓</span>
                                                 {feat}
@@ -59,6 +115,7 @@ export const Pricing = () => {
                             </div>
                         ))}
                     </div>
+
                 </div>
 
                 <div className="pr-note bg-gold/10 border border-gold/40 rounded-2xl p-6 flex items-start gap-4 mb-20 animate-in fade-in duration-1000">
@@ -102,3 +159,4 @@ export const Pricing = () => {
         </div>
     );
 };
+

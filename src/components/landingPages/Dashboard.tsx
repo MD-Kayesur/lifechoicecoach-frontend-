@@ -17,6 +17,7 @@ import { Progress } from "@/components/dashboard/Progress";
 import { DegreePathways } from "@/components/dashboard/DegreePathways";
 import { Settings } from "@/components/dashboard/Settings";
 import { Profile } from "@/components/dashboard/Profile";
+import { Subscription } from "@/components/dashboard/Subscription";
 
 export const Dashboard = () => {
     const router = useRouter();
@@ -32,6 +33,7 @@ export const Dashboard = () => {
             // Mapping for common tabs or direct match
             if (tab === "passport") setSelectedTab("MC Passport");
             else if (tab === "credentials") setSelectedTab("My Credentials");
+            else if (tab === "subscription") setSelectedTab("Subscription");
             else setSelectedTab(tab);
         }
     }, [searchParams]);
@@ -43,6 +45,7 @@ export const Dashboard = () => {
         { icon: '🏅', label: 'My Credentials' },
         { icon: '📈', label: 'Progress' },
         { icon: '🎓', label: 'Degree Pathways' },
+        { icon: '💳', label: 'Subscription' },
         { icon: '⚙️', label: 'Settings' },
         { icon: '👤', label: 'Profile' }
     ];
@@ -71,11 +74,13 @@ export const Dashboard = () => {
             case "My Credentials": return <MyCredentials />;
             case "Progress": return <Progress />;
             case "Degree Pathways": return <DegreePathways />;
-            case "Settings": return <Settings />;
+            case "Subscription": return <Subscription />;
+            case "Settings": return <Settings onTabChange={setSelectedTab} />;
             case "Profile": return <Profile />;
             default: return <Overview />;
         }
     };
+
 
     const userInitials = user?.name ? user.name.split(' ').map((n: string) => n[0]).join('') : (user?.first_name ? user.first_name[0] + (user?.last_name?.[0] || '') : "IK");
     const fullName = user?.name || (user?.first_name ? `${user.first_name} ${user.last_name || ''}` : "Guest User");
