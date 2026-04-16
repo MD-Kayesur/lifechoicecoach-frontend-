@@ -217,6 +217,66 @@ export const Neuroscience = () => {
                     </div>
                 </CommonWrapper>
             </section>
+            {/* Section 4: Learning Loop */}
+            <section className="py-24 relative overflow-hidden bg-[#050a14]">
+                <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+                <CommonWrapper>
+                    <div className="text-center mb-20 space-y-4">
+                        <div className="text-[10px] text-primary font-bold uppercase tracking-[4px]">THE LEARNING LOOP</div>
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white font-cormorant">
+                            This Is What Happens <span className="text-primary italic">Inside Every Competency</span>
+                        </h2>
+                        <p className="text-white/50 text-base md:text-lg max-w-3xl mx-auto font-outfit leading-relaxed">
+                            Each of the 10 Core Competencies within a Micro-Credential follows this learning loop. The loop repeats until competency is proven at 75%. There is no shortcut. There is no skipping ahead.
+                        </p>
+                    </div>
+
+                    <div className="relative mb-24">
+                        {/* Desktop Connector Arrows */}
+                        <div className="hidden lg:flex absolute top-[28px] left-[10%] right-[10%] justify-between items-center z-0">
+                            {[1, 2, 3, 4].map((i) => (
+                                <div key={i} className="text-primary/30 text-2xl">→</div>
+                            ))}
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-12 lg:gap-4 relative z-10 text-center">
+                            {[
+                                { title: "PRE-TEST", icon: "🧪", desc: "The AI checks what the practitioner already knows. No assumptions. Clean baseline." },
+                                { title: "PERSONALIZED TEACHING", icon: "🎯", desc: "Content, language, examples, and depth are matched to this learner's level in real time." },
+                                { title: "FORMATIVE ASSESSMENT", icon: "🔍", desc: "A diagnostic check; not to grade, but to understand what the brain has absorbed and what gaps remain." },
+                                { title: "REINFORCEMENT", icon: "🔄", desc: "Gaps are addressed immediately. The concept is re-taught differently, not repeated the same way." },
+                                { title: "VERIFIED MASTERY", icon: "✅", desc: "75% competency proven. Only then does the practitioner move to the next Core Competency.", badge: "COMPETENT" }
+                            ].map((step, i) => (
+                                <div key={i} className="space-y-6 flex flex-col items-center group">
+                                    <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-3xl shadow-xl group-hover:border-primary/50 transition-all">
+                                        {step.icon}
+                                    </div>
+                                    <div className="space-y-3">
+                                        <h4 className="text-[11px] font-bold text-primary tracking-[2px] uppercase">{step.title}</h4>
+                                        <p className="text-white/40 text-[13px] leading-relaxed max-w-[180px] mx-auto group-hover:text-white/60 transition-colors">{step.desc}</p>
+                                        {step.badge && (
+                                            <div className="pt-2">
+                                                <span className="inline-block px-3 py-1 rounded bg-primary text-[9px] font-bold text-white tracking-[2px] uppercase">
+                                                    {step.badge}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="mt-20 p-8 md:p-12 rounded-[32px] bg-white/[0.03] border border-white/10 relative overflow-hidden max-w-5xl mx-auto group">
+                        <div className="absolute top-0 left-0 p-6 text-primary/10 select-none group-hover:text-primary/20 transition-colors">
+                            <span className="text-8xl font-serif">“</span>
+                        </div>
+                        <p className="text-lg md:text-xl text-white/80 font-outfit leading-relaxed relative z-10 text-center px-4 md:px-12">
+                            This loop is not just a system feature. It mirrors the natural learning cycle of the human brain: <span className="text-white font-bold italic">encounter, process, test, correct, consolidate.</span> Skip any step, and learning becomes shallow. Run all steps, and the learner builds real competency that lasts well beyond the assessment.
+                        </p>
+                    </div>
+                </CommonWrapper>
+            </section>
 
             {/* Section 5: Concept Attainment */}
             <section className="py-24 bg-[#050a14]/50 border-y border-white/5">
