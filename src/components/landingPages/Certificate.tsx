@@ -2,12 +2,37 @@
 
 import { useSearchParams } from "next/navigation";
 import { MCS, DOMAINS } from "@/lib/data";
+import Image from "next/image";
+import certPhoto from "@/assets/images/PHOTO-2026-04-10-12-51-07.jpeg";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { useRef } from "react";
 
 export const Certificate = () => {
     const searchParams = useSearchParams();
     const id = searchParams.get("id") || "01-01";
     const mc = MCS.find(item => item.id === id) || MCS[0];
     const category = DOMAINS.find(d => d.id === mc.cat);
+
+
+const certRef = useRef<HTMLDivElement>(null);
+
+
+
+const handleDownload = async () => {
+    if (!certRef.current) return;
+
+    const canvas = await html2canvas(certRef.current, {
+        scale: 2, // better quality
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("landscape", "px", [canvas.width, canvas.height]);
+    pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+    pdf.save("certificate.pdf");
+};
+
 
     return (
         <div id="page-certificate" className="page active pt-[62px] min-h-screen bg-[#0a1628]">
@@ -25,13 +50,29 @@ export const Certificate = () => {
                     </div>
 
                     {/* Certificate Card */}
-                    <div className="certificate bg-white border-2 border-gold rounded-[4px] relative overflow-hidden shadow-2xl scale-[0.98] origin-left">
+                    <div ref={certRef}  className="cert-recipient-photo   top-10 right-10   border-[1.5px] border-gold rounded-[2px] overflow-hidden  transition-all shadow-sm z-10 hidden md:block">
+                        <Image
+                            src={certPhoto}
+                            alt="Edward Roy Krishnan"
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
+                    {/* <div className="certificate bg-white border-2 border-gold rounded-[4px] relative overflow-hidden shadow-2xl scale-[0.98] origin-left">
                         <div className="cert-ob m-3 border-[1.5px] border-gold rounded-[2px] p-10 md:p-12 relative">
-                            {/* Decorative Corners */}
+                           
                             <div className="cc absolute w-4 h-4 top-[-1px] left-[-1px] border-t-3 border-l-3 border-gold"></div>
                             <div className="cc absolute w-4 h-4 top-[-1px] right-[-1px] border-t-3 border-r-3 border-gold"></div>
                             <div className="cc absolute w-4 h-4 bottom-[-1px] left-[-1px] border-b-3 border-l-3 border-gold"></div>
                             <div className="cc absolute w-4 h-4 bottom-[-1px] right-[-1px] border-b-3 border-r-3 border-gold"></div>
+
+                     
+                            <div className="cert-recipient-photo absolute top-10 right-10 w-[90px] h-[115px] border-[1.5px] border-gold rounded-[2px] overflow-hidden grayscale hover:grayscale-0 transition-all shadow-sm z-10 hidden md:block">
+                                <Image
+                                    src={certPhoto}
+                                    alt="Edward Roy Krishnan"
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
 
                             <div className="cert-hdr text-center pb-6 border-b border-gold/15 mb-8">
                                 <div className="cert-logo-row flex items-center justify-center gap-2 mb-2">
@@ -89,7 +130,7 @@ export const Certificate = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 <aside className="cv-sidebar sticky top-[92px] animate-in fade-in slide-in-from-right-4 duration-700">
@@ -97,6 +138,22 @@ export const Certificate = () => {
                         <div className="cv-t text-[13px] font-bold text-[#0B1F3A] mb-4 flex items-center gap-2">
                             <span>🔒</span> Credential Verification
                         </div>
+
+                        {/* Sidebar Recipeint Photo */}
+                        <div className="cv-profile-box flex items-center gap-4 mb-6 pb-6 border-b border-[#0B1F3A]/5">
+                            <div className="w-[60px] h-[60px] rounded-full border-2 border-gold overflow-hidden bg-gold/5 shrink-0">
+                                <Image
+                                    src={certPhoto}
+                                    alt="Edward Roy Krishnan"
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                            <div>
+                                <div className="text-[14px] font-bold text-[#0B1F3A]">Edward Roy Krishnan</div>
+                                <div className="text-[10px] text-green-600 font-bold uppercase tracking-wider">✓ Verified Identity</div>
+                            </div>
+                        </div>
+
                         <div className="cv-id bg-[#F9F5EE] border border-gold/10 rounded-lg p-3 text-[11.5px] font-mono text-[#1A1A1E] break-all mb-4">
                             IKS-{mc.id}-2026-4201-XKPM7
                         </div>
@@ -118,13 +175,11 @@ export const Certificate = () => {
                         </div>
                     </div>
 
-                    <button className="btn-dl w-full bg-gold text-white font-bold text-[13.5px] py-3 rounded-xl shadow-[0_4px_0_#8a1e27] hover:bg-gold2 hover:translate-y-[2px] hover:shadow-[0_2px_0_#8a1e27] active:shadow-none active:translate-y-[4px] transition-all mb-3">
+                    <button   onClick={handleDownload} className="btn-dl w-full bg-gold text-white font-bold text-[13.5px] py-3 rounded-xl shadow-[0_4px_0_#8a1e27] hover:bg-gold2 hover:translate-y-[2px] hover:shadow-[0_2px_0_#8a1e27] active:shadow-none active:translate-y-[4px] transition-all mb-3">
                         ⬇ Download Certificate (PDF)
                     </button>
-                    <button className="btn-share w-full bg-transparent text-white font-medium text-[13px] py-2.5 rounded-xl border border-gold/25 hover:border-gold hover:text-gold transition-all mb-5">
-                        🔗 Share to IKON SKILLS™ Passport
-                    </button>
-
+                    
+                
                     <div className="note bg-[#F9F5EE] border border-gold/15 rounded-2xl p-4">
                         <div className="text-[12px] font-bold text-[#0B1F3A] mb-2">What this certificate proves</div>
                         <div className="text-[12px] text-[#3D4556] leading-relaxed">
