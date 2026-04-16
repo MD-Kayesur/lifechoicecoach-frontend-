@@ -2,6 +2,9 @@
 
 import CommonWrapper from "@/common/CommonWrapper";
 import { CheckCircle2, ArrowRight, Brain, Target, Zap, Heart, MessageSquare, RefreshCw, Layers, ShieldCheck } from "lucide-react";
+import Image from "next/image";
+import neuralScanImg from "@/assets/images/neural_scan.png";
+import learningLoopImg from "@/assets/images/learning_loop_diagram.png";
 
 export const Neuroscience = () => {
     const principles = [
@@ -108,10 +111,11 @@ export const Neuroscience = () => {
                             {/* Neural Sync Card */}
                             <div className="absolute top-0 right-[-20px] w-[340px] bg-[#0a1122]/90 border border-white/10 backdrop-blur-[12px] p-5 rounded-[24px] animate-f1 z-20 shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
                                 <div className="aspect-[4/3] w-full rounded-[16px] overflow-hidden mb-4 relative">
-                                    <img
-                                        src="/assets/images/neural_scan.png"
+                                    <Image
+                                        src={neuralScanImg}
                                         alt="Neural Activity Scan"
                                         className="object-cover w-full h-full opacity-90 group-hover:scale-110 transition-transform duration-700"
+                                        priority
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a1122] to-transparent opacity-40" />
                                 </div>
@@ -133,8 +137,8 @@ export const Neuroscience = () => {
                             {/* Learning Loop Card */}
                             <div className="absolute bottom-[40px] left-[-30px] w-[260px] bg-[#0a1122]/80 border border-white/5 backdrop-blur-[8px] p-5 rounded-[24px] animate-f2 z-10 shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
                                 <div className="aspect-square w-full rounded-[16px] overflow-hidden mb-4 border border-white/5">
-                                    <img
-                                        src="/assets/images/learning_loop_diagram.png"
+                                    <Image
+                                        src={learningLoopImg}
                                         alt="Learning Loop Diagram"
                                         className="object-cover w-full h-full"
                                     />
