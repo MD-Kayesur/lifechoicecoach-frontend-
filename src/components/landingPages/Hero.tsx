@@ -19,43 +19,42 @@ export const Hero = () => {
              bg-[radial-gradient(circle,rgba(231, 156, 27, 0.13)_0%,transparent_65%)] pointer-events-none" />
             <div className="absolute bottom-[-350px] left-[-200px] w-[1000px] h-[1000px] rounded-full bg-[radial-gradient(circle,rgba(26,58,107,0.5)_0%,transparent_70%)] pointer-events-none" />
 
-            <CommonWrapper className="relative z-10 max-w-[1200px] px-[48px] py-[80px]">
-                <div className="grid lg:grid-cols-[1fr_460px] gap-[72px] items-center">
+            <CommonWrapper className="relative z-10 max-w-[1200px] px-5 md:px-[48px] py-[60px] md:py-[80px]">
+                <div className="grid lg:grid-cols-[1fr_460px] gap-10 md:gap-[72px] items-center">
                     {/* Left content */}
                     <div>
-                        <div className="inline-flex items-center gap-[8px] bg-primary border-none px-[16px] py-[6px] rounded-full mb-[26px] shadow-[0_4px_0_#8a1e27,0_6px_10px_rgba(0,0,0,0.3)]">
-                            <div className="w-[6px] h-[6px] bg-white rounded-full blink" />
-                            <span className="text-[11px] font-bold text-white tracking-[1.6px] uppercase font-mono">
-                                Proof of Skill · 184 Micro-Credentials · ikonskills.ac
+                        <div className="inline-flex items-center gap-[8px] bg-primary border-none p-[6px_14px] md:px-[16px] md:py-[6px] rounded-full mb-[26px] shadow-[0_4px_0_#8a1e27,0_6px_10px_rgba(0,0,0,0.3)] max-w-full">
+                            <div className="w-[6px] h-[6px] bg-white rounded-full blink flex-shrink-0" />
+                            <span className="text-[10px] md:text-[11px] font-bold text-white tracking-[1px] md:tracking-[1.6px] uppercase font-mono truncate">
+                                Proof of Skill · 184 Micro-Credentials
                             </span>
                         </div>
 
-                        <h1 className="font-cormorant font-bold text-[clamp(38px,4.8vw,62px)] leading-[1.08] text-white mb-[22px]">
+                        <h1 className="font-cormorant font-bold text-[clamp(28px,6vw,62px)] leading-[1.1] md:leading-[1.08] text-white mb-[22px]">
                             Skills that are<br />
                             <em className="text-gold2 not-italic">verified, stackable,</em><br />
                             and portable.
                         </h1>
 
-                        <p className="text-[16px] leading-[1.75] text-white/60 max-w-[500px] mb-[36px] font-outfit">
+                        <p className="text-[15px] md:text-[16px] leading-[1.6] md:leading-[1.75] text-white/60 max-w-[500px] mb-[36px] font-outfit">
                             IKON SKILLS™ is the world&apos;s most comprehensive Micro-Credential platform.
                             Each credential proves exactly what you can do — 10 verified competencies, 10 ECTS, instantly stackable toward full degrees.
-                            Quality Assured by European International University, Paris.
                         </p>
 
-                        <div className="flex flex-wrap gap-[14px] mb-[48px]">
+                        <div className="flex flex-col sm:flex-row flex-wrap gap-[14px] mb-[48px]">
                             <button
                                 onClick={() => router.push("/catalog")}
-                                className="bg-primary text-white font-bold text-[14px] px-[28px] py-[13px] rounded-[8px] hover:bg-gold2 transition-all cursor-pointer shadow-[0_6px_0_#8a1e27,0_8px_16px_rgba(0,0,0,0.35)] active:translate-y-[5px] active:shadow-[0_1px_0_#8a1e27] hover:translate-y-[3px] hover:shadow-[0_3px_0_#8a1e27]"
+                                className="bg-primary text-white font-bold text-[14px] px-[24px] md:px-[28px] py-[13px] rounded-[8px] hover:bg-gold2 transition-all cursor-pointer shadow-[0_6px_0_#8a1e27,0_8px_16px_rgba(0,0,0,0.35)] active:translate-y-[5px] active:shadow-[0_1px_0_#8a1e27] hover:translate-y-[3px] hover:shadow-[0_3px_0_#8a1e27] w-full sm:w-auto"
                             >
-                                Explore All 184 Credentials
+                                Explore 184 Credentials
                             </button>
-                            <button className="bg-primary text-white font-bold text-[14px] px-[28px] py-[13px] rounded-[8px] hover:bg-gold2 transition-all cursor-pointer shadow-[0_6px_0_#8a1e27,0_8px_16px_rgba(0,0,0,0.35)] active:translate-y-[5px] active:shadow-[0_1px_0_#8a1e27] hover:translate-y-[3px] hover:shadow-[0_3px_0_#8a1e27]">
+                            <button className="bg-primary text-white font-bold text-[14px] px-[24px] md:px-[28px] py-[13px] rounded-[8px] hover:bg-gold2 transition-all cursor-pointer shadow-[0_6px_0_#8a1e27,0_8px_16px_rgba(0,0,0,0.35)] active:translate-y-[5px] active:shadow-[0_1px_0_#8a1e27] hover:translate-y-[3px] hover:shadow-[0_3px_0_#8a1e27] w-full sm:w-auto">
                                 Enroll Free
                             </button>
                         </div>
 
                         {/* KPI Display */}
-                        <div className="flex gap-[32px]">
+                        <div className="grid grid-cols-2 md:flex gap-x-8 gap-y-10 md:gap-[32px]">
                             {[
                                 { n: "184", l: "Micro-Credentials" },
                                 { n: "10", l: "Domains" },
@@ -63,8 +62,8 @@ export const Hero = () => {
                                 { n: "100%", l: "AI-Assessed" },
                             ].map((kpi) => (
                                 <div key={kpi.l}>
-                                    <div className="font-cormorant text-[34px] font-bold text-gold2 leading-none mb-[4px]">{kpi.n}</div>
-                                    <div className="text-[10.5px] text-white/45 tracking-[1px] uppercase font-mono">{kpi.l}</div>
+                                    <div className="font-cormorant text-[30px] md:text-[34px] font-bold text-gold2 leading-none mb-[4px]">{kpi.n}</div>
+                                    <div className="text-[9.5px] md:text-[10.5px] text-white/45 tracking-[1px] uppercase font-mono">{kpi.l}</div>
                                 </div>
                             ))}
                         </div>
