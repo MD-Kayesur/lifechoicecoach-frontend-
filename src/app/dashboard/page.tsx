@@ -1,9 +1,12 @@
 import { Dashboard } from "@/components/landingPages/Dashboard";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 export default function DashboardPage() {
     return (
-        <main className="min-h-screen bg-[#0a1628]">
-            <Dashboard />
-        </main>
+        <ProtectedRoute>
+            <main className="min-h-screen bg-[#0a1628]">
+                <Dashboard />
+            </main>
+        </ProtectedRoute>
     );
 }

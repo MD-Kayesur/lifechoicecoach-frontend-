@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "@/store/Slices/AuthSlice/authSlice";
 import { useLogoutMutation } from "@/redux/features/auth/authApi";
@@ -20,10 +20,21 @@ import { Profile } from "@/components/dashboard/Profile";
 
 export const Dashboard = () => {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const dispatch = useDispatch();
     const { user } = useSelector((state: RootState) => state.auth);
     const [logoutApi, { isLoading: isLoggingOut }] = useLogoutMutation();
     const [selectedTab, setSelectedTab] = useState("Overview");
+
+    useEffect(() => {
+        const tab = searchParams.get("tab");
+        if (tab) {
+            // Mapping for common tabs or direct match
+            if (tab === "passport") setSelectedTab("MC Passport");
+            else if (tab === "credentials") setSelectedTab("My Credentials");
+            else setSelectedTab(tab);
+        }
+    }, [searchParams]);
 
     const navLinks = [
         { icon: '🏠', label: 'Overview' },

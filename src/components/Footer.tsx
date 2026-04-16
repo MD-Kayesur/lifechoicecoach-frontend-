@@ -32,7 +32,7 @@ export default function Footer() {
                             {[
                                 { name: "Credential Catalog", href: "/catalog" },
                                 { name: "Practitioner Dashboard", href: "/dashboard" },
-                                { name: "MC Passport", href: "/" },
+                                { name: "MC Passport", href: "/dashboard?tab=passport" },
                                 { name: "Credential Pathways", href: "/pathways" },
                                 { name: "Degree Programs", href: "/degrees" }
                             ].map(link => (

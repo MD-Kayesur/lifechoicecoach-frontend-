@@ -1,61 +1,157 @@
 "use client";
 
+import { Award, ShieldCheck, Download, ExternalLink, QrCode, MapPin, Globe } from "lucide-react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+
 export const MCPassport = () => {
+    const { user } = useSelector((state: RootState) => state.auth);
+    const fullName = user?.name || (user?.first_name ? `${user.first_name} ${user.last_name || ""}` : "Edward Krishnan");
+
+    const credentials = [
+        { n: 'AI Prompt Engineer', e: '10 ECTS · EQF 6', d: 'Category 01 · AI & Automation', color: 'text-blue-400' },
+        { n: 'Generative AI Practitioner', e: '10 ECTS · EQF 6', d: 'Category 01 · AI & Automation', color: 'text-purple-400' },
+        { n: 'Responsible AI Practitioner', e: '10 ECTS · EQF 7', d: 'Category 01 · AI & Automation', color: 'text-emerald-400' },
+        { n: 'Data Storytelling Designer', e: '10 ECTS · EQF 6', d: 'Category 02 · Data & Analytics', color: 'text-amber-400' },
+        { n: 'AI Decision Support Analyst', e: '10 ECTS · EQF 7', d: 'Category 02 · Data & Analytics', color: 'text-rose-400' },
+        { n: 'AI Workflow Automation', e: '10 ECTS · EQF 6', d: 'Category 01 · AI & Automation', color: 'text-indigo-400' },
+    ];
+
     return (
-        <div className="animate-in fade-in duration-500">
-            <div className="text-[14.5px] font-bold text-white mb-3 tracking-wide">Digital Micro-Credential Passport</div>
-            <div className="mx-auto max-w-[520px] bg-gradient-to-br from-[#0B1F3A] to-[#0d1a2e] border-2 border-gold/40 rounded-3xl p-8 relative overflow-hidden group shadow-2xl">
-                <div className="absolute top-[-40px] left-[-40px] w-64 h-64 rounded-full bg-radial-gradient from-gold/15 to-transparent pointer-events-none group-hover:scale-125 transition-transform duration-700"></div>
-                <div className="absolute bottom-[-100px] right-[-100px] w-80 h-80 rounded-full bg-radial-gradient from-navy3/30 to-transparent pointer-events-none group-hover:scale-150 transition-transform duration-700"></div>
+        <div className="animate-in fade-in duration-700 space-y-12">
+            <div className="flex justify-between items-end">
+                <div>
+                    <h2 className="text-[24px] font-bold text-white font-cormorant">IKON Digital Passport</h2>
+                    <p className="text-white/40 text-[13px] font-outfit">Verified Practitioner Identity & Credential Vault</p>
+                </div>
+                <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full">
+                    <Globe size={14} className="text-emerald-400" />
+                    <span className="text-[10px] font-mono font-bold text-white uppercase tracking-widest">Global Validity · EQF/ECTS</span>
+                </div>
+            </div>
+
+            {/* Passport Identity Card */}
+            <div className="mx-auto max-w-[560px] bg-gradient-to-br from-[#0B1F3A] via-[#0d1a2e] to-[#0B1F3A] border-[3px] border-gold/40 rounded-[32px] p-8 relative overflow-hidden group shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
+                {/* Decorative background elements */}
+                <div className="absolute top-[-50px] left-[-50px] w-80 h-80 rounded-full bg-[radial-gradient(circle,rgba(203,45,57,0.15)_0%,transparent_70%)] pointer-events-none group-hover:scale-110 transition-transform duration-1000"></div>
+                <div className="absolute bottom-[-80px] right-[-80px] w-96 h-96 rounded-full bg-[radial-gradient(circle,rgba(26,58,107,0.4)_0%,transparent_70%)] pointer-events-none group-hover:scale-125 transition-transform duration-1000"></div>
 
                 <div className="flex justify-between items-start mb-10 relative z-10">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-gold flex items-center justify-center font-bold text-white font-serif text-[18px]">I</div>
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center font-bold text-white font-serif text-[22px] shadow-[0_10px_20px_rgba(203,45,57,0.4)]">I</div>
                         <div>
-                            <div className="text-white font-serif font-bold text-[18px]">IKON SKILLS</div>
-                            <div className="text-gold3 text-[9px] font-mono font-bold tracking-widest uppercase">Verified IQ Passport</div>
+                            <div className="text-white font-serif font-bold text-[20px] tracking-tight">IKON SKILLS<sup className="text-[10px] text-primary align-super">™</sup></div>
+                            <div className="text-gold3 text-[10px] font-mono font-bold tracking-[2px] uppercase flex items-center gap-2">
+                                <ShieldCheck size={12} />
+                                Verified Practitioner
+                            </div>
                         </div>
                     </div>
-                    <div className="text-[24px]">🛡️</div>
+                    <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+                        <QrCode size={24} className="text-white/20" />
+                    </div>
                 </div>
 
-                <div className="flex gap-6 mb-12 relative z-10">
-                    <div className="w-[120px] h-[150px] bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-[48px] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500">
-                        👨‍💼
+                <div className="flex gap-8 mb-12 relative z-10 items-center">
+                    <div className="relative">
+                        <div className="w-[140px] h-[170px] bg-white/5 border-2 border-white/10 rounded-2xl flex items-center justify-center text-[64px] overflow-hidden group-hover:border-gold/30 transition-all duration-500 shadow-inner">
+                            {user?.role === "IKON Practitioner" ? "👨‍🎓" : "👨‍💼"}
+                        </div>
+                        <div className="absolute -bottom-3 -right-3 w-10 h-10 rounded-full bg-primary border-4 border-[#0B1F3A] flex items-center justify-center shadow-lg">
+                            <Award size={18} className="text-white" />
+                        </div>
                     </div>
-                    <div className="flex-1 space-y-4">
-                        <div>
-                            <div className="text-white/40 text-[9px] font-mono font-bold uppercase tracking-wider mb-0.5">Holder</div>
-                            <div className="text-white text-[17px] font-bold">Edward Krishnan</div>
+                    <div className="flex-1 space-y-5">
+                        <div className="border-b border-white/10 pb-2">
+                            <div className="text-white/40 text-[9px] font-mono font-bold uppercase tracking-[2px] mb-1">Holder Name</div>
+                            <div className="text-white text-[19px] font-bold font-outfit">{fullName}</div>
                         </div>
-                        <div>
-                            <div className="text-white/40 text-[9px] font-mono font-bold uppercase tracking-wider mb-0.5">Passport ID</div>
-                            <div className="text-gold text-[12px] font-mono font-bold">IKON-MC-9221-EX09</div>
-                        </div>
-                        <div>
-                            <div className="text-white/40 text-[9px] font-mono font-bold uppercase tracking-wider mb-0.5">Verified ECTS</div>
-                            <div className="text-white text-[15px] font-bold">60 ECTS · EQF 6/7</div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <div className="text-white/40 text-[9px] font-mono font-bold uppercase tracking-[2px] mb-1">Passport ID</div>
+                                <div className="text-gold text-[13px] font-mono font-bold">IKON-MC-{Math.floor(Math.random() * 9000) + 1000}-EX09</div>
+                            </div>
+                            <div>
+                                <div className="text-white/40 text-[9px] font-mono font-bold uppercase tracking-[2px] mb-1">Verified Credits</div>
+                                <div className="text-white text-[14px] font-bold font-outfit">60 ECTS · EQF 6/7</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-10 relative z-10">
                     {[
-                        { l: 'Issued By', v: 'EIU-Paris' },
-                        { l: 'Quality Assured', v: 'ASIC Premier' },
-                        { l: 'Last Updated', v: '05 APR 2026' },
-                        { l: 'Competencies', v: '60 Verified' },
+                        { l: 'Accreditation', v: 'EIU-Paris' },
+                        { l: 'Quality Assured', v: 'ASIC Premier · UK' },
+                        { l: 'Issued At', v: 'Kuala Lumpur, MY' },
+                        { l: 'Validity', v: 'Indefinite / Permanent' },
                     ].map((item, i) => (
-                        <div key={i} className="bg-white/5 border border-white/10 rounded-lg p-3">
-                            <div className="text-white/30 text-[8px] font-mono uppercase mb-0.5 tracking-widest">{item.l}</div>
-                            <div className="text-white/80 text-[10.5px] font-bold truncate">{item.v}</div>
+                        <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-3.5 backdrop-blur-md">
+                            <div className="text-white/30 text-[8.5px] font-mono uppercase mb-1 tracking-[1.5px]">{item.l}</div>
+                            <div className="text-white/80 text-[11px] font-bold truncate tracking-wide">{item.v}</div>
                         </div>
                     ))}
                 </div>
 
                 <div className="relative z-10 pt-6 border-t border-gold/20 flex justify-between items-center">
-                    <div className="text-[28px]">📜</div>
-                    <button className="bg-gold text-white text-[11px] font-bold px-6 py-2 rounded-xl shadow-lg border border-gold/20 hover:bg-gold2 transition-all">Digital Validation Link →</button>
+                    <div className="flex items-center gap-2 text-white/40 text-[10px] font-mono uppercase tracking-widest">
+                        <MapPin size={12} className="text-primary" />
+                        Status: Active
+                    </div>
+                    <button className="bg-primary text-white text-[12px] font-bold px-8 py-3 rounded-xl shadow-[0_10px_20px_rgba(203,45,57,0.3)] hover:bg-gold2 transition-all transform hover:-translate-y-1 active:scale-95 border border-primary/20">
+                        Share Passport Link
+                    </button>
+                </div>
+            </div>
+
+            {/* Verified Stamps Gallery */}
+            <div className="space-y-6 pt-4">
+                <div className="flex items-center gap-4">
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/10"></div>
+                    <div className="text-[12px] font-mono font-bold text-gold3 uppercase tracking-[4px]">Verified Passport Stamps</div>
+                    <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/10"></div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {credentials.map((cred, i) => (
+                        <div key={i} className="bg-[#0B1F3A]/40 border border-white/10 rounded-[28px] p-6 relative group overflow-hidden hover:border-gold/40 transition-all duration-500 backdrop-blur-sm">
+                            <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:opacity-[0.15] transition-opacity duration-700">
+                                <ShieldCheck size={80} />
+                            </div>
+
+                            <div className="flex items-start justify-between mb-8">
+                                <div className={`w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center ${cred.color} shadow-inner`}>
+                                    <Award size={30} />
+                                </div>
+                                <div className="p-badge inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                    <span className="text-[9px] font-bold text-emerald-400 font-mono tracking-widest uppercase">Verified</span>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4 mb-8">
+                                <h4 className="text-white text-[17px] font-bold leading-tight font-outfit h-[42px] line-clamp-2">{cred.n}</h4>
+                                <div className="space-y-2">
+                                    <div className="text-white/40 text-[10px] font-mono tracking-widest uppercase">{cred.d}</div>
+                                    <div className="text-gold/80 text-[11.5px] font-bold flex items-center gap-2">
+                                        <div className="w-4 h-px bg-gold/40"></div>
+                                        {cred.e}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 pt-6 border-t border-white/5">
+                                <button className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold py-2.5 rounded-xl transition-all font-outfit">
+                                    <Download size={14} />
+                                    Certificate
+                                </button>
+                                <button className="flex items-center justify-center gap-2 bg-white/5 hover:bg-primary/20 text-white/70 hover:text-white text-[11px] font-bold py-2.5 rounded-xl border border-white/10 hover:border-primary/40 transition-all font-outfit">
+                                    <ExternalLink size={14} />
+                                    Verify
+                                </button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
