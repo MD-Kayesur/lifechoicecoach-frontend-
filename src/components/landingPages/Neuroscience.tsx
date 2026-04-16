@@ -73,31 +73,88 @@ export const Neuroscience = () => {
                 <div className="absolute bottom-[-200px] left-[-100px] w-[900px] h-[900px] rounded-full bg-[radial-gradient(circle,rgba(26,58,107,0.3)_0%,transparent_70%)] pointer-events-none" />
 
                 <CommonWrapper className="relative z-10 w-full max-w-[1200px] px-5 md:px-[48px] py-[80px]">
-                    <div className="space-y-8">
-                        <div>
-                            <div className="inline-flex items-center gap-[8px] bg-primary border-none px-[16px] py-[6px] rounded-full mb-[26px] shadow-[0_4px_0_#8a1e27,0_6px_10px_rgba(0,0,0,0.35)]">
-                                <div className="w-[6px] h-[6px] bg-white rounded-full blink" />
-                                <span className="text-[11px] font-bold text-white tracking-[1.6px] uppercase font-mono">
-                                    IKON SKILLS™ · NEUROSCIENCE OF LEARNING
-                                </span>
+                    <div className="grid lg:grid-cols-[1fr_420px] gap-10 md:gap-[72px] items-center">
+                        {/* Left content */}
+                        <div className="space-y-8">
+                            <div>
+                                <div className="inline-flex items-center gap-[8px] bg-primary border-none px-[16px] py-[6px] rounded-full mb-[26px] shadow-[0_4px_0_#8a1e27,0_6px_10px_rgba(0,0,0,0.35)]">
+                                    <div className="w-[6px] h-[6px] bg-white rounded-full blink" />
+                                    <span className="text-[11px] font-bold text-white tracking-[1.6px] uppercase font-mono">
+                                        IKON SKILLS™ · NEUROSCIENCE OF LEARNING
+                                    </span>
+                                </div>
+                                <h1 className="font-cormorant font-bold text-[clamp(38px,4.5vw,68px)] leading-[1.08] text-white mb-[28px]">
+                                    Every brain <br />
+                                    <span className="text-gold2 italic italic">is different.</span> <br />
+                                    <span className="text-white">Every learner gets proof.</span>
+                                </h1>
                             </div>
-                            <h1 className="font-cormorant font-bold text-[clamp(38px,4.5vw,68px)] leading-[1.08] text-white mb-[28px]">
-                                Every brain <br />
-                                <span className="text-gold2 italic italic">is different.</span> <br />
-                                <span className="text-white">Every learner gets proof.</span>
-                            </h1>
+                            <p className="text-[17px] leading-[1.8] text-white/60 max-w-[650px] font-outfit">
+                                Ten IKON Practitioners. One Micro-Credential. Ten completely personalized journeys, each ending at the same destination: <span className="text-white font-semibold underline decoration-primary/40 underline-offset-4">proven, verified competency.</span>
+                            </p>
+                            <div className="pt-4">
+                                <a
+                                    href="#science"
+                                    className="inline-flex items-center gap-2 text-primary font-bold tracking-[2px] uppercase text-xs border-b border-primary/30 pb-1 hover:border-primary transition-all group"
+                                >
+                                    Read the science below
+                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                </a>
+                            </div>
                         </div>
-                        <p className="text-[17px] leading-[1.8] text-white/60 max-w-[650px] font-outfit">
-                            Ten IKON Practitioners. One Micro-Credential. Ten completely personalized journeys, each ending at the same destination: <span className="text-white font-semibold underline decoration-primary/40 underline-offset-4">proven, verified competency.</span>
-                        </p>
-                        <div className="pt-4">
-                            <a
-                                href="#science"
-                                className="inline-flex items-center gap-2 text-primary font-bold tracking-[2px] uppercase text-xs border-b border-primary/30 pb-1 hover:border-primary transition-all group"
-                            >
-                                Read the science below
-                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                            </a>
+
+                        {/* Right side - Floating Proof Cards */}
+                        <div className="relative h-[520px] hidden lg:block">
+                            {/* Neural Sync Card */}
+                            <div className="absolute top-0 right-[-20px] w-[340px] bg-[#0a1122]/90 border border-white/10 backdrop-blur-[12px] p-5 rounded-[24px] animate-f1 z-20 shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
+                                <div className="aspect-[4/3] w-full rounded-[16px] overflow-hidden mb-4 relative">
+                                    <img
+                                        src="/assets/images/neural_scan.png"
+                                        alt="Neural Activity Scan"
+                                        className="object-cover w-full h-full opacity-90 group-hover:scale-110 transition-transform duration-700"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a1122] to-transparent opacity-40" />
+                                </div>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center text-[10px] font-mono tracking-widest text-[#49cbc7] uppercase">
+                                        <span>Neural Response Mapping</span>
+                                        <span>V.4.2</span>
+                                    </div>
+                                    <h3 className="text-white text-lg font-bold font-outfit leading-tight">Dynamic Cognitive Baseline established</h3>
+                                    <div className="flex gap-2">
+                                        <div className="h-1 flex-1 bg-white/10 rounded-full overflow-hidden">
+                                            <div className="h-full bg-[#49cbc7] w-[78%]" />
+                                        </div>
+                                        <span className="text-[10px] text-white/40 font-mono">78% Sync</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Learning Loop Card */}
+                            <div className="absolute bottom-[40px] left-[-30px] w-[260px] bg-[#0a1122]/80 border border-white/5 backdrop-blur-[8px] p-5 rounded-[24px] animate-f2 z-10 shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
+                                <div className="aspect-square w-full rounded-[16px] overflow-hidden mb-4 border border-white/5">
+                                    <img
+                                        src="/assets/images/learning_loop_diagram.png"
+                                        alt="Learning Loop Diagram"
+                                        className="object-cover w-full h-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <div className="text-[9px] font-mono tracking-widest text-[#e04d2e] uppercase font-bold">Closed Loop Assessment</div>
+                                    <h3 className="text-white/90 text-sm font-bold font-outfit">Self-Correcting <br />Neural Pathways</h3>
+                                </div>
+                            </div>
+
+                            {/* Tiny Verification Badge */}
+                            <div className="absolute top-[80px] left-[20px] p-3 px-4 rounded-[16px] bg-[#1a7a72]/20 border border-[#1a7a72]/30 backdrop-blur-[6px] animate-f3 z-30 flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-[#1a7a72] flex items-center justify-center text-white shadow-[0_0_15px_rgba(26,122,114,0.5)]">
+                                    <CheckCircle2 size={16} />
+                                </div>
+                                <div>
+                                    <div className="text-[8px] font-mono text-white/40 uppercase">Verified</div>
+                                    <div className="text-[11px] font-bold text-white font-outfit">Competency Proven</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </CommonWrapper>
