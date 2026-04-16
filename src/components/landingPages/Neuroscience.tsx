@@ -72,29 +72,33 @@ export const Neuroscience = () => {
                  bg-[radial-gradient(circle,rgba(203,45,57,0.1)_0%,transparent_65%)] pointer-events-none" />
                 <div className="absolute bottom-[-200px] left-[-100px] w-[900px] h-[900px] rounded-full bg-[radial-gradient(circle,rgba(26,58,107,0.3)_0%,transparent_70%)] pointer-events-none" />
 
-                <CommonWrapper className="relative z-10 max-w-[1200px] px-[48px] py-[80px]">
-                    <div className="max-w-[850px]">
-                        <div className="inline-flex items-center gap-[8px] bg-primary border-none px-[16px] py-[6px] rounded-full mb-[26px] shadow-[0_4px_0_#8a1e27,0_6px_10px_rgba(0,0,0,0.35)]">
-                            <div className="w-[6px] h-[6px] bg-white rounded-full blink" />
-                            <span className="text-[11px] font-bold text-white tracking-[1.6px] uppercase font-mono">
-                                IKON SKILLS™ · NEUROSCIENCE OF LEARNING
-                            </span>
+                <CommonWrapper className="relative z-10 w-full max-w-[1200px] px-[48px] py-[80px]">
+                    <div className="space-y-8">
+                        <div>
+                            <div className="inline-flex items-center gap-[8px] bg-primary border-none px-[16px] py-[6px] rounded-full mb-[26px] shadow-[0_4px_0_#8a1e27,0_6px_10px_rgba(0,0,0,0.35)]">
+                                <div className="w-[6px] h-[6px] bg-white rounded-full blink" />
+                                <span className="text-[11px] font-bold text-white tracking-[1.6px] uppercase font-mono">
+                                    IKON SKILLS™ · NEUROSCIENCE OF LEARNING
+                                </span>
+                            </div>
+                            <h1 className="font-cormorant font-bold text-[clamp(38px,4.5vw,68px)] leading-[1.08] text-white mb-[28px]">
+                                Every brain <br />
+                                <span className="text-gold2 italic italic">is different.</span> <br />
+                                <span className="text-white">Every learner gets proof.</span>
+                            </h1>
                         </div>
-                        <h1 className="font-cormorant font-bold text-[clamp(38px,4.8vw,72px)] leading-[1.08] text-white mb-[28px]">
-                            Every brain <br />
-                            <span className="text-gold2 italic italic">is different.</span> <br />
-                            <span className="text-white">Every learner gets proof.</span>
-                        </h1>
-                        <p className="text-[17px] leading-[1.8] text-white/60 max-w-[650px] mb-[42px] font-outfit">
+                        <p className="text-[17px] leading-[1.8] text-white/60 max-w-[650px] font-outfit">
                             Ten IKON Practitioners. One Micro-Credential. Ten completely personalized journeys, each ending at the same destination: <span className="text-white font-semibold underline decoration-primary/40 underline-offset-4">proven, verified competency.</span>
                         </p>
-                        <a
-                            href="#science"
-                            className="inline-flex items-center gap-2 text-primary font-bold tracking-[2px] uppercase text-xs border-b border-primary/30 pb-1 hover:border-primary transition-all group"
-                        >
-                            Read the science below
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </a>
+                        <div className="pt-4">
+                            <a
+                                href="#science"
+                                className="inline-flex items-center gap-2 text-primary font-bold tracking-[2px] uppercase text-xs border-b border-primary/30 pb-1 hover:border-primary transition-all group"
+                            >
+                                Read the science below
+                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </a>
+                        </div>
                     </div>
                 </CommonWrapper>
             </section>
