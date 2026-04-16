@@ -12,17 +12,17 @@ export function Navbar() {
   const pathname = usePathname();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
-    const navLinks = [
-        { name: "Home", href: "/", isSection: true, sectionId: "home" },
-        { name: "Credential Catalog", href: "/catalog", isSection: false },
-        { name: "Sample MC", href: "/sample-mc", isSection: false },
-        { name: "Neuroscience", href: "/neuroscience", isSection: false },
-        { name: "Sample Certificate", href: "/certificate", isSection: false },
-        { name: "Dashboard", href: "/dashboard", isSection: false },
-        { name: "Degree Programs", href: "/degrees", isSection: false },
-        { name: "Credential Pathways", href: "/pathways", isSection: false },
-        { name: "Pricing", href: "/pricing", isSection: false },
-    ];
+  const navLinks = [
+    { name: "Home", href: "/", isSection: true, sectionId: "home" },
+    { name: "Credential Catalog", href: "/catalog", isSection: false },
+    { name: "Sample MC", href: "/sample-mc", isSection: false },
+    { name: "Neuroscience", href: "/neuroscience", isSection: false },
+    { name: "Sample Certificate", href: "/certificate", isSection: false },
+    { name: "Dashboard", href: "/dashboard", isSection: false },
+    { name: "Degree Programs", href: "/degrees", isSection: false },
+    { name: "Credential Pathways", href: "/pathways", isSection: false },
+    { name: "Pricing", href: "/pricing", isSection: false },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,10 +48,10 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-[200] h-[62px] flex items-center justify-between px-4 md:px-[32px] transition-all duration-300 border-b border-[rgba(196,136,14,0.2)] ${
+      className={`fixed top-0 left-0 right-0 z-200 h-[62px] flex items-center justify-between px-4 md:px-[32px] transition-all duration-300 border-b border-[rgba(196,136,14,0.2)] ${
         scrolled
-          ? "bg-[rgba(11,31,58,0.97)] backdrop-blur-[16px]"
-          : "bg-[rgba(11,31,58,0.8)] backdrop-blur-[8px]"
+          ? "bg-[rgba(11,31,58,0.97)] backdrop-blur-lg"
+          : "bg-[rgba(11,31,58,0.8)] backdrop-blur-sm"
       }`}
     >
       {/* Brand */}
@@ -135,7 +135,7 @@ export function Navbar() {
 
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="xl:hidden fixed top-[62px] left-0 right-0 bg-[rgba(11,31,58,0.98)] backdrop-blur-[24px] border-b border-[rgba(196,136,14,0.15)] py-6 px-5 flex flex-col gap-1 transition-all animate-in slide-in-from-top-2 duration-300">
+        <div className="xl:hidden fixed top-[62px] left-0 right-0 bg-[rgba(11,31,58,0.98)] backdrop-blur-xl border-b border-[rgba(196,136,14,0.15)] py-6 px-5 flex flex-col gap-1 transition-all animate-in slide-in-from-top-2 duration-300">
           {navLinks.map((link) => (
             <Link
               key={link.name}
