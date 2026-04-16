@@ -35,7 +35,7 @@ export const IntegrityEngine = () => {
                         }
                     ].map((card, i) => (
                         <div key={i} className="p-12 rounded-[28px] bg-white/5 border border-white/10 space-y-8 relative group hover:border-primary/40 transition-all backdrop-blur-[6px]">
-                            <div className="text-6xl font-bold text-primary/5 absolute top-8 left-10 group-hover:text-primary/10 transition-colors font-cormorant">{card.id}</div>
+                            <div className="text-6xl font-bold text-primary/20 absolute top-8 left-10 group-hover:text-primary/30 transition-colors font-cormorant">{card.id}</div>
                             <div className="space-y-4 pt-12">
                                 <h3 className="text-[22px] font-bold text-white font-outfit">{card.title}</h3>
                                 <p className="text-white/60 leading-[1.75] font-outfit text-[15px]">{card.desc}</p>

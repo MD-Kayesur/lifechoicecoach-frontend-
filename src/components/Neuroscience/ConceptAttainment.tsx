@@ -38,7 +38,7 @@ export const ConceptAttainment = () => {
                         }
                     ].map((card, i) => (
                         <div key={i} className="p-10 rounded-[24px] bg-white/5 border border-white/10 space-y-6 hover:border-primary/40 transition-all group backdrop-blur-[6px]">
-                            <div className="text-4xl font-bold text-primary/10 group-hover:text-primary/20 transition-colors font-mono">{card.id}</div>
+                            <div className="text-4xl font-bold text-primary/20 group-hover:text-primary/30 transition-colors font-mono">{card.id}</div>
                             <div className="space-y-4">
                                 <h3 className="text-[19px] font-bold text-white uppercase tracking-tight font-outfit">{card.title}</h3>
                                 <p className="text-white/60 text-[15px] leading-relaxed font-outfit">{card.desc}</p>
