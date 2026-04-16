@@ -16,6 +16,7 @@ export function Navbar() {
         { name: "Home", href: "/", isSection: true, sectionId: "home" },
         { name: "Credential Catalog", href: "/catalog", isSection: false },
         { name: "Sample MC", href: "/sample-mc", isSection: false },
+        { name: "Neuroscience", href: "/neuroscience", isSection: false },
         { name: "Sample Certificate", href: "/certificate", isSection: false },
         { name: "Dashboard", href: "/dashboard", isSection: false },
         { name: "Degree Programs", href: "/degrees", isSection: false },
