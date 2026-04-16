@@ -157,9 +157,10 @@ export const CredentialDetail = () => {
                             </div>
                         </div>
 
-                        <button className="w-full bg-gold text-white font-bold text-[13.5px] py-3 rounded-xl shadow-[0_4px_0_#9a7e3a] hover:bg-gold2 hover:translate-y-[1px] hover:shadow-[0_3px_0_#9a7e3a] active:shadow-none active:translate-y-[4px] transition-all mb-3 text-center">
+                        <button onClick={() => router.push('/pricing#plans')} className="w-full bg-gold text-white font-bold text-[13.5px] py-3 rounded-xl shadow-[0_4px_0_#9a7e3a] hover:bg-gold2 hover:translate-y-[1px] hover:shadow-[0_3px_0_#9a7e3a] active:shadow-none active:translate-y-[4px] transition-all mb-3 text-center">
                             Enroll as Practitioner
                         </button>
+
                         <button className="w-full bg-white/10 text-white/85 font-medium text-[13px] py-2.5 rounded-xl border border-white/20 hover:bg-white/15 hover:text-white transition-all">
                             View Sample Certificate
                         </button>

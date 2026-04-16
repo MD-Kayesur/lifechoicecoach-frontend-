@@ -76,12 +76,13 @@ export const Pricing = () => {
             </section>
 
             <div className="pr-body max-w-[1200px] mx-auto px-8 md:px-12 py-12 md:py-16">
-                <div className="mb-12">
+                <div id="plans" className="mb-12">
                     <div className="pr-section-label text-[11px] font-bold tracking-[2px] uppercase text-gold font-mono mb-2">Section 1.1</div>
                     <h2 className="pr-section-h font-serif text-[28px] md:text-[34px] font-bold text-white mb-2 leading-tight">Consumer Pricing Reference</h2>
                     <p className="pr-section-sub text-[14.5px] text-white/60 leading-relaxed max-w-[700px] mb-8">
                         The following retail plans define the baseline pricing for individual IKON Practitioners and serve as the reference point for institutional pricing.
                     </p>
+
 
                     <div className="pr-plans-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
                         {plans.map((plan: any, i: number) => (
