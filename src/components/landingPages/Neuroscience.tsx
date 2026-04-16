@@ -62,27 +62,27 @@ export const Neuroscience = () => {
     return (
         <div className="min-h-screen pt-[62px] bg-[#020617]">
             {/* Hero Section */}
-            <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+            <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-transparent">
                 {/* Background Grid & Effects */}
-                <div className="absolute inset-0 pointer-events-none opacity-30"
+                <div className="absolute inset-0 pointer-events-none opacity-40"
                     style={{
                         backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)`,
                         backgroundSize: '4rem 4rem',
                         maskImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%)'
                     }}
                 />
-                <div className="absolute top-[-150px] right-[-150px] w-[900px] h-[900px] rounded-full
-                 bg-[radial-gradient(circle,rgba(203,45,57,0.1)_0%,transparent_65%)] pointer-events-none" />
-                <div className="absolute bottom-[-200px] left-[-100px] w-[900px] h-[900px] rounded-full bg-[radial-gradient(circle,rgba(26,58,107,0.3)_0%,transparent_70%)] pointer-events-none" />
+                <div className="absolute top-[-150px] right-[-150px] w-[1000px] h-[1000px] rounded-full
+                 bg-[radial-gradient(circle,rgba(231, 156, 27, 0.13)_0%,transparent_65%)] pointer-events-none" />
+                <div className="absolute bottom-[-350px] left-[-200px] w-[1000px] h-[1000px] rounded-full bg-[radial-gradient(circle,rgba(26,58,107,0.5)_0%,transparent_70%)] pointer-events-none" />
 
                 <CommonWrapper className="relative z-10 w-full max-w-[1200px] px-5 md:px-[48px] py-[80px]">
                     <div className="grid lg:grid-cols-[1fr_420px] gap-10 md:gap-[72px] items-center">
                         {/* Left content */}
-                        <div className="space-y-8">
+                        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 ease-in-out">
                             <div>
-                                <div className="inline-flex items-center gap-[8px] bg-primary border-none px-[16px] py-[6px] rounded-full mb-[26px] shadow-[0_4px_0_#8a1e27,0_6px_10px_rgba(0,0,0,0.35)]">
-                                    <div className="w-[6px] h-[6px] bg-white rounded-full blink" />
-                                    <span className="text-[11px] font-bold text-white tracking-[1.6px] uppercase font-mono">
+                                <div className="inline-flex items-center gap-[8px] bg-primary border-none p-[6px_14px] md:px-[16px] md:py-[6px] rounded-full mb-[26px] shadow-[0_4px_0_#8a1e27,0_6px_10px_rgba(0,0,0,0.3)] max-w-full">
+                                    <div className="w-[6px] h-[6px] bg-white rounded-full blink flex-shrink-0" />
+                                    <span className="text-[10px] md:text-[11px] font-bold text-white tracking-[1px] md:tracking-[1.6px] uppercase font-mono truncate">
                                         IKON SKILLS™ · NEUROSCIENCE OF LEARNING
                                     </span>
                                 </div>
@@ -95,21 +95,20 @@ export const Neuroscience = () => {
                             <p className="text-[17px] leading-[1.8] text-white/60 max-w-[650px] font-outfit">
                                 Ten IKON Practitioners. One Micro-Credential. Ten completely personalized journeys, each ending at the same destination: <span className="text-white font-semibold underline decoration-primary/40 underline-offset-4">proven, verified competency.</span>
                             </p>
-                            <div className="pt-4">
+                            <div className="pt-4 flex items-center gap-[14px]">
                                 <a
                                     href="#science"
-                                    className="inline-flex items-center gap-2 text-primary font-bold tracking-[2px] uppercase text-xs border-b border-primary/30 pb-1 hover:border-primary transition-all group"
+                                    className="bg-primary text-white font-bold text-[14px] px-[24px] md:px-[28px] py-[13px] rounded-[8px] hover:bg-gold2 transition-all cursor-pointer shadow-[0_6px_0_#8a1e27,0_8px_16px_rgba(0,0,0,0.35)] active:translate-y-[5px] active:shadow-[0_1px_0_#8a1e27] hover:translate-y-[3px] hover:shadow-[0_3px_0_#8a1e27] w-full sm:w-auto text-center"
                                 >
-                                    Read the science below
-                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                    Read Science Below
                                 </a>
                             </div>
                         </div>
 
                         {/* Right side - Floating Proof Cards */}
-                        <div className="relative h-[520px] hidden lg:block">
+                        <div className="relative h-[520px] hidden lg:block animate-in fade-in slide-in-from-right-8 duration-1000 delay-300">
                             {/* Neural Sync Card */}
-                            <div className="absolute top-0 right-[-20px] w-[340px] bg-[#0a1122]/90 border border-white/10 backdrop-blur-[12px] p-5 rounded-[24px] animate-f1 z-20 shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
+                            <div className="absolute top-0 right-[-80px] w-[340px] bg-[#0a1122]/90 border border-white/10 backdrop-blur-[12px] p-5 rounded-[24px] animate-f1 z-20 shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
                                 <div className="aspect-[4/3] w-full rounded-[16px] overflow-hidden mb-4 relative">
                                     <Image
                                         src={neuralScanImg}
@@ -135,7 +134,7 @@ export const Neuroscience = () => {
                             </div>
 
                             {/* Learning Loop Card */}
-                            <div className="absolute bottom-[40px] left-[-30px] w-[260px] bg-[#0a1122]/80 border border-white/5 backdrop-blur-[8px] p-5 rounded-[24px] animate-f2 z-10 shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
+                            <div className="absolute bottom-[40px] left-[-10px] w-[260px] bg-[#0a1122]/80 border border-white/5 backdrop-blur-[8px] p-5 rounded-[24px] animate-f2 z-10 shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
                                 <div className="aspect-square w-full rounded-[16px] overflow-hidden mb-4 border border-white/5">
                                     <Image
                                         src={learningLoopImg}
