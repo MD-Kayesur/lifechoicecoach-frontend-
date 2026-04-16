@@ -12,16 +12,17 @@ export function Navbar() {
   const pathname = usePathname();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
-  const navLinks = [
-    { name: "Home", href: "/", isSection: true, sectionId: "home" },
-    { name: "Credential Catalog", href: "/catalog", isSection: false },
-    { name: "Sample MC", href: "/sample-mc", isSection: false },
-    { name: "Sample Certificate", href: "/certificate", isSection: false },
-    { name: "Dashboard", href: "/dashboard", isSection: false },
-    { name: "Degree Programs", href: "/degrees", isSection: false },
-    { name: "Credential Pathways", href: "/pathways", isSection: false },
-    { name: "Pricing", href: "/pricing", isSection: false },
-  ];
+    const navLinks = [
+        { name: "Home", href: "/", isSection: true, sectionId: "home" },
+        { name: "Credential Catalog", href: "/catalog", isSection: false },
+        { name: "Sample MC", href: "/sample-mc", isSection: false },
+        { name: "Neuroscience", href: "/neuroscience", isSection: false },
+        { name: "Sample Certificate", href: "/certificate", isSection: false },
+        { name: "Dashboard", href: "/dashboard", isSection: false },
+        { name: "Degree Programs", href: "/degrees", isSection: false },
+        { name: "Credential Pathways", href: "/pathways", isSection: false },
+        { name: "Pricing", href: "/pricing", isSection: false },
+    ];
 
   useEffect(() => {
     const handleScroll = () => {
