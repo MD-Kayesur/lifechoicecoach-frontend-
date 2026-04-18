@@ -13,9 +13,14 @@ export const Features = () => {
     const [lastScrollY, setLastScrollY] = useState(0);
     const cardsSectionRef = useRef<HTMLDivElement>(null);
 
-    // Scroll tracking for filters bar visibility - only active when viewing cards
+    // Scroll tracking for filters bar visibility - only active when viewing cards on desktop
     useEffect(() => {
         const handleScroll = () => {
+            if (window.innerWidth < 1024) {
+                setIsVisible(true);
+                return;
+            }
+
             const currentScrollY = window.scrollY;
             const threshold = cardsSectionRef.current ? cardsSectionRef.current.offsetTop - 150 : 400;
 
@@ -104,7 +109,7 @@ export const Features = () => {
             </div>
 
             {/* Filters Bar */}
-            <div className={`filters-bar bg-[#0d1a2e] border-b border-white/10 sticky top-[62px] z-50 shadow-xl px-6 md:px-12 transition-all duration-300 ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}`}>
+            <div className={`filters-bar bg-[#0d1a2e] border-b border-white/10 lg:sticky top-[62px] z-[100] shadow-xl px-6 md:px-12 transition-all duration-300 ${isVisible ? 'translate-y-0 opacity-100' : 'lg:-translate-y-full lg:opacity-0 pointer-events-none'}`}>
                 <div className="filters-in max-w-[1200px] mx-auto py-3.5 flex flex-wrap items-center gap-4">
                     {/* Search Field */}
                     <div className="sw flex-[2] min-w-[200px] flex items-center gap-3 bg-white/5 border-1.5 border-white/15 rounded-lg px-3.5 py-2 group hover:border-gold/40 transition-all">
