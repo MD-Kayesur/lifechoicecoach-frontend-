@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useGetLessonCompetenciesQuery } from "@/redux/features/lesson/lessonCompetenciesApi";
 
@@ -9,6 +9,31 @@ export const Features = () => {
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [activeDomain, setActiveDomain] = useState<number | "all">("all");
     const [activeMC, setActiveMC] = useState<number | "all">("all");
+    const [isVisible, setIsVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
+    const cardsSectionRef = useRef<HTMLDivElement>(null);
+
+    // Scroll tracking for filters bar visibility - only active when viewing cards
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+            const threshold = cardsSectionRef.current ? cardsSectionRef.current.offsetTop - 150 : 400;
+
+            if (currentScrollY > threshold) {
+                if (currentScrollY > lastScrollY) {
+                    setIsVisible(false); // Hide on scroll down
+                } else {
+                    setIsVisible(true); // Show on scroll up
+                }
+            } else {
+                setIsVisible(true); // Always show when in header area
+            }
+            setLastScrollY(currentScrollY);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [lastScrollY]);
 
     // Debounce search query
     useEffect(() => {
@@ -79,7 +104,7 @@ export const Features = () => {
             </div>
 
             {/* Filters Bar */}
-            <div className="filters-bar bg-[#0d1a2e] border-b border-white/10 sticky top-[62px] z-50 shadow-xl px-6 md:px-12">
+            <div className={`filters-bar bg-[#0d1a2e] border-b border-white/10 sticky top-[62px] z-50 shadow-xl px-6 md:px-12 transition-all duration-300 ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}`}>
                 <div className="filters-in max-w-[1200px] mx-auto py-3.5 flex flex-wrap items-center gap-4">
                     {/* Search Field */}
                     <div className="sw flex-[2] min-w-[200px] flex items-center gap-3 bg-white/5 border-1.5 border-white/15 rounded-lg px-3.5 py-2 group hover:border-gold/40 transition-all">
@@ -130,9 +155,9 @@ export const Features = () => {
                 </div>
             </div>
 
-            <div className="cat-layout max-w-[1200px] mx-auto px-6 md:px-12 py-10 grid grid-cols-1 lg:grid-cols-[235px_1fr] gap-10">
+            <div ref={cardsSectionRef} className="cat-layout max-w-[1200px] mx-auto px-6 md:px-12 py-10 grid grid-cols-1 lg:grid-cols-[235px_1fr] gap-10">
                 {/* Sidebar */}
-                <aside className="sp sticky top-[154px] h-fit hidden lg:block animate-in fade-in slide-in-from-left-4 duration-700">
+                <aside className="sp sticky top-[80px] h-fit hidden lg:block animate-in fade-in slide-in-from-left-4 duration-700">
                     <div className="sp-sec mb-8">
                         <div className="sp-t text-[10px] font-bold tracking-[2px] uppercase text-white/45 font-mono mb-4">Domains</div>
                         <div
