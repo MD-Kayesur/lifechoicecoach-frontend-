@@ -129,7 +129,10 @@ export const SampleMC = () => {
                                     <button className="w-full h-14 bg-primary hover:bg-primary/90 text-white text-[12px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-primary/20 hover:scale-[1.02]">
                                         Enroll as IKON Practitioner
                                     </button>
-                                    <button className="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 text-white text-[12px] font-black uppercase tracking-widest rounded-xl transition-all">
+                                    <button
+                                        onClick={() => window.location.href = `/certificate?id=01-01`}
+                                        className="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 text-white text-[12px] font-black uppercase tracking-widest rounded-xl transition-all"
+                                    >
                                         View Sample Certificate
                                     </button>
                                 </div>
