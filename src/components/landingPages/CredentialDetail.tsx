@@ -161,7 +161,10 @@ export const CredentialDetail = () => {
                             Enroll as Practitioner
                         </button>
 
-                        <button className="w-full bg-white/10 text-white/85 font-medium text-[13px] py-2.5 rounded-xl border border-white/20 hover:bg-white/15 hover:text-white transition-all">
+                        <button
+                            onClick={() => router.push(`/certificate?id=${id || '01-01'}`)}
+                            className="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 text-white text-[12px] font-black uppercase tracking-widest rounded-xl transition-all"
+                        >
                             View Sample Certificate
                         </button>
                     </div>

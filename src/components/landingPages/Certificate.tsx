@@ -15,23 +15,23 @@ export const Certificate = () => {
     const category = DOMAINS.find(d => d.id === mc.cat);
 
 
-const certRef = useRef<HTMLDivElement>(null);
+    const certRef = useRef<HTMLDivElement>(null);
 
 
 
-const handleDownload = async () => {
-    if (!certRef.current) return;
+    const handleDownload = async () => {
+        if (!certRef.current) return;
 
-    const canvas = await html2canvas(certRef.current, {
-        scale: 2, // better quality
-    });
+        const canvas = await html2canvas(certRef.current, {
+            scale: 2, // better quality
+        });
 
-    const imgData = canvas.toDataURL("image/png");
+        const imgData = canvas.toDataURL("image/png");
 
-    const pdf = new jsPDF("landscape", "px", [canvas.width, canvas.height]);
-    pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-    pdf.save("certificate.pdf");
-};
+        const pdf = new jsPDF("landscape", "px", [canvas.width, canvas.height]);
+        pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+        pdf.save("certificate.pdf");
+    };
 
 
     return (
@@ -50,22 +50,15 @@ const handleDownload = async () => {
                     </div>
 
                     {/* Certificate Card */}
-                    <div ref={certRef}  className="cert-recipient-photo   top-10 right-10   border-[1.5px] border-gold rounded-[2px] overflow-hidden  transition-all shadow-sm z-10 hidden md:block">
-                        <Image
-                            src={certPhoto}
-                            alt="Edward Roy Krishnan"
-                            className="w-full h-full object-cover"
-                        />
-                    </div>
-                    {/* <div className="certificate bg-white border-2 border-gold rounded-[4px] relative overflow-hidden shadow-2xl scale-[0.98] origin-left">
-                        <div className="cert-ob m-3 border-[1.5px] border-gold rounded-[2px] p-10 md:p-12 relative">
-                           
+                    <div className="certificate bg-white border-2 border-gold rounded-[4px] relative overflow-hidden shadow-2xl scale-[0.98] origin-left">
+                        <div ref={certRef} className="cert-ob m-3 border-[1.5px] border-gold rounded-[2px] p-10 md:p-12 relative">
+
                             <div className="cc absolute w-4 h-4 top-[-1px] left-[-1px] border-t-3 border-l-3 border-gold"></div>
                             <div className="cc absolute w-4 h-4 top-[-1px] right-[-1px] border-t-3 border-r-3 border-gold"></div>
                             <div className="cc absolute w-4 h-4 bottom-[-1px] left-[-1px] border-b-3 border-l-3 border-gold"></div>
                             <div className="cc absolute w-4 h-4 bottom-[-1px] right-[-1px] border-b-3 border-r-3 border-gold"></div>
 
-                     
+
                             <div className="cert-recipient-photo absolute top-10 right-10 w-[90px] h-[115px] border-[1.5px] border-gold rounded-[2px] overflow-hidden grayscale hover:grayscale-0 transition-all shadow-sm z-10 hidden md:block">
                                 <Image
                                     src={certPhoto}
@@ -130,7 +123,7 @@ const handleDownload = async () => {
                                 </div>
                             </div>
                         </div>
-                    </div> */}
+                    </div>
                 </div>
 
                 <aside className="cv-sidebar sticky top-[92px] animate-in fade-in slide-in-from-right-4 duration-700">
@@ -175,11 +168,11 @@ const handleDownload = async () => {
                         </div>
                     </div>
 
-                    <button   onClick={handleDownload} className="btn-dl w-full bg-gold text-white font-bold text-[13.5px] py-3 rounded-xl shadow-[0_4px_0_#8a1e27] hover:bg-gold2 hover:translate-y-[2px] hover:shadow-[0_2px_0_#8a1e27] active:shadow-none active:translate-y-[4px] transition-all mb-3">
+                    <button onClick={handleDownload} className="btn-dl w-full bg-gold text-white font-bold text-[13.5px] py-3 rounded-xl shadow-[0_4px_0_#8a1e27] hover:bg-gold2 hover:translate-y-[2px] hover:shadow-[0_2px_0_#8a1e27] active:shadow-none active:translate-y-[4px] transition-all mb-3">
                         ⬇ Download Certificate (PDF)
                     </button>
-                    
-                
+
+
                     <div className="note bg-[#F9F5EE] border border-gold/15 rounded-2xl p-4">
                         <div className="text-[12px] font-bold text-[#0B1F3A] mb-2">What this certificate proves</div>
                         <div className="text-[12px] text-[#3D4556] leading-relaxed">
