@@ -1,21 +1,24 @@
 "use client";
 
-import { Award, ShieldCheck, Download, ExternalLink, QrCode, MapPin, Globe } from "lucide-react";
+import { Award, ShieldCheck, Download, ExternalLink, QrCode, MapPin, Globe, Loader2 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { useGetCertificatesQuery } from "@/redux/features/progress/certificateApi";
+import Link from "next/link";
 
 export const MCPassport = () => {
     const { user } = useSelector((state: RootState) => state.auth);
     const fullName = user?.name || (user?.first_name ? `${user.first_name} ${user.last_name || ""}` : "Edward Krishnan");
 
-    const credentials = [
+    const { data: certificates, isLoading } = useGetCertificatesQuery();
+
+    const staticCredentials = [
         { n: 'AI Prompt Engineer', e: '10 ECTS · EQF 6', d: 'Category 01 · AI & Automation', color: 'text-blue-400' },
         { n: 'Generative AI Practitioner', e: '10 ECTS · EQF 6', d: 'Category 01 · AI & Automation', color: 'text-purple-400' },
         { n: 'Responsible AI Practitioner', e: '10 ECTS · EQF 7', d: 'Category 01 · AI & Automation', color: 'text-emerald-400' },
-        { n: 'Data Storytelling Designer', e: '10 ECTS · EQF 6', d: 'Category 02 · Data & Analytics', color: 'text-amber-400' },
-        { n: 'AI Decision Support Analyst', e: '10 ECTS · EQF 7', d: 'Category 02 · Data & Analytics', color: 'text-rose-400' },
-        { n: 'AI Workflow Automation', e: '10 ECTS · EQF 6', d: 'Category 01 · AI & Automation', color: 'text-indigo-400' },
     ];
+
+    const displayCerts = certificates?.length ? certificates : [];
 
     return (
         <div className="animate-in fade-in duration-700 space-y-12">
@@ -73,7 +76,7 @@ export const MCPassport = () => {
                             </div>
                             <div>
                                 <div className="text-white/40 text-[9px] font-mono font-bold uppercase tracking-[2px] mb-1">Verified Credits</div>
-                                <div className="text-white text-[14px] font-bold font-outfit">60 ECTS · EQF 6/7</div>
+                                <div className="text-white text-[14px] font-bold font-outfit">{displayCerts.length * 10} ECTS · EQF 6/7</div>
                             </div>
                         </div>
                     </div>
@@ -112,47 +115,103 @@ export const MCPassport = () => {
                     <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/10"></div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {credentials.map((cred, i) => (
-                        <div key={i} className="bg-[#0B1F3A]/40 border border-white/10 rounded-[28px] p-6 relative group overflow-hidden hover:border-gold/40 transition-all duration-500 backdrop-blur-sm">
-                            <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:opacity-[0.15] transition-opacity duration-700">
-                                <ShieldCheck size={80} />
-                            </div>
+                {isLoading ? (
+                    <div className="flex flex-col items-center justify-center py-20 space-y-4">
+                        <Loader2 className="w-10 h-10 text-gold animate-spin" />
+                        <p className="text-white/30 font-mono text-[10px] uppercase tracking-widest">Loading Stamps...</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {displayCerts.length > 0 ? (
+                            displayCerts.map((cert, i) => (
+                                <div key={cert.id} className="bg-[#0B1F3A]/40 border border-white/10 rounded-[28px] p-6 relative group overflow-hidden hover:border-gold/40 transition-all duration-500 backdrop-blur-sm">
+                                    <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:opacity-[0.15] transition-opacity duration-700">
+                                        <ShieldCheck size={80} />
+                                    </div>
 
-                            <div className="flex items-start justify-between mb-8">
-                                <div className={`w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center ${cred.color} shadow-inner`}>
-                                    <Award size={30} />
-                                </div>
-                                <div className="p-badge inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                    <span className="text-[9px] font-bold text-emerald-400 font-mono tracking-widest uppercase">Verified</span>
-                                </div>
-                            </div>
+                                    <div className="flex items-start justify-between mb-8">
+                                        <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-blue-400 shadow-inner">
+                                            <Award size={30} />
+                                        </div>
+                                        <div className="p-badge inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                            <span className="text-[9px] font-bold text-emerald-400 font-mono tracking-widest uppercase">
+                                                {cert.is_valid ? "Verified" : "Pending"}
+                                            </span>
+                                        </div>
+                                    </div>
 
-                            <div className="space-y-4 mb-8">
-                                <h4 className="text-white text-[17px] font-bold leading-tight font-outfit h-[42px] line-clamp-2">{cred.n}</h4>
-                                <div className="space-y-2">
-                                    <div className="text-white/40 text-[10px] font-mono tracking-widest uppercase">{cred.d}</div>
-                                    <div className="text-gold/80 text-[11.5px] font-bold flex items-center gap-2">
-                                        <div className="w-4 h-px bg-gold/40"></div>
-                                        {cred.e}
+                                    <div className="space-y-4 mb-8">
+                                        <h4 className="text-white text-[17px] font-bold leading-tight font-outfit h-[42px] line-clamp-2">{cert.credential_name}</h4>
+                                        <div className="space-y-2">
+                                            <div className="text-white/40 text-[10px] font-mono tracking-widest uppercase">Issued: {cert.issue_date}</div>
+                                            <div className="text-gold/80 text-[11.5px] font-bold flex items-center gap-2">
+                                                <div className="w-4 h-px bg-gold/40"></div>
+                                                10 ECTS · EQF 6
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3 pt-6 border-t border-white/5">
+                                        <Link
+                                            href={`/certificate?id=${cert.id}`}
+                                            className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold py-2.5 rounded-xl transition-all font-outfit text-center"
+                                        >
+                                            <Download size={14} />
+                                            Certificate
+                                        </Link>
+                                        <Link
+                                            href={`/certificate?id=${cert.id}`}
+                                            className="flex items-center justify-center gap-2 bg-white/5 hover:bg-primary/20 text-white/70 hover:text-white text-[11px] font-bold py-2.5 rounded-xl border border-white/10 hover:border-primary/40 transition-all font-outfit text-center"
+                                        >
+                                            <ShieldCheck size={14} />
+                                            Verify
+                                        </Link>
                                     </div>
                                 </div>
-                            </div>
+                            ))
+                        ) : (
+                            staticCredentials.map((cred, i) => (
+                                <div key={i} className="bg-[#0B1F3A]/40 border border-white/10 rounded-[28px] p-6 relative group overflow-hidden hover:border-gold/40 transition-all duration-500 backdrop-blur-sm opacity-60">
+                                    <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:opacity-[0.15] transition-opacity duration-700">
+                                        <ShieldCheck size={80} />
+                                    </div>
 
-                            <div className="grid grid-cols-2 gap-3 pt-6 border-t border-white/5">
-                                <button className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold py-2.5 rounded-xl transition-all font-outfit">
-                                    <Download size={14} />
-                                    Certificate
-                                </button>
-                                <button className="flex items-center justify-center gap-2 bg-white/5 hover:bg-primary/20 text-white/70 hover:text-white text-[11px] font-bold py-2.5 rounded-xl border border-white/10 hover:border-primary/40 transition-all font-outfit">
-                                    <ExternalLink size={14} />
-                                    Verify
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                                    <div className="flex items-start justify-between mb-8">
+                                        <div className={`w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center ${cred.color} shadow-inner`}>
+                                            <Award size={30} />
+                                        </div>
+                                        <div className="p-badge inline-flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full">
+                                            <span className="text-[9px] font-bold text-white/30 font-mono tracking-widest uppercase">Sample</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4 mb-8">
+                                        <h4 className="text-white text-[17px] font-bold leading-tight font-outfit h-[42px] line-clamp-2">{cred.n}</h4>
+                                        <div className="space-y-2">
+                                            <div className="text-white/40 text-[10px] font-mono tracking-widest uppercase">{cred.d}</div>
+                                            <div className="text-gold/80 text-[11.5px] font-bold flex items-center gap-2">
+                                                <div className="w-4 h-px bg-gold/40"></div>
+                                                {cred.e}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3 pt-6 border-t border-white/5">
+                                        <Link href="/certificate" className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold py-2.5 rounded-xl transition-all font-outfit text-center">
+                                            <Download size={14} />
+                                            Preview
+                                        </Link>
+                                        <Link href="/certificate" className="flex items-center justify-center gap-2 bg-white/5 hover:bg-primary/20 text-white/70 hover:text-white text-[11px] font-bold py-2.5 rounded-xl border border-white/10 hover:border-primary/40 transition-all font-outfit text-center">
+                                            <ExternalLink size={14} />
+                                            Verify
+                                        </Link>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
