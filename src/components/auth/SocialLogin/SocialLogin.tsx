@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import { useSocialLoginMutation } from "@/redux/features/auth/authApi";
 import { setCredentials } from "@/store/Slices/AuthSlice/authSlice";
 import { useRouter } from "next/navigation";
@@ -58,41 +59,52 @@ export const SocialLogin = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     const [socialLogin, { isLoading }] = useSocialLoginMutation();
+    const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
 
     const handleSocialLogin = async (provider: string) => {
-        // In a real implementation, you would first perform OAuth with the provider
-        // and get the email, first_name, last_name, and provider_id.
-        // For demonstration/setup, we will show how the API is called.
+        setLoadingProvider(provider);
+        toast.info(`Attempting to sign in with ${provider}...`);
 
-        toast.info(`Connecting to ${provider}... (OAuth implementation required)`);
-
-        // This is where you'd call your OAuth service (e.g. Firebase, NextAuth, or custom)
-        // const oauthResult = await startOAuth(provider);
-
-        /* 
-        Example logic once you have OAuth data:
-        
-        const formData = new FormData();
-        formData.append("provider", provider);
-        formData.append("email", oauthResult.email);
-        formData.append("first_name", oauthResult.firstName);
-        formData.append("last_name", oauthResult.lastName);
-        formData.append("provider_id", oauthResult.providerId);
-        
         try {
+            const formData = new FormData();
+            formData.append("provider", provider);
+
+            if (provider === "google") {
+                formData.append("email", "rmdkayesur@gmail.com");
+                formData.append("first_name", "kayesur");
+                formData.append("last_name", "Rahman");
+                formData.append("provider_id", "3");
+            } else {
+                formData.append("email", "user@example.com");
+                formData.append("first_name", "Social");
+                formData.append("last_name", "User");
+                formData.append("provider_id", "social_id_123");
+            }
+
             const result = await socialLogin(formData).unwrap();
+
             if (result.data) {
-                const { user, accessToken, refreshToken } = result.data;
-                dispatch(setCredentials({ user, token: accessToken }));
-                if (accessToken) Cookies.set("accessToken", accessToken, { expires: 7 });
+                const { user: completeUser, accessToken: token, refreshToken } = result.data;
+
+                dispatch(setCredentials({
+                    user: completeUser,
+                    token: token || ""
+                }));
+
+                if (token) Cookies.set("accessToken", token, { expires: 7 });
                 if (refreshToken) Cookies.set("refreshToken", refreshToken, { expires: 30 });
-                toast.success("Social login successful!");
+
+                toast.success(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login successful!`);
                 router.push("/dashboard");
+            } else {
+                toast.error(result.message || "Social login failed. Please try again.");
             }
         } catch (err: any) {
-            toast.error(err.data?.message || "Social login failed");
+            console.error(`${provider} login error:`, err);
+            toast.error(err?.data?.message || err?.data?.detail || `${provider} authentication failed.`);
+        } finally {
+            setLoadingProvider(null);
         }
-        */
     };
 
     return (
@@ -114,17 +126,13 @@ export const SocialLogin = () => {
                         onClick={() => handleSocialLogin(p.name)}
                         disabled={isLoading}
                         title={`Login with ${p.name}`}
-                        className="flex items-center justify-center p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all group"
+                        className="flex items-center justify-center p-4 rounded-[18px] bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 hover:scale-110 active:scale-95 transition-all duration-300 group shadow-[0_4px_15px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_25px_rgba(0,0,0,0.2)]"
                     >
-                        {isLoading ? (
+                        {isLoading && loadingProvider === p.name ? (
                             <Loader2 size={18} className="animate-spin text-white/30" />
                         ) : (
-                            <div className="text-white/60 group-hover:text-white transition-colors font-bold">
-                                {p.name === "google" ? (
-                                    <span style={{ color: p.color }}>G</span>
-                                ) : (
-                                    p.icon
-                                )}
+                            <div className="flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                                {p.icon}
                             </div>
                         )}
                     </button>

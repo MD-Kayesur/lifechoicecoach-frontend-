@@ -53,6 +53,7 @@ export interface ChangePasswordRequest {
 }
 
 export interface ApiResponseBase {
+    success?: boolean;
     status?: string;
     message?: string;
     detail?: string;
