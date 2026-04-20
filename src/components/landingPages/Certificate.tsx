@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { MCS, DOMAINS } from "@/lib/data";
 import Image from "next/image";
 import certPhoto from "@/assets/images/PHOTO-2026-04-10-12-51-07.jpeg";
+import ikonLogo from "@/assets/images/ikon_logo.png";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useRef } from "react";
@@ -19,21 +20,88 @@ export const Certificate = () => {
 
 
 
+    // const handleDownload = async () => {
+    //     if (!certRef.current) return;
+
+    //     try {
+    //         const canvas = await html2canvas(certRef.current, {
+    //             scale: 3, // High quality
+    //             useCORS: true,
+    //             logging: false,
+    //             backgroundColor: "#ffffff",
+    //             windowWidth: certRef.current.scrollWidth,
+    //             windowHeight: certRef.current.scrollHeight
+    //         });
+
+    //         const imgData = canvas.toDataURL("image/png");
+
+    //         // Create PDF in landscape orientation
+    //         const pdf = new jsPDF({
+    //             orientation: 'landscape',
+    //             unit: 'px',
+    //             format: [canvas.width, canvas.height]
+    //         });
+
+    //         pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    //         pdf.save(`IKON-Skills-Certificate-${mc.id}.pdf`);
+    //     } catch (error) {
+    //         console.error("Error generating PDF:", error);
+    //     }
+    // };
+
     const handleDownload = async () => {
-        if (!certRef.current) return;
+        if (!certRef.current) {
+            console.error("Certificate reference is not available");
+            return;
+        }
 
-        const canvas = await html2canvas(certRef.current, {
-            scale: 2, // better quality
-        });
+        try {
+            const element = certRef.current;
 
-        const imgData = canvas.toDataURL("image/png");
+            // High-quality canvas capture
+            const canvas = await html2canvas(element, {
+                scale: 3.5,                    // Higher scale = sharper text & image
+                useCORS: true,
+                logging: false,
+                backgroundColor: "#ffffff",
+                allowTaint: true,
+                width: element.offsetWidth,
+                height: element.offsetHeight,
+            });
 
-        const pdf = new jsPDF("landscape", "px", [canvas.width, canvas.height]);
-        pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-        pdf.save("certificate.pdf");
+            const imgData = canvas.toDataURL("image/jpeg", 0.98); // Better quality than PNG for certificates
+
+            // Create PDF with correct A4 ratio (portrait)
+            const pdf = new jsPDF({
+                orientation: 'portrait',       // Changed to portrait (your certificate is taller)
+                unit: 'mm',
+                format: 'a4',                  // Standard A4 size
+            });
+
+            // Calculate dimensions to fit A4 properly while maintaining aspect ratio
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            const imgWidth = canvas.width;
+            const imgHeight = canvas.height;
+            const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+
+            const finalWidth = imgWidth * ratio;
+            const finalHeight = imgHeight * ratio;
+
+            const xOffset = (pdfWidth - finalWidth) / 2;
+            const yOffset = (pdfHeight - finalHeight) / 2;
+
+            pdf.addImage(imgData, 'JPEG', xOffset, yOffset, finalWidth, finalHeight);
+
+            // Save with proper filename
+            pdf.save(`IKON-Skills-Certificate-${'MD_Kayesur_Rahman'}.pdf`);
+
+        } catch (error) {
+            console.error("Error generating PDF:", error);
+            alert("Failed to generate PDF. Please try again.");
+        }
     };
-
-
     return (
         <div id="page-certificate" className="page active pt-[62px] min-h-screen bg-[#0a1628]">
             <div className="cert-layout max-w-[1200px] mx-auto px-8 md:px-12 py-10 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10">
@@ -50,17 +118,17 @@ export const Certificate = () => {
                     </div>
 
                     {/* Certificate Card */}
-                     <div>
+                    <div>
                         <Image src={certPhoto} alt="" />
-                    
-                     </div>
+
+                    </div>
                     {/* <div className="certificate bg-white border-2 border-gold rounded-[4px] relative overflow-hidden shadow-2xl scale-[0.98] origin-left">
                         <div ref={certRef} className="cert-ob m-3 border-[1.5px] border-gold rounded-[2px] p-10 md:p-12 relative">
 
-                            <div className="cc absolute w-4 h-4 top-[-1px] left-[-1px] border-t-3 border-l-3 border-gold"></div>
-                            <div className="cc absolute w-4 h-4 top-[-1px] right-[-1px] border-t-3 border-r-3 border-gold"></div>
-                            <div className="cc absolute w-4 h-4 bottom-[-1px] left-[-1px] border-b-3 border-l-3 border-gold"></div>
-                            <div className="cc absolute w-4 h-4 bottom-[-1px] right-[-1px] border-b-3 border-r-3 border-gold"></div>
+                            <div className="cc absolute w-6 h-6 top-[-2px] left-[-2px] border-t-[3px] border-l-[3px] border-gold"></div>
+                            <div className="cc absolute w-6 h-6 top-[-2px] right-[-2px] border-t-[3px] border-r-[3px] border-gold"></div>
+                            <div className="cc absolute w-6 h-6 bottom-[-2px] left-[-2px] border-b-[3px] border-l-[3px] border-gold"></div>
+                            <div className="cc absolute w-6 h-6 bottom-[-2px] right-[-2px] border-b-[3px] border-r-[3px] border-gold"></div>
 
 
                             <div className="cert-recipient-photo absolute top-10 right-10 w-[90px] h-[115px] border-[1.5px] border-gold rounded-[2px] overflow-hidden grayscale hover:grayscale-0 transition-all shadow-sm z-10 hidden md:block">
@@ -73,7 +141,7 @@ export const Certificate = () => {
 
                             <div className="cert-hdr text-center pb-6 border-b border-gold/15 mb-8">
                                 <div className="cert-logo-row flex items-center justify-center gap-2 mb-2">
-                                    <img src="https://ikonmalta.ac/IKON_LOGO_White_Color.png" alt="IKON" className="h-7 w-auto object-contain filter brightness-0 saturate-100 invert-[18%] sepia-[82%] saturate-[1200%] hue-rotate-[340deg] brightness-[0.85]" />
+                                    <Image src={ikonLogo} alt="IKON" className="h-7 w-auto object-contain filter brightness-0 saturate-100 invert-[18%] sepia-[82%] saturate-[1200%] hue-rotate-[340deg] brightness-[0.85]" />
                                     <div className="cert-ln font-serif font-bold text-[21px] text-[#0B1F3A]">SKILLS<sup>™</sup></div>
                                 </div>
                                 <div className="cert-qa-line text-[10px] text-[#74798A] font-mono leading-relaxed">

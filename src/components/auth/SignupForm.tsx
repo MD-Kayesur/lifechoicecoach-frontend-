@@ -253,29 +253,29 @@ export function SignupForm() {
                 <div className="space-y-5">
                     <div className="space-y-1.5">
                         <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5">Password</label>
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                name="password"
-                                placeholder="••••••••"
-                                value={formData.password}
-                                onChange={handleInputChange}
-                                required
-                                minLength={8}
-                                className="w-full bg-white/5 border border-white/10 rounded-[18px] py-4 px-6 text-[14px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] transition-all"
-                            />
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            placeholder="••••••••"
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            required
+                            minLength={8}
+                            className="w-full bg-white/5 border border-white/10 rounded-[18px] py-4 px-6 text-[14px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] transition-all"
+                        />
                     </div>
                     <div className="space-y-1.5">
                         <label className="text-[11px] font-black uppercase tracking-[2px] text-[#cb2d39]/90 ml-1.5">Confirm Password</label>
-                            <input
+                        <input
                             type={showPassword ? "text" : "password"}
-                                name="password2"
-                                placeholder="••••••••"
-                                value={formData.password2}
-                                onChange={handleInputChange}
-                                required
-                                minLength={8}
-                                className="w-full bg-white/5 border border-white/10 rounded-[18px] py-4 px-6 text-[14px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] transition-all"
-                            />
+                            name="password2"
+                            placeholder="••••••••"
+                            value={formData.password2}
+                            onChange={handleInputChange}
+                            required
+                            minLength={8}
+                            className="w-full bg-white/5 border border-white/10 rounded-[18px] py-4 px-6 text-[14px] font-bold text-white placeholder:text-white/15 focus:outline-none focus:border-[#cb2d39]/40 focus:bg-white/[0.07] transition-all"
+                        />
                     </div>
                 </div>
 
