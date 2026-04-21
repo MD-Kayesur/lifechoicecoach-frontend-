@@ -259,8 +259,7 @@ export const CredentialDetail = () => {
                             <button 
                                 className="w-full bg-gold text-white font-bold py-4 rounded-xl shadow-[0_4px_0_#9a7e3a] hover:bg-gold2 hover:translate-y-[1px] hover:shadow-[0_3px_0_#9a7e3a] transition-all flex items-center justify-center gap-3"
                                 onClick={() => {
-                                    // Handle payment logic here
-                                    alert("Proceeding to payment gateway...");
+                                    router.push(`/checkout?id=${id}`);
                                 }}
                             >
                                 <CreditCard size={18} />
