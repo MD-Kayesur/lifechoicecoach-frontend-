@@ -1,43 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useGetSubscriptionPlansQuery, SubscriptionPlan } from "@/redux/features/enrollment/subscriptionsplansApi";
-import { Loader2 } from "lucide-react";
+import { Loader2, Check, Globe, ShieldCheck, Users, Building2, Landmark, ArrowRight, Info } from "lucide-react";
+import Link from "next/link";
 
 export const Pricing = () => {
-    const { data: plansData, isLoading, isError } = useGetSubscriptionPlansQuery();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    // Default features if none provided by API
-    const defaultFeatures = [
-        'Full learning access per MC',
-        'AI-powered assessment',
-        'Digital credential per MC',
-        'Assessment attempts included',
-        'Practitioner Dashboard access'
-    ];
-
-    // Safely extract plans array from different potential API response shapes
-    const plansArray = Array.isArray(plansData)
-        ? plansData
-        : (plansData as any)?.results || (plansData as any)?.data || [];
-
-    const plans = plansArray.map((plan: SubscriptionPlan) => ({
-        id: plan.id,
-        name: plan.name,
-        price: typeof plan.price === 'number' ? `$${plan.price.toFixed(2)}` : plan.price,
-        per: plan.duration_months ? (plan.duration_months >= 12 ? '/ year' : `/ ${plan.duration_months} months`) : '/ month',
-        cap: plan.description || 'Unlimited Access',
-        feats: plan.features && plan.features.length > 0 ? plan.features : defaultFeatures,
-        featured: plan.name.toLowerCase().includes('practitioner') || plan.name.toLowerCase().includes('popular')
-    }));
-
-
-    if (!mounted || isLoading) {
+    if (!mounted) {
         return (
             <div className="min-h-screen bg-[#0a1628] flex items-center justify-center">
                 <Loader2 className="w-10 h-10 text-gold animate-spin" />
@@ -45,119 +19,226 @@ export const Pricing = () => {
         );
     }
 
-
-    if (isError) {
-        return (
-            <div className="min-h-screen bg-[#0a1628] flex items-center justify-center text-white">
-                <div className="text-center">
-                    <p className="text-xl mb-4">Failed to load subscription plans.</p>
-                    <button
-                        onClick={() => window.location.reload()}
-                        className="bg-gold text-white px-6 py-2 rounded-xl"
-                    >
-                        Retry
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
     return (
-        <div id="page-pricing" className="page active pt-[62px] min-h-screen bg-[#0a1628]">
-            <section className="pr-hero bg-[#060e1e] py-16 md:py-24 px-8 md:px-12 text-center relative overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                <div className="absolute inset-0 bg-radial-gradient from-gold/15 via-transparent to-transparent opacity-40 pointer-events-none"></div>
-                <div className="relative z-10 max-w-[900px] mx-auto">
-                    <div className="pr-hero-kicker text-[10.5px] font-bold tracking-[2.5px] uppercase text-gold3 mb-4">Transparent. Flexible. Practitioner-First.</div>
-                    <h1 className="pr-hero-h font-serif font-bold text-[36px] md:text-[52px] text-white leading-tight mb-4 ml-0">Simple Pricing for Every<br />IKON Practitioner</h1>
-                    <p className="pr-hero-sub text-[15.5px] text-white/68 leading-relaxed max-w-[620px] mx-auto font-medium">
-                        Start with one Micro-Credential. Build toward a degree. Every plan includes full learning access, AI assessment, and a verified digital credential.
+        <div className="pt-[62px] min-h-screen bg-[#0a1628]">
+            {/* Hero Section */}
+            <section className="relative py-20 px-6 overflow-hidden border-b border-white/5 bg-[#060e1e]">
+                <div className="absolute inset-0 bg-radial-gradient from-gold/10 via-transparent to-transparent opacity-40"></div>
+                <div className="max-w-[1000px] mx-auto text-center relative z-10">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/10 border border-gold/20 text-gold text-[10px] font-bold tracking-[1.5px] uppercase mb-6 animate-in fade-in slide-in-from-bottom-2 duration-700">
+                        <Info size={12} />
+                        Transparent · Flexible · Practitioner-First
+                    </div>
+                    <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-6 leading-tight animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        Simple Pricing for Every<br />IKON Practitioner
+                    </h1>
+                    <p className="text-lg text-white/60 max-w-[700px] mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-6 duration-700">
+                        Individual IKON Practitioners access the platform on a Pay-Per-Micro-Credential basis. 
+                        Start with one skill, build toward a degree.
                     </p>
                 </div>
             </section>
 
-            <div className="pr-body max-w-[1200px] mx-auto px-8 md:px-12 py-12 md:py-16">
-                <div id="plans" className="mb-12">
-                    <div className="pr-section-label text-[11px] font-bold tracking-[2px] uppercase text-gold font-mono mb-2">Section 1.1</div>
-                    <h2 className="pr-section-h font-serif text-[28px] md:text-[34px] font-bold text-white mb-2 leading-tight">Consumer Pricing Reference</h2>
-                    <p className="pr-section-sub text-[14.5px] text-white/60 leading-relaxed max-w-[700px] mb-8">
-                        The following retail plans define the baseline pricing for individual IKON Practitioners and serve as the reference point for institutional pricing.
-                    </p>
-
-
-                    <div className="pr-plans-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                        {plans.map((plan: any, i: number) => (
-                            <div key={plan.id || i} className={`pr-plan bg-white/5 border-1.5 border-white/10 rounded-2xl overflow-hidden flex flex-col transition-all group relative hover:-translate-y-2 hover:shadow-2xl hover:shadow-gold/10 ${plan.featured ? 'border-gold shadow-2xl shadow-gold/15' : 'hover:border-gold/30'}`}>
-                                {plan.featured && (
-                                    <div className="pr-plan-ribbon absolute top-[16px] right-[-28px] bg-gold text-white text-[9px] font-black tracking-[1px] uppercase py-1 px-8 rotate-45 shadow-lg">Popular</div>
-                                )}
-                                <div className="pr-plan-head p-6 pb-5 bg-white/3 border-b border-white/8">
-                                    <div className="pr-plan-name font-serif text-[22px] font-bold text-white mb-3 group-hover:text-gold transition-colors">{plan.name}</div>
-                                    <div className="pr-plan-price flex items-baseline gap-1 mb-2">
-                                        <div className="pr-plan-amt font-serif text-[42px] font-bold text-white leading-none">{plan.price}</div>
-                                        <div className="pr-plan-per text-[12px] text-white/50">{plan.per}</div>
-                                    </div>
-                                    <div className="pr-plan-mc text-[11px] font-bold text-gold font-mono bg-gold/15 px-2.5 py-1 rounded-md inline-block">{plan.cap}</div>
-                                </div>
-                                <div className="pr-plan-body p-6 flex-1">
-                                    <ul className="pr-feat-list space-y-3">
-                                        {plan.feats.map((feat: string, fi: number) => (
-                                            <li key={fi} className="text-[13px] text-white/75 flex gap-2.5 items-start leading-tight group-hover:text-white transition-colors">
-                                                <span className="text-gold font-bold">✓</span>
-                                                {feat}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                                <div className="pr-plan-foot p-6 pt-0">
-                                    <button className={`pr-plan-cta w-full py-2.5 rounded-xl text-[13px] font-bold transition-all ${plan.featured ? 'bg-gold text-white shadow-lg hover:bg-gold2 active:translate-y-1' : 'bg-white/10 text-white border border-white/20 hover:border-gold hover:bg-gold hover:text-white active:translate-y-1'}`}>
-                                        {plan.name === 'Starter' ? 'Get Started' : 'Select Plan'}
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
+            <div className="max-w-[1200px] mx-auto px-6 py-20">
+                {/* Section 1.1: Individual Pricing */}
+                <div className="mb-24">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="w-8 h-8 bg-gold/10 border border-gold/20 rounded flex items-center justify-center text-gold font-mono font-bold text-xs italic">1.1</div>
+                        <h2 className="text-2xl font-serif font-bold text-white uppercase tracking-wider">Individual Practitioner</h2>
                     </div>
 
-                </div>
-
-                <div className="pr-note bg-gold/10 border border-gold/40 rounded-2xl p-6 flex items-start gap-4 mb-20 animate-in fade-in duration-1000">
-                    <span className="pr-note-icon text-[24px]">💡</span>
-                    <div className="pr-note-text text-[14px] text-white/85 leading-relaxed">
-                        <strong className="text-gold3">Degree Stacking:</strong> Every Micro-Credential you earn is worth 10 ECTS credits. When you accumulate the required ECTS for a degree (e.g. 180 for Bachelor), you can apply for institutional degree award through EIU-Paris.
-                    </div>
-                </div>
-
-                <div className="institutional-section">
-                    <div className="pr-section-label text-[11px] font-bold tracking-[2px] uppercase text-gold font-mono mb-2">Section 2.0</div>
-                    <h2 className="pr-section-h font-serif text-[28px] md:text-[34px] font-bold text-white mb-2 leading-tight ml-0">Institutional Partners</h2>
-                    <p className="pr-section-sub text-[14.5px] text-white/60 leading-relaxed max-w-[700px] mb-8">
-                        Custom licensing for Education Institutions, Government Agencies, and Corporate L&D Departments.
-                    </p>
-
-                    <div className="pr-inst-grid grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                        {[
-                            { name: 'Higher Education', icon: '🎓', desc: 'Deploy 184 Micro-Credentials into your existing curriculum. Quality assured by EIU-Paris.', tag: 'COLLEGES & UNIVERSITIES', feats: ['Full API integration', 'White-label dashboard', 'Co-branded certificates'] },
-                            { name: 'K-12 Schools', icon: '🏫', desc: 'Verified professional development for 21st-century teaching competencies.', tag: 'SCHOOL SYSTEMS', feats: ['Teacher PD tracking', 'AI assessment tools', 'Pedagogical support'] },
-                            { name: 'Corporate L&D', icon: '🏢', desc: 'Upskill your workforce with industry-aligned digital intelligence competencies.', tag: 'ENTERPRISE LICENSING', feats: ['LMS SCORM support', 'Skills gap analytics', 'Bulk learner credits'] }
-                        ].map((inst, i) => (
-                            <div key={i} className="pr-inst-card bg-white/5 border border-white/10 rounded-2xl overflow-hidden p-6 transition-all hover:border-gold/30 hover:-translate-y-2 group">
-                                <div className="pr-inst-icon text-[32px] mb-3">{inst.icon}</div>
-                                <div className="pr-inst-name font-serif text-[21px] font-bold text-white mb-1 group-hover:text-gold transition-colors">{inst.name}</div>
-                                <div className="pr-inst-tag text-[9.5px] font-bold text-gold font-mono mb-4 uppercase tracking-[0.8px]">{inst.tag}</div>
-                                <p className="pr-inst-desc text-[13.5px] text-white/55 leading-relaxed mb-6">{inst.desc}</p>
-                                <ul className="pr-inst-feats space-y-2 mb-8">
-                                    {inst.feats.map((feat, fi) => (
-                                        <li key={fi} className="text-[12.5px] text-white/75 flex items-center gap-2 group-hover:text-white transition-colors">
-                                            <span className="text-gold text-[10px]">◆</span> {feat}
-                                        </li>
+                    <div className="bg-gradient-to-br from-[#0f2240] to-[#0a1a30] rounded-3xl border border-gold/30 p-8 md:p-12 shadow-2xl relative overflow-hidden group hover:border-gold/50 transition-all duration-500">
+                        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-radial-gradient from-gold/10 to-transparent pointer-events-none -translate-y-1/2 translate-x-1/4"></div>
+                        
+                        <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-12 items-center">
+                            <div>
+                                <div className="inline-block px-3 py-1 rounded bg-gold text-white text-[10px] font-black uppercase tracking-widest mb-6">Popular choice</div>
+                                <h3 className="text-3xl font-bold text-white mb-4">Pay-Per-Micro-Credential</h3>
+                                <p className="text-white/50 text-base mb-8 max-w-[500px]">
+                                    Complete learning journey, assessments, and verified credential for a single specific skill. No ongoing commitment.
+                                </p>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                                    {[
+                                        "Full AI-powered learning journey",
+                                        "4-phase AI teaching model",
+                                        "AI-generated assessments (Formative & Summative)",
+                                        "Unlimited competency reattempts",
+                                        "Digital badge + Certificate of Completion",
+                                        "Verified record in IKON SKILLS™ Passport",
+                                        "Stackable toward EIU-Paris degrees",
+                                        "Quality Assured by EIU-Paris"
+                                    ].map((feat, i) => (
+                                        <div key={i} className="flex items-start gap-3 text-[13.5px] text-white/80">
+                                            <div className="mt-1 flex-shrink-0 w-4 h-4 rounded-full bg-gold/20 flex items-center justify-center">
+                                                <Check size={10} className="text-gold" strokeWidth={4} />
+                                            </div>
+                                            {feat}
+                                        </div>
                                     ))}
-                                </ul>
-                                <button className="pr-inst-cta w-full bg-white/10 border border-white/20 text-white font-bold py-2.5 rounded-xl hover:bg-gold hover:border-gold transition-all active:translate-y-1">Contact for Pricing</button>
+                                </div>
                             </div>
-                        ))}
+
+                            <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center backdrop-blur-sm">
+                                <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">One-time payment</div>
+                                <div className="flex items-center justify-center gap-2 mb-2">
+                                    <span className="text-5xl font-serif font-bold text-white leading-none">$14.99</span>
+                                    <div className="flex flex-col items-start leading-none">
+                                        <span className="text-gold font-bold text-[14px]">USD</span>
+                                        <span className="text-white/30 text-[10px] mt-1">per MC</span>
+                                    </div>
+                                </div>
+                                <p className="text-[11px] text-white/40 mb-8 font-medium italic">Lifetime access to your earned credential</p>
+                                
+                                <Link 
+                                    href="/catalog"
+                                    className="w-full inline-flex items-center justify-center gap-2 bg-gold hover:bg-gold2 text-white font-bold py-4 rounded-xl shadow-[0_4px_0_#9a7e3a] hover:translate-y-[1px] hover:shadow-[0_3px_0_#9a7e3a] active:shadow-none active:translate-y-[4px] transition-all"
+                                >
+                                    Browse Catalog
+                                    <ArrowRight size={18} />
+                                </Link>
+                                
+                                <div className="mt-6 flex items-center justify-center gap-3 opacity-30 grayscale">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/d1/Visa_logo_2014.svg" className="h-3" alt="Visa" />
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" className="h-4" alt="Mastercard" />
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" className="h-4" alt="Stripe" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </div>
+
+                {/* Section 1.2 & 1.3: Institutional & Exclusive */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Institutional Partners */}
+                    <div>
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-8 h-8 bg-gold/10 border border-gold/20 rounded flex items-center justify-center text-gold font-mono font-bold text-xs italic">1.2</div>
+                            <h2 className="text-xl font-serif font-bold text-white uppercase tracking-wider">Institutional Partners</h2>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:border-gold/30 transition-all group h-full flex flex-col">
+                            <div className="mb-6 w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center text-gold group-hover:scale-110 transition-transform">
+                                <Building2 size={24} />
+                            </div>
+                            <h3 className="text-xl font-bold text-white mb-4">Schools & Organizations</h3>
+                            <p className="text-white/50 text-[14px] leading-relaxed mb-8 flex-grow">
+                                Bulk licensing for educational institutions, government agencies, and corporate teams. Deploy verified credentials at scale.
+                            </p>
+                            <div className="space-y-4 mb-8">
+                                {[
+                                    "Volume-based per-seat pricing",
+                                    "Institutional analytics dashboard",
+                                    "Cohort enrollment management",
+                                    "Custom domain curation",
+                                    "White-label options available"
+                                ].map((feat, i) => (
+                                    <div key={i} className="flex items-center gap-3 text-[13px] text-white/70">
+                                        <Check size={14} className="text-gold" />
+                                        {feat}
+                                    </div>
+                                ))}
+                            </div>
+                            <button className="w-full bg-white/5 border border-white/10 hover:border-gold hover:bg-gold hover:text-white text-white font-bold py-3 rounded-xl transition-all uppercase tracking-widest text-xs">
+                                Contact Sales
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Exclusive Country Partner */}
+                    <div>
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-8 h-8 bg-gold/10 border border-gold/20 rounded flex items-center justify-center text-gold font-mono font-bold text-xs italic">1.3</div>
+                            <h2 className="text-xl font-serif font-bold text-white uppercase tracking-wider">Exclusive Partner</h2>
+                        </div>
+                        <div className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:border-gold/30 transition-all group h-full flex flex-col">
+                            <div className="mb-6 w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center text-gold group-hover:scale-110 transition-transform">
+                                <Globe size={24} />
+                            </div>
+                            <h3 className="text-xl font-bold text-white mb-4">Country Exclusive Licensing</h3>
+                            <p className="text-white/50 text-[14px] leading-relaxed mb-8 flex-grow">
+                                Revenue-share model for one exclusive partner per country. Manage regional operations with full white-label customization.
+                            </p>
+                            <div className="space-y-4 mb-8">
+                                {[
+                                    "Full white-label customization",
+                                    "Partner agent portal access",
+                                    "Co-branded credential issuance",
+                                    "Dedicated regional support",
+                                    "Exclusive market rights"
+                                ].map((feat, i) => (
+                                    <div key={i} className="flex items-center gap-3 text-[13px] text-white/70">
+                                        <Check size={14} className="text-gold" />
+                                        {feat}
+                                    </div>
+                                ))}
+                            </div>
+                            <button className="w-full bg-white/5 border border-white/10 hover:border-gold hover:bg-gold hover:text-white text-white font-bold py-3 rounded-xl transition-all uppercase tracking-widest text-xs">
+                                Apply for Partnership
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Section 2.0: Comparison Table */}
+                <div className="mt-24">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="w-8 h-8 bg-gold/10 border border-gold/20 rounded flex items-center justify-center text-gold font-mono font-bold text-xs italic">2.0</div>
+                        <h2 className="text-2xl font-serif font-bold text-white uppercase tracking-wider">What is Included</h2>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-2xl border border-white/10 shadow-2xl">
+                        <table className="w-full text-left border-collapse bg-white/5">
+                            <thead>
+                                <tr className="bg-white/10 border-b border-white/20">
+                                    <th className="p-6 text-[11px] font-bold text-white uppercase tracking-widest font-mono">Platform Feature</th>
+                                    <th className="p-6 text-[11px] font-bold text-gold uppercase tracking-widest font-mono text-center">Individual</th>
+                                    <th className="p-6 text-[11px] font-bold text-white/50 uppercase tracking-widest font-mono text-center">Institution</th>
+                                    <th className="p-6 text-[11px] font-bold text-white/50 uppercase tracking-widest font-mono text-center">Country Partner</th>
+                                </tr>
+                            </thead>
+                            <tbody className="text-[13.5px]">
+                                {[
+                                    { f: "AI-Powered Learning Journey", i: true, s: true, c: true },
+                                    { f: "Verified Digital Badge + Certificate", i: true, s: true, c: true },
+                                    { f: "IKON SKILLS™ Passport Access", i: true, s: true, c: true },
+                                    { f: "10 ECTS · Stackable toward Degrees", i: true, s: true, c: true },
+                                    { f: "Institutional Analytics Dashboard", i: false, s: true, c: true },
+                                    { f: "White-Label Customization", i: false, s: "Optional", c: true },
+                                    { f: "Co-Branded Issuance", i: false, s: false, c: true },
+                                    { f: "Partner Agent Portal", i: false, s: false, c: true },
+                                    { f: "Market Exclusivity Rights", i: false, s: false, c: true },
+                                ].map((row, i) => (
+                                    <tr key={i} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                        <td className="p-5 text-white/80 font-medium">{row.f}</td>
+                                        <td className="p-5 text-center">
+                                            {typeof row.i === 'boolean' ? (row.i ? <Check size={18} className="mx-auto text-gold" /> : <XIcon />) : <span className="text-white/40">{row.i}</span>}
+                                        </td>
+                                        <td className="p-5 text-center">
+                                            {typeof row.s === 'boolean' ? (row.s ? <Check size={18} className="mx-auto text-white/50" /> : <XIcon />) : <span className="text-white/40">{row.s}</span>}
+                                        </td>
+                                        <td className="p-5 text-center">
+                                            {typeof row.c === 'boolean' ? (row.c ? <Check size={18} className="mx-auto text-white/50" /> : <XIcon />) : <span className="text-white/40">{row.c}</span>}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {/* Accreditation Footer */}
+                <div className="mt-20 pt-10 border-t border-white/10 text-center">
+                    <p className="text-[11px] text-white/30 max-w-[800px] mx-auto leading-relaxed">
+                        IKON SKILLS™ Micro-Credentials are quality assured by European International University, Paris (EIU-Paris). 
+                        All accreditations and rankings listed on this platform are held by EIU-Paris and underpin the academic 
+                        standing of every credential issued.
+                    </p>
                 </div>
             </div>
         </div>
     );
 };
 
+const XIcon = () => (
+    <div className="mx-auto w-4 h-[1.5px] bg-white/10 rounded-full"></div>
+);

@@ -8,7 +8,7 @@ import {
     useStripe, 
     useElements 
 } from "@stripe/react-stripe-js";
-import { useBuyCredentialMutation, useGetEnrollmentPricingQuery } from "@/redux/features/enrollment/EnrollmentManagementapi";
+import { useBuyCredentialMutation } from "@/redux/features/enrollment/EnrollmentManagementapi";
 import { useGetLessonCompetenciesQuery } from "@/redux/features/lesson/lessonCompetenciesApi";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -41,8 +41,7 @@ export const CheckoutForm = ({ id }: CheckoutFormProps) => {
     const [isProcessing, setIsProcessing] = useState(false);
 
     const [buyCredential] = useBuyCredentialMutation();
-    const { data: pricingResponse } = useGetEnrollmentPricingQuery();
-    const pricing = pricingResponse?.pricing;
+    const pricing = { price: "14.99", currency: "USD" };
 
     const { data: apiResponse, isLoading: isCredentialLoading } = useGetLessonCompetenciesQuery(
         id ? { micro_credential_id: Number(id) } : undefined

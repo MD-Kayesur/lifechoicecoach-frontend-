@@ -1,7 +1,6 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { useGetLessonCompetenciesQuery } from "@/redux/features/lesson/lessonCompetenciesApi";
 import { 
-    useGetEnrollmentPricingQuery, 
     useCheckAccessQuery 
 } from "@/redux/features/enrollment/EnrollmentManagementapi";
 import { useMemo, useState, useEffect } from "react";
@@ -18,9 +17,6 @@ export const CredentialDetail = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
     const id = searchParams.get("id");
-
-    const { data: pricingResponse } = useGetEnrollmentPricingQuery();
-    const pricing = pricingResponse?.pricing;
 
     // Check if user already has access
     const { data: accessData } = useCheckAccessQuery(Number(id), { 
@@ -251,10 +247,10 @@ export const CredentialDetail = () => {
                                 <div className="text-white/50 text-[13px] mb-1">Total Enrollment Fee</div>
                                 <div className="flex items-center justify-center gap-2">
                                     <span className="text-[42px] font-serif font-bold text-white leading-none">
-                                        {pricing?.price || "14.99"}
+                                        14.99
                                     </span>
                                     <div className="flex flex-col items-start leading-none">
-                                        <span className="text-gold font-bold text-[14px] uppercase">{pricing?.currency || "USD"}</span>
+                                        <span className="text-gold font-bold text-[14px] uppercase">USD</span>
                                         <span className="text-white/30 text-[10px] mt-0.5">VAT Incl.</span>
                                     </div>
                                 </div>
