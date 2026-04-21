@@ -8,6 +8,7 @@ export interface EarnedCredential {
     badge_url: string;
     ects: number;
     level: number;
+    domain?: string;
 }
 
 export interface ECTSAccumulation {
@@ -23,6 +24,7 @@ export interface InProgressMC {
     progress_percentage: number;
     last_accessed: string;
     current_competency: string;
+    category?: string;
 }
 
 export interface DashboardOverview {
@@ -32,6 +34,7 @@ export interface DashboardOverview {
     points: number;
     rank: string;
     subscription_status: string;
+    competencies_verified?: number;
 }
 
 export interface SessionHistory {
@@ -51,11 +54,55 @@ export interface SubscriptionStatus {
     auto_renew: boolean;
 }
 
+export interface EnrolledMC {
+    id: number;
+    name: string;
+    status: string;
+    passed_competency_count: number;
+    total_competency_count: number;
+    enrollment_date: string;
+}
+
+export interface ApiResponse<T> {
+    success: boolean;
+    message: string;
+    total_count?: number;
+    [key: string]: any;
+}
+
+export interface EarnedCredentialsResponse extends ApiResponse<EarnedCredential[]> {
+    credentials: EarnedCredential[];
+}
+
+export interface CompletedCredentialsResponse extends ApiResponse<any[]> {
+    credentials: any[];
+}
+
+export interface ECTSAccumulationResponse extends ApiResponse<ECTSAccumulation> {
+    ects_data: ECTSAccumulation;
+}
+
+export interface EnrolledMCsResponse extends ApiResponse<EnrolledMC[]> {
+    micro_credentials: EnrolledMC[];
+}
+
+export interface InProgressMCsResponse extends ApiResponse<InProgressMC[]> {
+    in_progress: InProgressMC[];
+}
+
+export interface DashboardOverviewResponse extends ApiResponse<DashboardOverview> {
+    dashboard: DashboardOverview;
+}
+
+export interface SessionHistoryResponse extends ApiResponse<SessionHistory[]> {
+    sessions: SessionHistory[];
+}
+
 export const PractitionerManagementApi = baseApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
         // Get all earned micro-credentials with certificates and badges
-        getEarnedCredentials: builder.query<EarnedCredential[], void>({
+        getEarnedCredentials: builder.query<EarnedCredentialsResponse, void>({
             query: () => ({
                 url: "/practitioner/dashboard/earned-credentials/",
                 method: "GET",
@@ -63,8 +110,17 @@ export const PractitionerManagementApi = baseApi.injectEndpoints({
             providesTags: ["Practitioner"],
         }),
 
+        // Get all micro-credentials where user passed all competencies
+        getCompletedCredentials: builder.query<CompletedCredentialsResponse, void>({
+            query: () => ({
+                url: "/practitioner/dashboard/completed-credentials/",
+                method: "GET",
+            }),
+            providesTags: ["Practitioner"],
+        }),
+
         // Get total ECTS accumulated and degree progress
-        getECTSAccumulation: builder.query<ECTSAccumulation, void>({
+        getECTSAccumulation: builder.query<ECTSAccumulationResponse, void>({
             query: () => ({
                 url: "/practitioner/dashboard/ects-accumulation/",
                 method: "GET",
@@ -72,8 +128,17 @@ export const PractitionerManagementApi = baseApi.injectEndpoints({
             providesTags: ["Practitioner"],
         }),
 
+        // Get all micro-credentials bought or enrolled by the user
+        getEnrolledMCs: builder.query<EnrolledMCsResponse, void>({
+            query: () => ({
+                url: "/practitioner/dashboard/enrolled-mcs/",
+                method: "GET",
+            }),
+            providesTags: ["Practitioner"],
+        }),
+
         // Get all micro-credentials currently in progress
-        getInProgressMCs: builder.query<InProgressMC[], void>({
+        getInProgressMCs: builder.query<InProgressMCsResponse, void>({
             query: () => ({
                 url: "/practitioner/dashboard/in-progress/",
                 method: "GET",
@@ -82,7 +147,7 @@ export const PractitionerManagementApi = baseApi.injectEndpoints({
         }),
 
         // Get complete dashboard overview with key statistics
-        getDashboardOverview: builder.query<DashboardOverview, void>({
+        getDashboardOverview: builder.query<DashboardOverviewResponse, void>({
             query: () => ({
                 url: "/practitioner/dashboard/overview/",
                 method: "GET",
@@ -91,7 +156,7 @@ export const PractitionerManagementApi = baseApi.injectEndpoints({
         }),
 
         // Get recent learning session history
-        getSessionHistory: builder.query<SessionHistory[], { limit?: number } | void>({
+        getSessionHistory: builder.query<SessionHistoryResponse, { limit?: number } | void>({
             query: (params) => ({
                 url: "/practitioner/dashboard/session-history/",
                 method: "GET",
@@ -113,9 +178,12 @@ export const PractitionerManagementApi = baseApi.injectEndpoints({
 
 export const {
     useGetEarnedCredentialsQuery,
+    useGetCompletedCredentialsQuery,
     useGetECTSAccumulationQuery,
+    useGetEnrolledMCsQuery,
     useGetInProgressMCsQuery,
     useGetDashboardOverviewQuery,
     useGetSessionHistoryQuery,
     useGetSubscriptionStatusQuery,
 } = PractitionerManagementApi;
+

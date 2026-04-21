@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { MCS, DOMAINS } from "@/lib/data";
 import Image from "next/image";
-import certPhoto from "@/assets/cirtificate/image12.jpg";
+import certPhoto from "@/assets/cirtificate/Untitled-2.png";
 // import certPhoto from "@/assets/images/PHOTO-2026-04-10-12-51-07.jpeg";
 import ikonLogo from "@/assets/images/ikon_logo.png";
 import html2canvas from "html2canvas";
@@ -104,7 +104,7 @@ export const Certificate = () => {
             // 4. Certificate ID
             const certId = `IKS-${mc.id}-2026-4201-XKPM7`;
             // Coordinates for the "Certificate ID:" field
-            pdf.text(certId, 128, 168);
+            pdf.text(certId, 128, 180);
 
             // Final Save
             pdf.save(`IKON-Skills-Certificate-${mc.name.replace(/\s+/g, '-')}.pdf`);
