@@ -181,7 +181,7 @@ export const Degrees = () => {
                                 {group.items.map((deg: any) => (
                                     <div
                                         key={deg.id}
-                                        className={`degree-card bg-white/3 border border-white/8 rounded-xl overflow-hidden transition-all hover:bg-white/6 hover:border-white/20 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border-l-3 ${group.id === 'Bachelor' ? 'border-l-[#1E6B8C]' :
+                                        className={`degree-card relative bg-white/3 border border-white/8 rounded-xl ${expandedDegrees.includes(deg.id) ? 'z-[60]' : 'z-10 overflow-hidden'} transition-all hover:bg-white/6 hover:border-white/20 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border-l-3 ${group.id === 'Bachelor' ? 'border-l-[#1E6B8C]' :
                                                 group.id === 'Master' ? 'border-l-[#a02030]' :
                                                     group.id === 'Doctorate' ? 'border-l-[#8a1a26]' :
                                                         'border-l-[#9B59B6]'
@@ -211,22 +211,47 @@ export const Degrees = () => {
                                         </div>
 
                                         {expandedDegrees.includes(deg.id) && (
-                                            <div className="mc-list p-4.5 pt-0 border-t border-white/6 animate-in slide-in-from-top-1.5 duration-250">
-                                                <div className="mc-intro text-[11px] text-[#64748B] py-3 flex items-center gap-2 before:content-[''] before:inline-block before:w-5 before:h-[1px] before:bg-[#a02030]">
-                                                    Required Micro-Credentials to earn this degree
+                                            <div className="mc-list absolute top-[calc(100%+12px)] left-0 right-0 z-[100] p-5 bg-[#070c14]/98 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-[0_30px_70px_rgba(0,0,0,0.8)] animate-in fade-in zoom-in-95 duration-200 origin-top">
+                                                <div className="mc-header flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[10px] uppercase tracking-[2px] font-bold text-gold">Required Path</span>
+                                                        <span className="text-[9px] text-[#64748B]">Complete all units to graduate</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[11px] font-mono text-white bg-white/5 px-2 py-0.5 rounded border border-white/10">{deg.mcs.length} MCs</span>
+                                                        <button 
+                                                            onClick={(e) => { e.stopPropagation(); toggleDegree(deg.id); }}
+                                                            className="text-[#64748B] hover:text-white transition-colors"
+                                                        >
+                                                            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <div className="mc-items flex flex-col gap-1">
-                                                    {deg.mcs.map((mc: string, idx: number) => (
-                                                        <div key={idx} className="mc-item flex items-center gap-2 py-1.5 px-2.5 bg-white/3 rounded-md text-[12px] text-[#E2E8F0] border border-transparent transition-all hover:bg-gold/8 hover:border-gold/20 hover:text-white group">
-                                                            <span className="mc-num font-mono text-[10px] text-[#64748B] w-5">{String(idx + 1).padStart(2, '0')}</span>
-                                                            <div className={`mc-dot w-1.5 h-1.5 rounded-full ${group.id === 'Bachelor' ? 'bg-[#1E6B8C]' :
-                                                                    group.id === 'Master' ? 'bg-[#a02030]' :
-                                                                        group.id === 'Doctorate' ? 'bg-[#8a1a26]' :
-                                                                            'bg-[#9B59B6]'
-                                                                }`}></div>
-                                                            {mc}
-                                                        </div>
-                                                    ))}
+                                                
+                                                <div className="mc-items-scroll max-h-[340px] overflow-y-auto pr-3 custom-scrollbar scroll-smooth">
+                                                    <div className="mc-items flex flex-col gap-2">
+                                                        {deg.mcs.map((mc: string, idx: number) => (
+                                                            <div key={idx} className="mc-item flex items-center gap-3 py-2.5 px-3.5 bg-white/[0.03] rounded-xl text-[12.5px] text-[#CBD5E1] border border-white/5 transition-all hover:bg-white/[0.06] hover:border-white/15 hover:text-white hover:translate-x-1 group cursor-default">
+                                                                <div className="mc-step flex items-center justify-center w-6 h-6 rounded-lg bg-white/5 border border-white/10 text-[10px] font-mono text-[#64748B] group-hover:bg-gold/20 group-hover:border-gold/30 group-hover:text-gold transition-all">
+                                                                    {String(idx + 1).padStart(2, '0')}
+                                                                </div>
+                                                                <div className={`mc-indicator w-1 h-3.5 rounded-full ${group.id === 'Bachelor' ? 'bg-[#1E6B8C]' :
+                                                                        group.id === 'Master' ? 'bg-[#a02030]' :
+                                                                            group.id === 'Doctorate' ? 'bg-[#8a1a26]' :
+                                                                                'bg-[#9B59B6]'
+                                                                    } opacity-30 group-hover:opacity-100 transition-opacity`}></div>
+                                                                <span className="flex-1 leading-tight">{mc}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                <div className="mt-4 pt-3 border-t border-white/5 flex justify-center">
+                                                    <button 
+                                                        onClick={(e) => { e.stopPropagation(); toggleDegree(deg.id); }}
+                                                        className="text-[10px] uppercase tracking-[1px] font-bold text-[#64748B] hover:text-gold transition-colors"
+                                                    >
+                                                        Close Syllabus
+                                                    </button>
                                                 </div>
                                             </div>
                                         )}
