@@ -1,13 +1,23 @@
-"use client";
-
 import { useSearchParams, useRouter } from "next/navigation";
 import { useGetLessonCompetenciesQuery } from "@/redux/features/lesson/lessonCompetenciesApi";
-import { useMemo } from "react";
+import { useGetEnrollmentPricingQuery } from "@/redux/features/enrollment/EnrollmentManagementapi";
+import { useMemo, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { Check, CreditCard, X, ShieldCheck, Globe } from "lucide-react";
 
 export const CredentialDetail = () => {
+    const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
     const searchParams = useSearchParams();
     const router = useRouter();
     const id = searchParams.get("id");
+
+    const { data: pricingResponse } = useGetEnrollmentPricingQuery();
+    const pricing = pricingResponse?.pricing;
 
     // Fetch data from API using micro_credential_id
     const { data: apiResponse, isLoading, isError } = useGetLessonCompetenciesQuery(
@@ -157,7 +167,10 @@ export const CredentialDetail = () => {
                             </div>
                         </div>
 
-                        <button onClick={() => router.push('/pricing#plans')} className="w-full bg-gold text-white font-bold text-[13.5px] py-3 rounded-xl shadow-[0_4px_0_#9a7e3a] hover:bg-gold2 hover:translate-y-[1px] hover:shadow-[0_3px_0_#9a7e3a] active:shadow-none active:translate-y-[4px] transition-all mb-3 text-center">
+                        <button 
+                            onClick={() => setIsPricingModalOpen(true)} 
+                            className="w-full bg-gold text-white font-bold text-[13.5px] py-3 rounded-xl shadow-[0_4px_0_#9a7e3a] hover:bg-gold2 hover:translate-y-[1px] hover:shadow-[0_3px_0_#9a7e3a] active:shadow-none active:translate-y-[4px] transition-all mb-3 text-center"
+                        >
                             Enroll as Practitioner
                         </button>
 
@@ -184,6 +197,83 @@ export const CredentialDetail = () => {
                     </div>
                 </aside>
             </div>
+
+            {/* PRICING & PAYMENT MODAL */}
+            {isPricingModalOpen && mounted && createPortal(
+                <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
+                    <div 
+                        className="absolute inset-0 bg-[#040812]/95 backdrop-blur-xl animate-in fade-in duration-300"
+                        onClick={() => setIsPricingModalOpen(false)}
+                    ></div>
+                    <div className="relative w-full max-w-[420px] bg-[#0a111e] border border-gold/30 rounded-2xl shadow-[0_0_100px_rgba(196,136,14,0.2)] overflow-hidden animate-in zoom-in-95 fade-in duration-300">
+                        {/* Header */}
+                        <div className="bg-gradient-to-r from-gold/20 to-transparent p-6 pb-4 border-b border-white/10 flex justify-between items-start">
+                            <div>
+                                <h3 className="text-white font-serif font-bold text-xl">Enroll as Practitioner</h3>
+                                <p className="text-white/50 text-[12px] mt-1">IKON SKILLS™ Certified Pathway</p>
+                            </div>
+                            <button 
+                                onClick={() => setIsPricingModalOpen(false)}
+                                className="text-white/40 hover:text-white transition-colors p-1"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="p-6">
+                            {/* Credential Card Summary */}
+                            <div className="bg-white/5 rounded-xl p-4 mb-6 border border-white/10">
+                                <div className="text-[10px] uppercase tracking-widest text-gold font-bold mb-1">Selected Credential</div>
+                                <div className="text-white font-bold text-[15px]">{mc.micro_credential}</div>
+                            </div>
+
+                            {/* Price Section */}
+                            <div className="text-center mb-8">
+                                <div className="text-white/50 text-[13px] mb-1">Total Enrollment Fee</div>
+                                <div className="flex items-center justify-center gap-2">
+                                    <span className="text-[42px] font-serif font-bold text-white leading-none">
+                                        {pricing?.price || "14.99"}
+                                    </span>
+                                    <div className="flex flex-col items-start leading-none">
+                                        <span className="text-gold font-bold text-[14px] uppercase">{pricing?.currency || "USD"}</span>
+                                        <span className="text-white/30 text-[10px] mt-0.5">VAT Incl.</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Features */}
+                            <div className="space-y-3 mb-8">
+                                {[
+                                    { icon: <ShieldCheck size={16} className="text-gold" />, text: "Lifetime Verifiable Credential" },
+                                    { icon: <Globe size={16} className="text-gold" />, text: "International Recognition" },
+                                    { icon: <Check size={16} className="text-gold" />, text: "100% Digital & AI Assessed" }
+                                ].map((item, i) => (
+                                    <div key={i} className="flex items-center gap-3 text-[13px] text-white/70">
+                                        {item.icon}
+                                        <span>{item.text}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Action */}
+                            <button 
+                                className="w-full bg-gold text-white font-bold py-4 rounded-xl shadow-[0_4px_0_#9a7e3a] hover:bg-gold2 hover:translate-y-[1px] hover:shadow-[0_3px_0_#9a7e3a] transition-all flex items-center justify-center gap-3"
+                                onClick={() => {
+                                    // Handle payment logic here
+                                    alert("Proceeding to payment gateway...");
+                                }}
+                            >
+                                <CreditCard size={18} />
+                                Pay & Enroll Now
+                            </button>
+                            <p className="text-[10px] text-white/30 text-center mt-4 px-4 leading-relaxed">
+                                By clicking 'Pay & Enroll Now', you agree to IKON SKILLS™ Terms of Service and Academic Integrity Policy.
+                            </p>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
         </div>
     );
 };

@@ -24,6 +24,22 @@ export interface CheckAccessResponse {
     enrollment?: Enrollment;
 }
 
+export interface EnrollmentPricing {
+    id: number;
+    price: string;
+    currency: string;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface EnrollmentPricingResponse {
+    success: boolean;
+    message: string;
+    pricing: EnrollmentPricing;
+    error: boolean;
+}
+
 export const EnrollmentManagementapi = baseApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
@@ -65,6 +81,15 @@ export const EnrollmentManagementapi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["Enrollment"],
         }),
+
+        // Get current micro-credential pricing
+        getEnrollmentPricing: builder.query<EnrollmentPricingResponse, void>({
+            query: () => ({
+                url: "/enrollment/enrollments/pricing/",
+                method: "GET",
+            }),
+            providesTags: ["Enrollment"],
+        }),
     }),
 });
 
@@ -73,4 +98,5 @@ export const {
     useBuyCredentialMutation,
     useCheckAccessQuery,
     useEnrollWithSubscriptionMutation,
+    useGetEnrollmentPricingQuery,
 } = EnrollmentManagementapi;

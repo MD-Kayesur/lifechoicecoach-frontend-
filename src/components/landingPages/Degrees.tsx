@@ -44,7 +44,7 @@ export const Degrees = () => {
             const levelMatch = activeFilter === 'all' || deg.level === activeFilter;
             const searchMatch = !query ||
                 deg.name.toLowerCase().includes(query) ||
-                deg.mcs.some(mc => mc.toLowerCase().includes(query));
+                deg.mcs.some((mc: any) => mc.toLowerCase().includes(query));
             return levelMatch && searchMatch;
         });
     }, [activeFilter, searchQuery, mappedDegrees]);
