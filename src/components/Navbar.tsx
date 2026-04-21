@@ -19,7 +19,7 @@ export function Navbar() {
     { name: "Sample MC", href: "/sample-mc", isSection: false },
     { name: "Neuroscience", href: "/neuroscience", isSection: false },
     { name: "Sample Certificate", href: "/certificate", isSection: false },
-    { name: "Dashboard", href: "/dashboard", isSection: false },
+    ...(isAuthenticated ? [{ name: "Dashboard", href: "/dashboard", isSection: false }] : []),
     { name: "Degree Programs", href: "/degrees", isSection: false },
     { name: "Credential Pathways", href: "/pathways", isSection: false },
     { name: "Pricing", href: "/pricing", isSection: false },
