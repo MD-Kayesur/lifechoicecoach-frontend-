@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { DEGREES, CERTS } from "@/lib/data";
+import { useGetDegreeCatalogQuery } from "@/redux/features/degree/degreePathwaysApi";
 
 export const Degrees = () => {
     const [activeFilter, setActiveFilter] = useState("all");
@@ -14,16 +15,39 @@ export const Degrees = () => {
         );
     };
 
+    const { data: catalogData } = useGetDegreeCatalogQuery();
+
+    const mappedDegrees = useMemo(() => {
+        if (!catalogData?.success) return DEGREES;
+
+        const allDegrees: any[] = [];
+        catalogData.degree_catalog.degree_types.forEach(type => {
+            type.degrees.forEach(deg => {
+                allDegrees.push({
+                    id: deg.id,
+                    level: deg.degree_type,
+                    name: deg.name,
+                    mcs: deg.required_micro_credentials.map(mc => mc.name),
+                    mc_count: deg.mc_required,
+                    ects: deg.ects_required,
+                    eqf: deg.eqf_level,
+                    partner: deg.co_endorser === "-" ? null : deg.co_endorser
+                });
+            });
+        });
+        return allDegrees;
+    }, [catalogData]);
+
     const filteredDegrees = useMemo(() => {
         const query = searchQuery.toLowerCase().trim();
-        return DEGREES.filter(deg => {
+        return mappedDegrees.filter(deg => {
             const levelMatch = activeFilter === 'all' || deg.level === activeFilter;
             const searchMatch = !query ||
                 deg.name.toLowerCase().includes(query) ||
                 deg.mcs.some(mc => mc.toLowerCase().includes(query));
             return levelMatch && searchMatch;
         });
-    }, [activeFilter, searchQuery]);
+    }, [activeFilter, searchQuery, mappedDegrees]);
 
     const filteredCerts = useMemo(() => {
         const query = searchQuery.toLowerCase().trim();
@@ -42,6 +66,12 @@ export const Degrees = () => {
         { id: 'Doctorate', label: 'Doctorate Degrees', items: filteredDegrees.filter(d => d.level === 'Doctorate') },
         { id: 'Cert', label: 'Brand Strategy Certifications', items: filteredCerts }
     ];
+
+    const totalCount = mappedDegrees.length + CERTS.length;
+    const bachelorCount = mappedDegrees.filter(d => d.level === 'Bachelor').length;
+    const masterCount = mappedDegrees.filter(d => d.level === 'Master').length;
+    const doctorateCount = mappedDegrees.filter(d => d.level === 'Doctorate').length;
+    const certCount = CERTS.length;
 
     return (
         <div id="page-degrees" className="page active pt-[62px] min-h-screen bg-[#070c14] relative overflow-hidden font-outfit">
@@ -62,17 +92,17 @@ export const Degrees = () => {
                         IKON SKILLS™ Stackable Degrees
                     </div>
                     <h1 className="font-sora font-extrabold text-white text-[28px] md:text-[52px] leading-[1.1] mb-4 tracking-[-.5px]">
-                        59 Degree Programs.<br /><span className="text-gold">Built from Micro-Credentials.</span>
+                        {totalCount} Degree Programs.<br /><span className="text-gold">Built from Micro-Credentials.</span>
                     </h1>
                     <p className="text-[#94A3B8] text-[16px] max-w-[680px] mx-auto mb-10 leading-[1.7]">
                         Every degree is assembled from verified IKON SKILLS™ Micro-Credentials. Stack your credentials. Earn your qualification. No traditional lectures required.
                     </p>
                     <div className="hero-stats flex justify-center gap-10 flex-wrap mb-10">
                         {[
-                            { n: '59', l: 'Degree Programs' },
-                            { n: '56', l: 'EIU-Paris Degrees' },
+                            { n: String(totalCount), l: 'Degree Programs' },
+                            { n: String(mappedDegrees.length), l: 'EIU-Paris Degrees' },
                             { n: '3', l: 'Education Degrees' },
-                            { n: '3', l: 'Brand Certifications' }
+                            { n: String(certCount), l: 'Brand Certifications' }
                         ].map((stat, i) => (
                             <div key={i} className="hero-stat text-center">
                                 <div className="num font-mono text-[32px] font-extrabold text-gold">{stat.n}</div>
@@ -89,31 +119,31 @@ export const Degrees = () => {
                             className={`filter-btn bg-white/5 border border-white/12 text-[#94A3B8] px-4.5 py-2 rounded-lg text-[13px] font-medium transition-all hover:bg-white/10 hover:text-white ${activeFilter === 'all' ? 'bg-[#a02030] border-gold text-white' : ''}`}
                             onClick={() => setActiveFilter('all')}
                         >
-                            All (59)
+                            All ({totalCount})
                         </button>
                         <button
                             className={`filter-btn bg-white/5 border border-white/12 text-[#94A3B8] px-4.5 py-2 rounded-lg text-[13px] font-medium transition-all hover:bg-white/10 hover:text-white ${activeFilter === 'Bachelor' ? 'bg-[#1E6B8C]/40 border-[#1E6B8C] text-white' : ''}`}
                             onClick={() => setActiveFilter('Bachelor')}
                         >
-                            Bachelor (22)
+                            Bachelor ({bachelorCount})
                         </button>
                         <button
                             className={`filter-btn bg-white/5 border border-white/12 text-[#94A3B8] px-4.5 py-2 rounded-lg text-[13px] font-medium transition-all hover:bg-white/10 hover:text-white ${activeFilter === 'Master' ? 'bg-gold/30 border-gold text-[#cb2d39]' : ''}`}
                             onClick={() => setActiveFilter('Master')}
                         >
-                            Master (22)
+                            Master ({masterCount})
                         </button>
                         <button
                             className={`filter-btn bg-white/5 border border-white/12 text-[#94A3B8] px-4.5 py-2 rounded-lg text-[13px] font-medium transition-all hover:bg-white/10 hover:text-white ${activeFilter === 'Doctorate' ? 'bg-[#8a1a26]/40 border-gold text-[#FF8080]' : ''}`}
                             onClick={() => setActiveFilter('Doctorate')}
                         >
-                            Doctorate (12)
+                            Doctorate ({doctorateCount})
                         </button>
                         <button
                             className={`filter-btn bg-white/5 border border-white/12 text-[#94A3B8] px-4.5 py-2 rounded-lg text-[13px] font-medium transition-all hover:bg-white/10 hover:text-white ${activeFilter === 'Cert' ? 'bg-[#4a1e6b]/40 border-[#9B59B6] text-[#C39BD3]' : ''}`}
                             onClick={() => setActiveFilter('Cert')}
                         >
-                            Certifications (3)
+                            Certifications ({certCount})
                         </button>
                         <div className="search-box flex-1 min-w-[220px] max-w-[360px]">
                             <input
@@ -128,7 +158,7 @@ export const Degrees = () => {
                 </div>
 
                 <div className="results-count px-10 pb-3 text-[13px] text-[#64748B] max-w-[1400px] mx-auto">
-                    Showing {groups.reduce((acc, g) => acc + g.items.length, 0)} of 59 credentials
+                    Showing {groups.reduce((acc, g) => acc + g.items.length, 0)} of {totalCount} credentials
                 </div>
 
                 {/* DEGREES GRID */}
