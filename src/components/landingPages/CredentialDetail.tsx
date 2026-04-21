@@ -1,9 +1,12 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { useGetLessonCompetenciesQuery } from "@/redux/features/lesson/lessonCompetenciesApi";
-import { useGetEnrollmentPricingQuery } from "@/redux/features/enrollment/EnrollmentManagementapi";
+import { 
+    useGetEnrollmentPricingQuery, 
+    useCheckAccessQuery 
+} from "@/redux/features/enrollment/EnrollmentManagementapi";
 import { useMemo, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Check, CreditCard, X, ShieldCheck, Globe } from "lucide-react";
+import { Check, CreditCard, X, ShieldCheck, Globe, BookOpen } from "lucide-react";
 
 export const CredentialDetail = () => {
     const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
@@ -18,6 +21,12 @@ export const CredentialDetail = () => {
 
     const { data: pricingResponse } = useGetEnrollmentPricingQuery();
     const pricing = pricingResponse?.pricing;
+
+    // Check if user already has access
+    const { data: accessData } = useCheckAccessQuery(Number(id), { 
+        skip: !id 
+    });
+    const canAccess = accessData?.access?.can_access;
 
     // Fetch data from API using micro_credential_id
     const { data: apiResponse, isLoading, isError } = useGetLessonCompetenciesQuery(
@@ -167,12 +176,22 @@ export const CredentialDetail = () => {
                             </div>
                         </div>
 
-                        <button 
-                            onClick={() => setIsPricingModalOpen(true)} 
-                            className="w-full bg-gold text-white font-bold text-[13.5px] py-3 rounded-xl shadow-[0_4px_0_#9a7e3a] hover:bg-gold2 hover:translate-y-[1px] hover:shadow-[0_3px_0_#9a7e3a] active:shadow-none active:translate-y-[4px] transition-all mb-3 text-center"
-                        >
-                            Enroll as Practitioner
-                        </button>
+                        {canAccess ? (
+                            <button 
+                                onClick={() => router.push('/dashboard?tab=My Learning')} 
+                                className="w-full bg-[#4ade80]/20 border border-[#4ade80]/50 text-[#4ade80] font-bold text-[13.5px] py-3 rounded-xl hover:bg-[#4ade80]/30 transition-all mb-3 flex items-center justify-center gap-2"
+                            >
+                                <BookOpen size={18} />
+                                Already Enrolled · Resume Learning
+                            </button>
+                        ) : (
+                            <button 
+                                onClick={() => setIsPricingModalOpen(true)} 
+                                className="w-full bg-gold text-white font-bold text-[13.5px] py-3 rounded-xl shadow-[0_4px_0_#9a7e3a] hover:bg-gold2 hover:translate-y-[1px] hover:shadow-[0_3px_0_#9a7e3a] active:shadow-none active:translate-y-[4px] transition-all mb-3 text-center"
+                            >
+                                Enroll as Practitioner
+                            </button>
+                        )}
 
                         <button
                             onClick={() => router.push(`/certificate?id=${id || '01-01'}`)}

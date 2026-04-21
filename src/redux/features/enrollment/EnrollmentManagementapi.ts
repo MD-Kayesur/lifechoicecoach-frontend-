@@ -20,8 +20,14 @@ export interface EnrollmentWithSubscriptionRequest {
 }
 
 export interface CheckAccessResponse {
-    has_access: boolean;
-    enrollment?: Enrollment;
+    success: boolean;
+    message: string;
+    access: {
+        can_access: boolean;
+        message: string;
+        micro_credential_id: string | number;
+    };
+    error: boolean;
 }
 
 export interface EnrollmentPricing {
@@ -40,6 +46,31 @@ export interface EnrollmentPricingResponse {
     error: boolean;
 }
 
+export interface EnrollmentCreateResponse {
+    success: boolean;
+    message: string;
+    error: boolean;
+    enrollment: {
+        id: number;
+        user_email: string;
+        micro_credential: number;
+        micro_credential_name: string;
+        domain_name: string;
+        access_granted_at: string;
+        access_expires_at: string | null;
+        is_active: boolean;
+        attempts_used: number;
+        max_attempts: number;
+        status: string;
+        completed_at: string | null;
+        can_access: {
+            status: boolean;
+            message: string;
+        };
+        payment_amount: number;
+    };
+}
+
 export const EnrollmentManagementapi = baseApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
@@ -53,10 +84,10 @@ export const EnrollmentManagementapi = baseApi.injectEndpoints({
             providesTags: ["Enrollment"],
         }),
 
-        // Buy a single micro-credential
-        buyCredential: builder.mutation<any, BuyCredentialRequest>({
+        // Buy a single micro-credential (Lifetime Access)
+        buyCredential: builder.mutation<EnrollmentCreateResponse, BuyCredentialRequest>({
             query: (body) => ({
-                url: "/enrollment/enrollments/buy-credential/",
+                url: "/enrollment/enrollments/",
                 method: "POST",
                 body,
             }),

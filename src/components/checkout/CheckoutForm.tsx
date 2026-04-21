@@ -85,7 +85,7 @@ export const CheckoutForm = ({ id }: CheckoutFormProps) => {
             }).unwrap();
 
             if (result.success || !result.error) {
-                toast.success("Enrollment successful!");
+                toast.success(result.message || "Enrollment successful!");
                 router.push("/dashboard?tab=My Learning");
             } else {
                 toast.error(result.message || "Enrollment failed");
