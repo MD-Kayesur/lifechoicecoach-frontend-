@@ -1,0 +1,136 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-outfit);
+  --font-outfit: var(--font-outfit);
+  --font-cormorant: var(--font-cormorant);
+  --font-mono: var(--font-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* IKON Reference Colors */
+  --color-navy: #0B1F3A;
+  --color-navy2: #142E55;
+  --color-navy3: #1A3A6B;
+  --color-gold: #cb2d39;
+  --color-gold2: #e0364a;
+  --color-gold3: #f06070;
+  --color-cream: #F9F5EE;
+  --color-ivory: #FDFCF9;
+  --color-chalk: #F2EDE4;
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: #0a1628;
+  --foreground: #f8fafc;
+  --card: rgba(255, 255, 255, 0.05);
+  --card-foreground: #f8fafc;
+  --popover: #0d1a2e;
+  --popover-foreground: #f8fafc;
+  --primary: #cb2d39;
+  --primary-foreground: #ffffff;
+  --secondary: #e0364a;
+  --secondary-foreground: #020617;
+  --muted: #3D4556;
+  --muted-foreground: #74798A;
+  --accent: rgba(255, 255, 255, 0.07);
+  --accent-foreground: #f8fafc;
+  --destructive: #7f1d1d;
+  --destructive-foreground: #f8fafc;
+  --border: rgba(196, 136, 14, 0.2);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #cb2d39;
+  --radius: 0.75rem;
+}
+
+@layer base {
+  * {
+    @apply border-border/50 outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-outfit;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-cormorant font-bold;
+  }
+}
+
+.hero-grid {
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(196, 136, 14, 0.05) 60px),
+                    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(196, 136, 14, 0.05) 60px);
+}
+
+.page-bg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 80% 60% at 15% 20%, rgba(203, 45, 57, 0.08) 0%, transparent 55%),
+              radial-gradient(ellipse 60% 50% at 85% 75%, rgba(203, 45, 57, 0.06) 0%, transparent 50%),
+              repeating-linear-gradient(-45deg, transparent, transparent 38px, rgba(203, 45, 57, 0.025) 38px, rgba(203, 45, 57, 0.025) 40px),
+              linear-gradient(160deg, #0a1628 0%, #111827 40%, #0d1f35 70%, #0a1628 100%);
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .4; }
+}
+
+.blink {
+  animation: blink 2s infinite;
+}
+
+@keyframes f1 { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-12px) } }
+@keyframes f2 { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-9px) } }
+@keyframes f3 { 0%,100% { transform:translateY(0) } 50% { transform:translateY(7px) } }
+@keyframes f4 { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-7px) } }
+
+.animate-f1 { animation: f1 7s ease-in-out infinite; }
+.animate-f2 { animation: f2 8s ease-in-out infinite; }
+.animate-f3 { animation: f3 9s ease-in-out infinite; }
+.animate-f4 { animation: f4 6.5s ease-in-out infinite; }
+
+
