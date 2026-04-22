@@ -23,11 +23,18 @@ export interface BadgeVerifyResponse {
     issued_on: string;
 }
 
+export interface BadgesResponse {
+    success: boolean;
+    message: string;
+    badges: Badge[];
+    error: boolean;
+}
+
 export const progressbadgeapi = baseApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
         // Get all badges for current user
-        getBadges: builder.query<Badge[], BadgeListParams | void>({
+        getBadges: builder.query<BadgesResponse, BadgeListParams | void>({
             query: (params) => ({
                 url: "/progress/badges/",
                 method: "GET",

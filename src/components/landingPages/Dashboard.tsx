@@ -15,6 +15,8 @@ import { MCPassport } from "@/components/dashboard/MCPassport";
 import { MyCredentials } from "@/components/dashboard/MyCredentials";
 import { Progress } from "@/components/dashboard/Progress";
 import { DegreePathways } from "@/components/dashboard/DegreePathways";
+import { Certificates } from "@/components/dashboard/Certificates";
+import { Badges } from "@/components/dashboard/Badges";
 import { Settings } from "@/components/dashboard/Settings";
 import { Profile } from "@/components/dashboard/Profile";
 import { Subscription } from "@/components/dashboard/Subscription";
@@ -34,6 +36,8 @@ export const Dashboard = () => {
             if (tab === "passport") setSelectedTab("MC Passport");
             else if (tab === "credentials") setSelectedTab("My Credentials");
             else if (tab === "subscription") setSelectedTab("Subscription");
+            else if (tab === "certificates") setSelectedTab("Certificates");
+            else if (tab === "badges") setSelectedTab("Badges");
             else setSelectedTab(tab);
         }
     }, [searchParams]);
@@ -45,6 +49,8 @@ export const Dashboard = () => {
         { icon: '🏅', label: 'My Credentials' },
         { icon: '📈', label: 'Progress' },
         { icon: '🎓', label: 'Degree Pathways' },
+        { icon: '📜', label: 'Certificates' },
+        { icon: '🎖️', label: 'Badges' },
         { icon: '💳', label: 'Subscription' },
         { icon: '⚙️', label: 'Settings' },
         { icon: '👤', label: 'Profile' }
@@ -74,6 +80,8 @@ export const Dashboard = () => {
             case "My Credentials": return <MyCredentials />;
             case "Progress": return <Progress />;
             case "Degree Pathways": return <DegreePathways />;
+            case "Certificates": return <Certificates />;
+            case "Badges": return <Badges />;
             case "Subscription": return <Subscription />;
             case "Settings": return <Settings onTabChange={setSelectedTab} />;
             case "Profile": return <Profile />;

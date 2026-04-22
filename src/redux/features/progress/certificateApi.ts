@@ -24,11 +24,17 @@ export interface CertificateVerifyResponse {
     verification_time: string;
 }
 
+export interface CertificatesResponse {
+    success: boolean;
+    message: string;
+    certificates: Certificate[];
+}
+
 export const certificateApi = baseApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
         // Get all certificates for current user
-        getCertificates: builder.query<Certificate[], CertificateListParams | void>({
+        getCertificates: builder.query<CertificatesResponse, CertificateListParams | void>({
             query: (params) => ({
                 url: "/progress/certificates/",
                 method: "GET",
