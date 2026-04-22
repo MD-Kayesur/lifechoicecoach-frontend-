@@ -81,6 +81,19 @@ export interface EnrolledCredentialWithState {
     gamification_points: number;
 }
 
+export interface DegreePathwayProgress {
+    degree_id: number;
+    degree_type: string;
+    degree_name: string;
+    eqf_level: number;
+    completed_micro_credentials: number;
+    total_micro_credentials: number;
+    degree_pathway_progress: string;
+    progress_percentage: number;
+    is_completed: boolean;
+    completed_at: string | null;
+}
+
 export interface ApiResponse<T> {
     success: boolean;
     message: string;
@@ -110,6 +123,10 @@ export interface InProgressMCsResponse extends ApiResponse<InProgressMC[]> {
 
 export interface EnrolledCredentialsWithStateResponse extends ApiResponse<EnrolledCredentialWithState[]> {
     micro_credentials: EnrolledCredentialWithState[];
+}
+
+export interface DegreePathwayProgressResponse extends ApiResponse<DegreePathwayProgress[]> {
+    degree_pathways: DegreePathwayProgress[];
 }
 
 export interface DashboardOverviewResponse extends ApiResponse<DashboardOverview> {
@@ -204,6 +221,15 @@ export const PractitionerManagementApi = baseApi.injectEndpoints({
             }),
             providesTags: ["Practitioner"],
         }),
+
+        // Get degree pathway progress for current user
+        getDegreePathwayProgress: builder.query<DegreePathwayProgressResponse, void>({
+            query: () => ({
+                url: "/practitioner/dashboard/track-management/degree-pathways/",
+                method: "GET",
+            }),
+            providesTags: ["Practitioner"],
+        }),
     }),
 });
 
@@ -217,5 +243,6 @@ export const {
     useGetSessionHistoryQuery,
     useGetSubscriptionStatusQuery,
     useGetEnrolledCredentialsWithStateQuery,
+    useGetDegreePathwayProgressQuery,
 } = PractitionerManagementApi;
 
