@@ -8,11 +8,8 @@ import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { Loader2 } from "lucide-react";
 
-// Replace with your actual Stripe publishable key
-const stripePromise = loadStripe(
-    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 
-    "pk_test_51P0Y0rL2vJvV5P0Y0rL2vJvV5P0Y0rL2vJvV5P0Y0rL2vJvV5P0Y0rL2vJvV5P0Y0rL2vJvV5P0Y0rL2vJvV"
-);
+// Initialize Stripe with the publishable key from environment variables
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "");
 
 const CheckoutContent = () => {
     const searchParams = useSearchParams();

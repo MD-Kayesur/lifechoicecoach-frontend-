@@ -36,6 +36,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${outfit.variable} ${cormorant.variable} ${jetbrains.variable} font-sans h-full antialiased`}
     >
       <body className="min-h-screen flex flex-col bg-background text-foreground">

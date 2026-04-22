@@ -13,17 +13,19 @@ export function Navbar() {
   const pathname = usePathname();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
-  const navLinks = [
+  const baseLinks = [
     { name: "Home", href: "/", isSection: true, sectionId: "home" },
     { name: "Credential Catalog", href: "/catalog", isSection: false },
-    // { name: "Sample MC", href: "/sample-mc", isSection: false },
     { name: "Neuroscience", href: "/neuroscience", isSection: false },
     { name: "Sample Certificate", href: "/certificate", isSection: false },
-    ...(isAuthenticated ? [{ name: "Dashboard", href: "/dashboard", isSection: false }] : []),
     { name: "Degree Pathways", href: "/degrees", isSection: false },
-    // { name: "Credential Pathways", href: "/pathways", isSection: false },
     { name: "Pricing", href: "/pricing", isSection: false },
   ];
+
+  // Only include Dashboard in navLinks on the client to avoid hydration mismatch
+  const navLinks = mounted && isAuthenticated 
+    ? [...baseLinks.slice(0, 4), { name: "Dashboard", href: "/dashboard", isSection: false }, ...baseLinks.slice(4)]
+    : baseLinks;
 
   useEffect(() => {
     setMounted(true);

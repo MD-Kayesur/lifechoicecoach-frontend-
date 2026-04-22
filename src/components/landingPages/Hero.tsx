@@ -2,9 +2,13 @@
 
 import CommonWrapper from "@/common/CommonWrapper";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 export const Hero = () => {
     const router = useRouter();
+    const { user } = useSelector((state: RootState) => state.auth);
+
     return (
         <section id="home" className="relative min-h-[100vh] flex items-center overflow-hidden bg-transparent">
             {/* Background Grid & Effects */}
@@ -48,9 +52,14 @@ export const Hero = () => {
                             >
                                 Explore 184 Credentials
                             </button>
-                            <button className="bg-primary text-white font-bold text-[14px] px-[24px] md:px-[28px] py-[13px] rounded-[8px] hover:bg-gold2 transition-all cursor-pointer shadow-[0_6px_0_#8a1e27,0_8px_16px_rgba(0,0,0,0.35)] active:translate-y-[5px] active:shadow-[0_1px_0_#8a1e27] hover:translate-y-[3px] hover:shadow-[0_3px_0_#8a1e27] w-full sm:w-auto">
-                                Enroll Free
-                            </button>
+                            {!user && (
+                                <button
+                                    onClick={() => router.push("/login")}
+                                    className="bg-primary text-white font-bold text-[14px] px-[24px] md:px-[28px] py-[13px] rounded-[8px] hover:bg-gold2 transition-all cursor-pointer shadow-[0_6px_0_#8a1e27,0_8px_16px_rgba(0,0,0,0.35)] active:translate-y-[5px] active:shadow-[0_1px_0_#8a1e27] hover:translate-y-[3px] hover:shadow-[0_3px_0_#8a1e27] w-full sm:w-auto"
+                                >
+                                    Enroll Free
+                                </button>
+                            )}
                         </div>
 
                         {/* KPI Display */}

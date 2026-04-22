@@ -50,6 +50,8 @@ export interface EnrollmentCreateResponse {
     success: boolean;
     message: string;
     error: boolean;
+    status?: number;
+    client_secret?: string;
     enrollment: {
         id: number;
         user_email: string;

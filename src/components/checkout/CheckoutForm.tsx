@@ -82,8 +82,26 @@ export const CheckoutForm = ({ id }: CheckoutFormProps) => {
                 micro_credential_id: Number(id),
                 payment_method_id: paymentMethod.id,
             }).unwrap();
+            
+            console.log("Backend Enrollment Response:", result);
 
-            if (result.success || !result.error) {
+            // Step 3: handle 3D Secure if required (Status 202)
+            if (result.status === 202 && result.client_secret) {
+                toast.info("Authentication required. Please verify your payment.");
+                const confirmResult = await stripe.confirmCardPayment(result.client_secret);
+                console.log("Stripe Confirmation Result:", confirmResult);
+                
+                const { error: confirmError, paymentIntent } = confirmResult;
+                
+                if (confirmError) {
+                    toast.error(confirmError.message || "Payment authentication failed");
+                } else if (paymentIntent && paymentIntent.status === "succeeded") {
+                    toast.success("Payment confirmed and enrollment successful!");
+                    router.push("/dashboard?tab=My Learning");
+                } else {
+                    toast.error("Payment status: " + (paymentIntent?.status || "unknown"));
+                }
+            } else if (result.success || !result.error) {
                 toast.success(result.message || "Enrollment successful!");
                 router.push("/dashboard?tab=My Learning");
             } else {
