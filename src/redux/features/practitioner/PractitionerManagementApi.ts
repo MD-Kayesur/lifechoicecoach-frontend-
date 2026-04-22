@@ -65,6 +65,22 @@ export interface EnrolledMC {
     enrollment_date: string;
 }
 
+export interface EnrolledCredentialWithState {
+    micro_credential_id: number;
+    micro_credential_name: string;
+    status: string;
+    attempts_used: number;
+    max_attempts: number;
+    attempts_remaining: number;
+    passed_competencies: number;
+    total_competencies: number;
+    access_expires_at: string | null;
+    enrolled_at: string;
+    completed_at: string | null;
+    is_active: boolean;
+    gamification_points: number;
+}
+
 export interface ApiResponse<T> {
     success: boolean;
     message: string;
@@ -90,6 +106,10 @@ export interface EnrolledMCsResponse extends ApiResponse<EnrolledMC[]> {
 
 export interface InProgressMCsResponse extends ApiResponse<InProgressMC[]> {
     in_progress: InProgressMC[];
+}
+
+export interface EnrolledCredentialsWithStateResponse extends ApiResponse<EnrolledCredentialWithState[]> {
+    micro_credentials: EnrolledCredentialWithState[];
 }
 
 export interface DashboardOverviewResponse extends ApiResponse<DashboardOverview> {
@@ -175,6 +195,15 @@ export const PractitionerManagementApi = baseApi.injectEndpoints({
             }),
             providesTags: ["Practitioner"],
         }),
+
+        // Get all enrolled credentials with current state
+        getEnrolledCredentialsWithState: builder.query<EnrolledCredentialsWithStateResponse, void>({
+            query: () => ({
+                url: "/practitioner/dashboard/track-management/enrolled-credentials/",
+                method: "GET",
+            }),
+            providesTags: ["Practitioner"],
+        }),
     }),
 });
 
@@ -187,5 +216,6 @@ export const {
     useGetDashboardOverviewQuery,
     useGetSessionHistoryQuery,
     useGetSubscriptionStatusQuery,
+    useGetEnrolledCredentialsWithStateQuery,
 } = PractitionerManagementApi;
 
