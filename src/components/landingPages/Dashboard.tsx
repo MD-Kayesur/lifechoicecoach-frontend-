@@ -51,7 +51,7 @@ export const Dashboard = () => {
         { icon: '🎓', label: 'Degree Pathways' },
         { icon: '📜', label: 'Certificates' },
         { icon: '🎖️', label: 'Badges' },
-        { icon: '💳', label: 'Subscription' },
+        // { icon: '💳', label: 'Subscription' },
         { icon: '⚙️', label: 'Settings' },
         { icon: '👤', label: 'Profile' }
     ];
@@ -82,7 +82,7 @@ export const Dashboard = () => {
             case "Degree Pathways": return <DegreePathways />;
             case "Certificates": return <Certificates />;
             case "Badges": return <Badges />;
-            case "Subscription": return <Subscription />;
+            // case "Subscription": return <Subscription />;
             case "Settings": return <Settings onTabChange={setSelectedTab} />;
             case "Profile": return <Profile />;
             default: return <Overview />;

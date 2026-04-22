@@ -44,6 +44,18 @@ export const MCPassport = () => {
 
     const fullName = passport?.user_name || user?.name || "Practitioner";
 
+    const handleShare = async () => {
+        if (!passport?.public_profile_url) return;
+        
+        try {
+            const fullUrl = `${window.location.origin}${passport.public_profile_url}`;
+            await navigator.clipboard.writeText(fullUrl);
+            toast.success("Passport link copied to clipboard!");
+        } catch (error) {
+            toast.error("Failed to copy passport link");
+        }
+    };
+
     return (
         <div className="animate-in fade-in duration-700 space-y-12 pb-20">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
@@ -55,13 +67,13 @@ export const MCPassport = () => {
                     <button 
                         onClick={handleToggleVisibility}
                         disabled={isUpdatingVisibility}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all text-[10px] font-mono font-bold uppercase tracking-widest ${
+                        className={`flex items-center gap-2 px-6 py-2.5 rounded-xl border transition-all text-[11px] font-bold uppercase tracking-wider shadow-lg transform hover:-translate-y-0.5 active:scale-95 ${
                             passport?.is_public 
-                            ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" 
-                            : "bg-white/5 border-white/10 text-white/40"
+                            ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20" 
+                            : "bg-white/5 border-white/10 text-white/40 hover:bg-white/10"
                         }`}
                     >
-                        {isUpdatingVisibility ? <Loader2 size={12} className="animate-spin" /> : (passport?.is_public ? <Eye size={12} /> : <EyeOff size={12} />)}
+                        {isUpdatingVisibility ? <Loader2 size={14} className="animate-spin" /> : (passport?.is_public ? <Eye size={14} /> : <EyeOff size={14} />)}
                         {passport?.is_public ? "Public Access" : "Private Mode"}
                     </button>
                     <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full">
@@ -140,6 +152,7 @@ export const MCPassport = () => {
                         Status: Active
                     </div>
                     <button 
+                        onClick={handleShare}
                         disabled={!passport?.is_public}
                         className={`flex items-center gap-2 text-white text-[12px] font-bold px-8 py-3 rounded-xl shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 border ${
                             passport?.is_public 
