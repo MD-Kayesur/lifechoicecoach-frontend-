@@ -1,14 +1,17 @@
 import { baseApi } from "@/redux/hooks/baseApi";
 
 export interface Badge {
-    id: string | number;
-    name: string;
-    description: string;
-    image: string;
-    earned_at?: string;
-    verification_code?: string;
-    criteria?: string;
-    issuer?: string;
+    id: number;
+    user_email: string;
+    micro_credential: number;
+    micro_credential_name: string;
+    competency: number;
+    competency_name: string | null;
+    badge_type: string;
+    issued_at: string;
+    verification_code: string;
+    is_verified: boolean;
+    image?: string;
 }
 
 export interface BadgeListParams {
@@ -17,6 +20,8 @@ export interface BadgeListParams {
 }
 
 export interface BadgeVerifyResponse {
+    success: boolean;
+    message: string;
     is_valid: boolean;
     badge: Badge;
     recipient_name: string;
@@ -67,5 +72,6 @@ export const progressbadgeapi = baseApi.injectEndpoints({
 export const {
     useGetBadgesQuery,
     useVerifyBadgeQuery,
+    useLazyVerifyBadgeQuery,
     useGetBadgeByIdQuery,
 } = progressbadgeapi;
