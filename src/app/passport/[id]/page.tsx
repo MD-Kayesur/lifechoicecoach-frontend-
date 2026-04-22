@@ -16,6 +16,7 @@ export default function PublicPassportPage() {
     
     const { data, isLoading, error } = useGetPublicPassportQuery({ practitioner_id: id });
     const passport = data?.passport;
+    const user = passport?.user_name;
 
     const handleShare = async () => {
         try {
@@ -48,6 +49,14 @@ export default function PublicPassportPage() {
         );
     }
 
+    const userInitials = passport?.user_name 
+        ? passport.user_name.split(' ').map((n: string) => n[0]).join('').toUpperCase() 
+        : "IK";
+
+    const lastSync = passport?.updated_at 
+        ? new Date(passport.updated_at).toLocaleDateString() 
+        : "N/A";
+
     return (
         <main className="min-h-screen bg-[#0a1628] flex flex-col">
             <Navbar />
@@ -58,7 +67,7 @@ export default function PublicPassportPage() {
                         <CheckCircle2 size={12} />
                         Verified Digital Identity
                     </div>
-                    <h1 className="text-3xl md:text-4xl font-bold text-white font-cormorant mb-2">Practitioner MC Passport</h1>
+                    <h1 className="text-3xl md:text-4xl font-bold text-white font-cormorant mb-2">{user} MC Passport</h1>
                     <p className="text-white/40 text-[14px] font-outfit max-w-lg mx-auto">This official digital passport verifies the holder's professional identity and academic achievements within the IKON ecosystem.</p>
                 </div>
 
@@ -86,8 +95,8 @@ export default function PublicPassportPage() {
 
                     <div className="flex gap-8 mb-12 relative z-10 items-center">
                         <div className="relative">
-                            <div className="w-[140px] h-[170px] bg-white/5 border-2 border-white/10 rounded-2xl flex items-center justify-center text-[64px] overflow-hidden group-hover:border-gold/30 transition-all duration-500 shadow-inner">
-                                👨‍🎓
+                            <div className="w-[140px] h-[170px] bg-white/5 border-2 border-white/10 rounded-2xl flex items-center justify-center text-[44px] font-bold text-white/20 overflow-hidden group-hover:border-gold/30 transition-all duration-500 shadow-inner">
+                                {userInitials}
                             </div>
                             <div className="absolute -bottom-3 -right-3 w-10 h-10 rounded-full bg-primary border-4 border-[#0B1F3A] flex items-center justify-center shadow-lg">
                                 <Award size={18} className="text-white" />
@@ -115,8 +124,8 @@ export default function PublicPassportPage() {
                         {[
                             { l: 'Accreditation', v: 'EIU-Paris' },
                             { l: 'Quality Assured', v: 'ASIC Premier · UK' },
-                            { l: 'Badges Earned', v: passport.badges },
-                            { l: 'Certificates', v: passport.certificates },
+                            { l: 'Last Sync', v: lastSync },
+                            { l: 'Status', v: 'Valid & Active' },
                         ].map((item, i) => (
                             <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-3.5 backdrop-blur-md">
                                 <div className="text-white/30 text-[8.5px] font-mono uppercase mb-1 tracking-[1.5px]">{item.l}</div>
@@ -125,17 +134,49 @@ export default function PublicPassportPage() {
                         ))}
                     </div>
 
+                    <div className="space-y-6 relative z-10 border-t border-white/5 pt-8 mb-8">
+                        <div className="grid grid-cols-3 gap-4">
+                            <div className="flex flex-col">
+                                <span className="text-white/30 text-[8.5px] font-mono uppercase mb-1 tracking-[1px]">Earned MCs</span>
+                                <span className="text-white text-[16px] font-bold font-outfit">{passport.total_credentials_earned}</span>
+                            </div>
+                            <div className="flex flex-col text-center">
+                                <span className="text-white/30 text-[8.5px] font-mono uppercase mb-1 tracking-[1px]">Total ECTS</span>
+                                <span className="text-white text-[16px] font-bold font-outfit">{passport.total_ects_accumulated}</span>
+                            </div>
+                            <div className="flex flex-col text-right">
+                                <span className="text-white/30 text-[8.5px] font-mono uppercase mb-1 tracking-[1px]">Competencies</span>
+                                <span className="text-white text-[16px] font-bold font-outfit">{passport.total_competencies_mastered}</span>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-4">
+                            <div className="flex flex-col">
+                                <span className="text-white/30 text-[8.5px] font-mono uppercase mb-1 tracking-[1px]">Badges</span>
+                                <span className="text-emerald-400 text-[16px] font-bold font-outfit">{passport.badges}</span>
+                            </div>
+                            <div className="flex flex-col text-center">
+                                <span className="text-white/30 text-[8.5px] font-mono uppercase mb-1 tracking-[1px]">Certificates</span>
+                                <span className="text-gold text-[16px] font-bold font-outfit">{passport.certificates}</span>
+                            </div>
+                            <div className="flex flex-col text-right">
+                                <span className="text-white/30 text-[8.5px] font-mono uppercase mb-1 tracking-[1px]">Degree Progress</span>
+                                <span className="text-primary text-[16px] font-bold font-outfit">{passport.degree_progress}%</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="relative z-10 pt-6 border-t border-gold/20 flex justify-between items-center">
                         <div className="flex items-center gap-2 text-white/40 text-[10px] font-mono uppercase tracking-widest">
                             <MapPin size={12} className="text-primary" />
-                            Status: Verified
+                            Issued: Kuala Lumpur
                         </div>
                         <button 
                             onClick={handleShare}
                             className="flex items-center gap-2 text-white text-[12px] font-bold px-8 py-3 rounded-xl shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 border bg-primary border-primary/20 shadow-[0_10px_20px_rgba(203,45,57,0.3)] hover:bg-gold2"
                         >
                             <Share2 size={14} />
-                            Share Link
+                            Verify Identity
                         </button>
                     </div>
                 </div>

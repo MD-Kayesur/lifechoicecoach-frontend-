@@ -136,14 +136,46 @@ export const MCPassport = () => {
                     {[
                         { l: 'Accreditation', v: 'EIU-Paris' },
                         { l: 'Quality Assured', v: 'ASIC Premier · UK' },
-                        { l: 'Badges Earned', v: passport?.badges || 0 },
-                        { l: 'Certificates', v: passport?.certificates || 0 },
+                        { l: 'Last Sync', v: passport ? new Date(passport.updated_at).toLocaleDateString() : 'N/A' },
+                        { l: 'Status', v: 'Valid & Active' },
                     ].map((item, i) => (
                         <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-3.5 backdrop-blur-md">
                             <div className="text-white/30 text-[8.5px] font-mono uppercase mb-1 tracking-[1.5px]">{item.l}</div>
                             <div className="text-white/80 text-[11px] font-bold truncate tracking-wide">{item.v}</div>
                         </div>
                     ))}
+                </div>
+
+                <div className="space-y-6 relative z-10 border-t border-white/5 pt-8 mb-8">
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="flex flex-col">
+                            <span className="text-white/30 text-[8.5px] font-mono uppercase mb-1 tracking-[1px]">Earned MCs</span>
+                            <span className="text-white text-[16px] font-bold font-outfit">{passport?.total_credentials_earned || 0}</span>
+                        </div>
+                        <div className="flex flex-col text-center">
+                            <span className="text-white/30 text-[8.5px] font-mono uppercase mb-1 tracking-[1px]">Total ECTS</span>
+                            <span className="text-white text-[16px] font-bold font-outfit">{passport?.total_ects_accumulated || 0}</span>
+                        </div>
+                        <div className="flex flex-col text-right">
+                            <span className="text-white/30 text-[8.5px] font-mono uppercase mb-1 tracking-[1px]">Competencies</span>
+                            <span className="text-white text-[16px] font-bold font-outfit">{passport?.total_competencies_mastered || 0}</span>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="flex flex-col">
+                            <span className="text-white/30 text-[8.5px] font-mono uppercase mb-1 tracking-[1px]">Badges</span>
+                            <span className="text-emerald-400 text-[16px] font-bold font-outfit">{passport?.badges || 0}</span>
+                        </div>
+                        <div className="flex flex-col text-center">
+                            <span className="text-white/30 text-[8.5px] font-mono uppercase mb-1 tracking-[1px]">Certificates</span>
+                            <span className="text-gold text-[16px] font-bold font-outfit">{passport?.certificates || 0}</span>
+                        </div>
+                        <div className="flex flex-col text-right">
+                            <span className="text-white/30 text-[8.5px] font-mono uppercase mb-1 tracking-[1px]">Degree Progress</span>
+                            <span className="text-primary text-[16px] font-bold font-outfit">{passport?.degree_progress || 0}%</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="relative z-10 pt-6 border-t border-gold/20 flex justify-between items-center">
