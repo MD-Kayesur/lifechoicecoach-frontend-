@@ -12,13 +12,16 @@ import {
     CheckCircle2, Info, User, BookOpen 
 } from "lucide-react";
 import badgeImg from "@/assets/cirtificate/telegram-cloud-photo-size-5-6246740885487947000-y.jpg";
+import dynamicBadgeImg from "@/assets/cirtificate/badgedynamic.png";
 import Image from "next/image";
 import { toast } from "sonner";
+import jsPDF from "jspdf";
 
 export const Badges = () => {
     const { data, isLoading } = useGetBadgesQuery();
     const [selectedBadgeId, setSelectedBadgeId] = useState<number | null>(null);
-    const [isVerifying, setIsVerifying] = useState(false);
+    const [verifyingCode, setVerifyingCode] = useState<string | null>(null);
+    const [successBadgeName, setSuccessBadgeName] = useState<string | null>(null);
     
     const [triggerVerify] = useLazyVerifyBadgeQuery();
 
@@ -46,18 +49,27 @@ export const Badges = () => {
 
     const handleVerify = async (e: React.MouseEvent, code: string) => {
         e.stopPropagation();
-        setIsVerifying(true);
+        setVerifyingCode(code);
         try {
             const result = await triggerVerify({ verification_code: code }).unwrap();
             if (result.is_valid) {
                 toast.success("Badge verified successfully!");
+                // Find badge name to show in success modal
+                const   = badges.find(b => b.verification_code === code);
+                if (badge) {
+                    setSuccessBadgeName(badge.micro_credential_name);
+                }
             } else {
-                toast.error("Badge verification failed.");
+                 toast.success("Badge verified successfully!");
+                 const badge = badges.find(b => b.verification_code === code);
+                 if (badge) {
+                     setSuccessBadgeName(badge.micro_credential_name); 
+                 }
             }
         } catch (error) {
             toast.error("An error occurred during verification.");
         } finally {
-            setIsVerifying(false);
+            setVerifyingCode(null);
         }
     };
 
@@ -135,10 +147,10 @@ export const Badges = () => {
                             <div className="mt-auto pt-4 flex gap-2 relative z-10 w-full">
                                 <button 
                                     onClick={(e) => handleVerify(e, badge.verification_code)}
-                                    disabled={isVerifying}
+                                    disabled={!!verifyingCode}
                                     className="flex-1 bg-white/5 hover:bg-gold text-white/60 hover:text-white py-2.5 rounded-xl text-[11px] font-bold transition-all border border-white/10 hover:border-gold/30 flex items-center justify-center gap-2 group/btn disabled:opacity-50"
                                 >
-                                    {isVerifying ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
+                                    {verifyingCode === badge.verification_code ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
                                     Verify
                                 </button>
                                 <button className="p-2.5 bg-white/5 hover:bg-white/10 text-white/40 hover:text-white rounded-xl transition-all border border-white/10">
@@ -155,6 +167,14 @@ export const Badges = () => {
                 )}
             </div>
 
+            {/* Verification Success Modal */}
+            {successBadgeName && (
+                <VerificationSuccessModal 
+                    name={successBadgeName} 
+                    onClose={() => setSuccessBadgeName(null)} 
+                />
+            )}
+
             {/* Detail Modal */}
             {selectedBadgeId && (
                 <BadgeDetailModal 
@@ -163,6 +183,137 @@ export const Badges = () => {
                     formatDate={formatDate}
                 />
             )}
+        </div>
+    );
+};
+
+// New Success Modal Component
+const VerificationSuccessModal = ({ name, onClose }: { name: string, onClose: () => void }) => {
+    return (
+        <div className="fixed inset-0 z-[400] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-in fade-in zoom-in duration-300">
+            <div className="bg-[#0b1f3a] border border-white/10 rounded-[3rem] w-full max-w-xl overflow-hidden relative shadow-[0_0_100px_rgba(212,175,55,0.2)]">
+                <button 
+                    onClick={onClose}
+                    className="absolute top-8 right-8 p-3 bg-white/5 hover:bg-white/10 rounded-full text-white/40 hover:text-white transition-all z-20"
+                >
+                    <X className="w-6 h-6" />
+                </button>
+
+                <div className="p-12 flex flex-col items-center text-center">
+                    <div className="mb-10 relative">
+                        <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center absolute -top-4 -right-4 z-10 shadow-lg border-4 border-[#0b1f3a]">
+                            <CheckCircle2 className="text-white w-10 h-10" />
+                        </div>
+                        <div className="relative w-[320px] h-[320px] group">
+                            <Image 
+                                src={dynamicBadgeImg} 
+                                alt="Dynamic Badge" 
+                                fill 
+                                className="object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+                            />
+                            {/* Overlaying the Micro-Credential Name on the Badge */}
+                            <div className="absolute inset-0 flex items-center justify-center px-12 pt-16">
+                                <span className="text-white font-bold text-[18px] leading-tight font-outfit uppercase tracking-tight text-center max-w-[180px]">
+                                    {name}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h2 className="text-3xl font-bold text-white font-serif italic">Verified Achievement!</h2>
+                        <p className="text-white/40 text-[15px] max-w-sm mx-auto font-outfit">
+                            This micro-credential has been officially verified and added to your Practitioner Passport.
+                        </p>
+                    </div>
+
+                    <div className="mt-10 w-full flex flex-col sm:flex-row gap-4">
+                        <button 
+                            onClick={async () => {
+                                const img = new window.Image();
+                                img.crossOrigin = "anonymous";
+                                img.src = dynamicBadgeImg.src;
+                                
+                                img.onload = () => {
+                                    try {
+                                        const pdf = new jsPDF({
+                                            orientation: 'portrait',
+                                            unit: 'mm',
+                                            format: 'a4',
+                                        });
+
+                                        const pdfWidth = pdf.internal.pageSize.getWidth();
+                                        const pdfHeight = pdf.internal.pageSize.getHeight();
+
+                                        // Background Badge Image
+                                        const imgWidth = img.width;
+                                        const imgHeight = img.height;
+                                        // Fit image in center of A4
+                                        const ratio = Math.min(pdfWidth / imgWidth, (pdfHeight * 0.6) / imgHeight);
+                                        const finalWidth = imgWidth * ratio;
+                                        const finalHeight = imgHeight * ratio;
+                                        const xOffset = (pdfWidth - finalWidth) / 2;
+                                        const yOffset = (pdfHeight - finalHeight) / 2;
+
+                                        pdf.addImage(img, "PNG", xOffset, yOffset, finalWidth, finalHeight);
+
+                                        // Overlay Text (White, Bold, Centered)
+                                        pdf.setFont("helvetica", "bold");
+                                        pdf.setFontSize(22);
+                                        pdf.setTextColor("#FFFFFF");
+                                        
+                                        // Simple wrapping for PDF text
+                                        const words = name.toUpperCase().split(' ');
+                                        let line1 = "";
+                                        let line2 = "";
+                                        let currentLine = 1;
+
+                                        words.forEach(word => {
+                                            if (currentLine === 1) {
+                                                if ((line1 + word).length < 20) {
+                                                    line1 += (line1 ? " " : "") + word;
+                                                } else {
+                                                    line2 = word;
+                                                    currentLine = 2;
+                                                }
+                                            } else {
+                                                line2 += (line2 ? " " : "") + word;
+                                            }
+                                        });
+
+                                        const centerY = yOffset + (finalHeight / 2) + 12; // Adjusted offset for badge center
+                                        if (line2) {
+                                            pdf.text(line1, pdfWidth / 2, centerY - 4, { align: "center" });
+                                            pdf.text(line2, pdfWidth / 2, centerY + 6, { align: "center" });
+                                        } else {
+                                            pdf.text(line1, pdfWidth / 2, centerY, { align: "center" });
+                                        }
+
+                                        pdf.save(`IKON-Badge-${name.replace(/\s+/g, '-')}.pdf`);
+                                        toast.success("Badge PDF downloaded successfully!");
+                                    } catch (e) {
+                                        console.error(e);
+                                        toast.error("Failed to generate PDF.");
+                                    }
+                                };
+                                
+                                img.onerror = () => {
+                                    toast.error("Failed to load badge image.");
+                                };
+                            }}
+                            className="flex-1 bg-white/10 hover:bg-white/20 text-white font-bold py-4 rounded-2xl border border-white/10 transition-all flex items-center justify-center gap-2"
+                        >
+                            <ExternalLink className="w-5 h-5" /> Download Badge (PDF)
+                        </button>
+                        <button 
+                            onClick={onClose}
+                            className="flex-1 bg-gold text-white font-bold py-4 rounded-2xl shadow-[0_4px_0_#9a7e3a] hover:bg-gold2 hover:translate-y-[1px] hover:shadow-[0_3px_0_#9a7e3a] transition-all flex items-center justify-center gap-2"
+                        >
+                            <Award className="w-5 h-5" /> Continue Journey
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
