@@ -1,64 +1,94 @@
 "use client";
 
+import { useGetInProgressMCsQuery } from "@/redux/features/practitioner/PractitionerManagementApi";
+import { Loader2, TrendingUp, BookOpen, ChevronRight } from "lucide-react";
+
 export const Progress = () => {
+    const { data: inProgressData, isLoading } = useGetInProgressMCsQuery();
+    const inProgress = inProgressData?.in_progress || [];
+
     return (
-        <div className="animate-in fade-in duration-500">
-            <div className="text-[14.5px] font-bold text-white mb-3 tracking-wide">Skills Progress Tracking</div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative overflow-hidden group hover:border-gold/30">
-                    <div className="text-[14px] font-bold text-white mb-6 tracking-wide">Overall Completion Status</div>
-                    <div className="flex flex-col items-center justify-center py-10 relative">
-                        <div className="w-48 h-48 rounded-full border-12 border-white/5 flex items-center justify-center p-4">
-                            <div className="w-full h-full rounded-full border-12 border-gold/40 flex items-center justify-center relative">
-                                <div className="text-[36px] font-bold text-white">45%</div>
-                            </div>
-                        </div>
-                        <div className="mt-8 text-center">
-                            <div className="text-white text-[18px] font-bold mb-1">Advanced Level Achieved</div>
-                            <div className="text-white/50 text-[11px] font-mono uppercase tracking-[1px]">60/184 Micro-Credentials</div>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative overflow-hidden group hover:border-gold/30">
-                    <div className="text-[14px] font-bold text-white mb-6 tracking-wide">Verified Competencies Domain Breakdown</div>
-                    <div className="space-y-4">
-                        {[
-                            { n: 'AI & Data Intelligence', p: 85, c: '60 Verified' },
-                            { n: 'Business & Management', p: 40, c: '28 Verified' },
-                            { n: 'Creative & Digital Arts', p: 10, c: '8 Verified' },
-                            { n: 'Education & Pedagogy', p: 0, c: '0 Verified' }
-                        ].map((prog, i) => (
-                            <div key={i} className="group cursor-pointer">
-                                <div className="flex justify-between items-center mb-1.5">
-                                    <div className="text-[13px] font-bold text-white group-hover:text-gold transition-colors">{prog.n}</div>
-                                    <div className="text-[10px] text-white/50 font-mono font-bold tracking-widest uppercase">{prog.c}</div>
-                                </div>
-                                <div className="bg-white/5 rounded-full h-[6px] overflow-hidden">
-                                    <div className="h-full bg-gradient-to-r from-gold to-gold2 rounded-full" style={{ width: `${prog.p}%` }}></div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+        <div className="animate-in fade-in duration-500 space-y-10">
+            {/* Top Header */}
+            <div className="flex items-center gap-3">
+                <TrendingUp className="w-6 h-6 text-gold" />
+                <h2 className="text-[20px] font-bold text-white italic font-serif">Detailed Skills Progress</h2>
             </div>
 
-            <div className="bg-gradient-to-br from-[#0B1F3A] to-[#142E55] border border-gold/20 rounded-2xl p-6 relative overflow-hidden group shadow-2xl">
-                <div className="absolute top-[-30px] right-[-30px] w-48 h-48 rounded-full bg-radial-gradient from-gold/15 to-transparent pointer-events-none group-hover:scale-125 transition-transform duration-700"></div>
-                <div className="text-[14px] font-bold text-white mb-6 tracking-wide">Learning Speed Index (Last 30 Days)</div>
-                <div className="h-32 flex items-end gap-3 px-4 relative z-10">
-                    {[10, 25, 45, 30, 60, 85, 100, 75, 55, 90].map((h, i) => (
-                        <div key={i} className="flex-1 bg-white/10 rounded-t-lg transition-all hover:bg-gold relative group/bar" style={{ height: `${h}%` }}>
-                            <div className="absolute top-[-25px] left-1/2 -translate-x-1/2 text-[9px] font-bold text-white opacity-0 group-hover/bar:opacity-100 transition-opacity font-mono tracking-widest">{h}%</div>
+            {/* In Progress Micro-Credentials Section */}
+            <section className="bg-white/5 border border-white/10 rounded-3xl p-8 relative overflow-hidden">
+                <div className="flex items-center justify-between mb-8">
+                    <div>
+                        <div className="text-[15px] font-bold text-white mb-1 tracking-wide uppercase">Active Curriculum Progress</div>
+                        <p className="text-white/40 text-[11px]">Real-time assessment tracking for currently enrolled MCs</p>
+                    </div>
+                    <BookOpen className="w-6 h-6 text-white/10" />
+                </div>
+
+                <div className="space-y-4">
+                    {isLoading ? (
+                        <div className="flex items-center justify-center py-20">
+                            <Loader2 className="w-8 h-8 text-gold animate-spin" />
                         </div>
-                    ))}
+                    ) : inProgress.length > 0 ? (
+                        inProgress.map((mc, i) => (
+                            <div key={i} className="bg-white/5 border border-white/5 rounded-2xl p-6 hover:border-gold/30 transition-all group/mc">
+                                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6">
+                                    <div className="flex-1">
+                                        <div className="text-white text-[16px] font-bold mb-1 group-hover/mc:text-gold transition-colors">{mc.micro_credential_name}</div>
+                                        <div className="flex items-center gap-3">
+                                            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-widest border ${
+                                                mc.status === 'not_started' ? 'bg-white/5 border-white/10 text-white/40' : 'bg-gold/10 border-gold/20 text-gold'
+                                            }`}>
+                                                {mc.status.replace('_', ' ')}
+                                            </span>
+                                            <span className="text-[10px] text-white/30 font-mono">Domain: {mc.domain_name}</span>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-gold text-[20px] font-bold font-serif italic leading-none mb-1">{Math.round(mc.progress_percentage)}%</div>
+                                        <div className="text-[9px] text-white/30 uppercase font-bold tracking-[1px]">Total Progress</div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                        <div 
+                                            className="h-full bg-gradient-to-r from-gold to-gold2 transition-all duration-1000 shadow-[0_0_15px_rgba(212,175,55,0.3)]" 
+                                            style={{ width: `${mc.progress_percentage}%` }}
+                                        />
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                        <div className="bg-white/5 border border-white/5 rounded-xl p-2.5">
+                                            <div className="text-white/30 text-[9px] uppercase font-bold mb-1">Competencies</div>
+                                            <div className="text-white text-[12px] font-bold font-mono">{mc.passed_competencies} / {mc.total_competencies}</div>
+                                        </div>
+                                        <div className="bg-white/5 border border-white/5 rounded-xl p-2.5">
+                                            <div className="text-white/30 text-[9px] uppercase font-bold mb-1">Attempts</div>
+                                            <div className="text-white text-[12px] font-bold font-mono">{mc.attempts_used} / {mc.max_attempts}</div>
+                                        </div>
+                                        <div className="bg-white/5 border border-white/5 rounded-xl p-2.5">
+                                            <div className="text-white/30 text-[9px] uppercase font-bold mb-1">Enrolled On</div>
+                                            <div className="text-white text-[12px] font-bold font-mono">{new Date(mc.enrolled_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
+                                        </div>
+                                        <div className="flex items-center justify-end">
+                                            <button className="text-gold2 text-[10px] font-bold uppercase tracking-[2px] flex items-center gap-2 hover:text-white transition-colors group/btn">
+                                                {mc.status === 'not_started' ? 'Start' : 'Continue'}
+                                                <span className="w-5 h-5 rounded-lg bg-gold/10 flex items-center justify-center group-hover/btn:bg-gold group-hover/btn:text-white transition-all">→</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="text-white/40 text-[13px] py-16 text-center border border-dashed border-white/10 rounded-2xl bg-white/[0.02]">
+                            No micro-credentials currently in progress.
+                        </div>
+                    )}
                 </div>
-                <div className="flex justify-between items-center mt-6 text-white/30 text-[9px] font-mono tracking-[2px] pt-4 border-t border-white/5">
-                    <span>MAR 06</span>
-                    <span>MAR 16</span>
-                    <span>MAR 26</span>
-                    <span>APR 06</span>
-                </div>
-            </div>
+            </section>
         </div>
     );
 };

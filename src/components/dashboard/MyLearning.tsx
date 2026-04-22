@@ -9,8 +9,11 @@ import { Loader2 } from "lucide-react";
 
 export const MyLearning = () => {
     const { data: completedData, isLoading: isCompletedLoading } = useGetCompletedCredentialsQuery();
+    console.log("completedData",completedData);
     const { data: inProgressData, isLoading: isInProgressLoading } = useGetInProgressMCsQuery();
+    console.log("inProgressData",inProgressData);
     const { data: enrolledData, isLoading: isEnrolledLoading } = useGetEnrolledMCsQuery();
+    console.log("enrolledData",enrolledData);
 
     if (isCompletedLoading || isInProgressLoading || isEnrolledLoading) {
         return (

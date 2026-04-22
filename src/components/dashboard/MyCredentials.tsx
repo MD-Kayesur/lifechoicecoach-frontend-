@@ -29,59 +29,76 @@ export const MyCredentials = () => {
                     <BookOpen className="w-5 h-5 text-gold" />
                     <div className="text-[14.5px] font-bold text-white tracking-wide uppercase">Active Enrollments & Progress</div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {enrolledCredentials.length > 0 ? (
                         enrolledCredentials.map((mc, i) => {
                             const progress = mc.total_competencies > 0 
                                 ? (mc.passed_competencies / mc.total_competencies) * 100 
                                 : 0;
                             
+                            const isNotStarted = mc.status === 'not_started';
+                            const isCompleted = mc.status === 'completed';
+                            
                             return (
-                                <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-5 transition-all hover:border-gold/30 group">
-                                    <div className="flex justify-between items-start mb-4">
-                                        <div>
-                                            <div className="text-white text-[16px] font-bold mb-1 group-hover:text-gold transition-colors">{mc.micro_credential_name}</div>
-                                            <div className="flex items-center gap-2 text-[10px] text-white/40 font-mono uppercase tracking-wider">
-                                                <span className={`px-2 py-0.5 rounded-md ${mc.status === 'not_started' ? 'bg-white/10' : 'bg-gold/20 text-gold'}`}>
+                                <div key={i} className="bg-white/5 border border-white/10 rounded-[28px] p-6 transition-all hover:border-gold/40 group relative overflow-hidden flex flex-col h-full">
+                                    {/* Glass Background Highlight */}
+                                    <div className="absolute top-[-50px] right-[-50px] w-40 h-40 rounded-full bg-gold/5 group-hover:bg-gold/10 transition-colors pointer-events-none"></div>
+                                    
+                                    <div className="flex justify-between items-start mb-6 relative z-10">
+                                        <div className="flex-1">
+                                            <div className="text-white text-[17px] font-bold mb-2 group-hover:text-gold transition-colors leading-tight">{mc.micro_credential_name}</div>
+                                            <div className="flex flex-wrap items-center gap-3">
+                                                <span className={`text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-widest border ${
+                                                    isNotStarted ? 'bg-white/5 border-white/10 text-white/40' : 
+                                                    isCompleted ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' :
+                                                    'bg-gold/10 border-gold/20 text-gold'
+                                                }`}>
                                                     {mc.status.replace('_', ' ')}
                                                 </span>
-                                                <span>•</span>
-                                                <span>Enrolled: {new Date(mc.enrolled_at).toLocaleDateString()}</span>
+                                                <span className="text-[10px] text-white/30 font-mono">ID: {mc.micro_credential_id}</span>
                                             </div>
                                         </div>
-                                        <div className="text-right">
-                                            <div className="text-gold text-[18px] font-bold font-serif">{Math.round(progress)}%</div>
-                                            <div className="text-[9px] text-white/30 uppercase font-bold tracking-tighter">Progress</div>
+                                        <div className="text-right ml-4">
+                                            <div className="text-gold text-[22px] font-bold font-serif leading-none mb-1">{Math.round(progress)}%</div>
+                                            <div className="text-[9px] text-white/30 uppercase font-bold tracking-[1px]">Completed</div>
                                         </div>
                                     </div>
 
-                                    {/* Progress Bar */}
-                                    <div className="h-1.5 w-full bg-white/10 rounded-full mb-4 overflow-hidden">
+                                    {/* Progress Bar Container */}
+                                    <div className="relative h-2 w-full bg-white/5 rounded-full mb-8 overflow-hidden">
                                         <div 
-                                            className="h-full bg-gradient-to-r from-gold to-gold2 transition-all duration-1000" 
+                                            className="absolute inset-y-0 left-0 bg-gradient-to-r from-gold to-gold2 transition-all duration-1000 shadow-[0_0_10px_rgba(212,175,55,0.3)]" 
                                             style={{ width: `${progress}%` }}
                                         />
                                     </div>
 
-                                    <div className="grid grid-cols-3 gap-2">
-                                        <div className="bg-white/5 rounded-xl p-2 border border-white/5">
-                                            <div className="text-white/40 text-[9px] uppercase font-bold mb-0.5">Competencies</div>
-                                            <div className="text-white text-[12px] font-bold">{mc.passed_competencies}/{mc.total_competencies}</div>
+                                    <div className="grid grid-cols-3 gap-3 mb-8">
+                                        <div className="bg-white/5 border border-white/5 rounded-2xl p-3 hover:border-white/10 transition-colors">
+                                            <div className="text-white/30 text-[9px] uppercase font-bold mb-1.5 tracking-wider">Competencies</div>
+                                            <div className="text-white text-[13px] font-bold font-mono">{mc.passed_competencies} <span className="text-white/20">/</span> {mc.total_competencies}</div>
                                         </div>
-                                        <div className="bg-white/5 rounded-xl p-2 border border-white/5">
-                                            <div className="text-white/40 text-[9px] uppercase font-bold mb-0.5">Attempts</div>
-                                            <div className="text-white text-[12px] font-bold">{mc.attempts_remaining} Left</div>
+                                        <div className="bg-white/5 border border-white/5 rounded-2xl p-3 hover:border-white/10 transition-colors text-center">
+                                            <div className="text-white/30 text-[9px] uppercase font-bold mb-1.5 tracking-wider">Attempts</div>
+                                            <div className="text-white text-[13px] font-bold font-mono">{mc.attempts_used} <span className="text-white/20">/</span> {mc.max_attempts}</div>
                                         </div>
-                                        <div className="bg-white/5 rounded-xl p-2 border border-white/5">
-                                            <div className="text-white/40 text-[9px] uppercase font-bold mb-0.5">Points</div>
-                                            <div className="text-gold text-[12px] font-bold">+{mc.gamification_points}</div>
+                                        <div className="bg-white/5 border border-white/5 rounded-2xl p-3 hover:border-white/10 transition-colors text-right">
+                                            <div className="text-white/30 text-[9px] uppercase font-bold mb-1.5 tracking-wider">Points</div>
+                                            <div className="text-gold text-[13px] font-bold font-mono">+{mc.gamification_points}</div>
                                         </div>
+                                    </div>
+
+                                    <div className="mt-auto flex items-center justify-between pt-4 border-t border-white/5">
+                                        <div className="text-white/30 text-[9px] font-mono uppercase">Enrolled: {new Date(mc.enrolled_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                                        <button className="text-gold2 text-[10px] font-bold uppercase tracking-[2px] flex items-center gap-2 hover:text-white transition-colors group/btn">
+                                            {isNotStarted ? 'Start Learning' : 'Continue Course'}
+                                            <span className="w-5 h-5 rounded-lg bg-gold/10 flex items-center justify-center group-hover/btn:bg-gold group-hover/btn:text-white transition-all">→</span>
+                                        </button>
                                     </div>
                                 </div>
                             );
                         })
                     ) : (
-                        <div className="col-span-full text-white/40 text-[13px] py-10 text-center border border-dashed border-white/10 rounded-2xl">
+                        <div className="col-span-full text-white/40 text-[13px] py-16 text-center border border-dashed border-white/10 rounded-3xl bg-white/[0.02]">
                             No active enrollments found.
                         </div>
                     )}

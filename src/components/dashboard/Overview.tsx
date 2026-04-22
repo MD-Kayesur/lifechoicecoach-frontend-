@@ -10,11 +10,10 @@ import { Loader2, Award, GraduationCap, BookOpen, CheckCircle } from "lucide-rea
 
 export const Overview = () => {
     const { data: overviewData, isLoading: isOverviewLoading } = useGetDashboardOverviewQuery();
-     console.log("overviewData",overviewData);
     const { data: inProgressData, isLoading: isInProgressLoading } = useGetInProgressMCsQuery();
     const { data: ectsData, isLoading: isEctsLoading } = useGetECTSAccumulationQuery();
     const { data: earnedData, isLoading: isEarnedLoading } = useGetEarnedCredentialsQuery();
-
+console.log("earnedData",earnedData);
     if (isOverviewLoading || isInProgressLoading || isEctsLoading || isEarnedLoading) {
         return (
             <div className="flex items-center justify-center min-h-[400px]">
@@ -61,14 +60,14 @@ export const Overview = () => {
                         inProgress.map((prog, i) => (
                             <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4 transition-all hover:border-gold/50 cursor-pointer flex justify-between items-center gap-4 group">
                                 <div className="flex-1">
-                                    <div className="text-[14px] font-bold text-white mb-1 group-hover:text-gold transition-colors">{prog.name}</div>
-                                    <div className="text-[10.5px] text-white/45 font-mono mb-2 uppercase tracking-wide">{prog.category || 'Curriculum'}</div>
+                                    <div className="text-[14px] font-bold text-white mb-1 group-hover:text-gold transition-colors">{prog.micro_credential_name}</div>
+                                    <div className="text-[10.5px] text-white/45 font-mono mb-2 uppercase tracking-wide">{prog.domain_name || 'Curriculum'}</div>
                                     <div className="bg-white/10 rounded-full h-[5px] mb-1 overflow-hidden">
                                         <div className="h-full bg-gradient-to-r from-gold to-gold2 rounded-full" style={{ width: `${prog.progress_percentage}%` }}></div>
                                     </div>
-                                    <div className="text-[10px] text-white/45 font-mono">{prog.progress_percentage}% complete · {prog.current_competency || 'In Progress'}</div>
+                                    <div className="text-[10px] text-white/45 font-mono">{Math.round(prog.progress_percentage)}% complete · {prog.passed_competencies} / {prog.total_competencies} Competencies</div>
                                 </div>
-                                <div className="text-[10px] font-bold px-2.5 py-1 rounded-md bg-gold/20 text-[#f06070] font-mono whitespace-nowrap">In Progress</div>
+                                <div className="text-[10px] font-bold px-2.5 py-1 rounded-md bg-gold/20 text-[#f06070] font-mono whitespace-nowrap uppercase tracking-widest">{prog.status.replace('_', ' ')}</div>
                             </div>
                         ))
                     ) : (

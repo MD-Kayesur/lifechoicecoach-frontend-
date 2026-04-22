@@ -49,7 +49,7 @@ export const Settings = ({ onTabChange }: { onTabChange?: (tab: string) => void 
             </div>
 
 
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative overflow-hidden group hover:border-white/20">
+            {/* <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative overflow-hidden group hover:border-white/20">
                 <div className="text-[14px] font-bold text-white mb-6 tracking-wide">General Portal Settings & Security</div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
                     {[
@@ -89,7 +89,7 @@ export const Settings = ({ onTabChange }: { onTabChange?: (tab: string) => void 
                     <button className="bg-gold text-white text-[13px] font-bold px-8 py-3 rounded-xl shadow-lg border border-gold/20 hover:bg-gold2 transition-all">Save Changes</button>
                     <button className="bg-white/5 text-white/50 text-[13px] font-bold px-8 py-3 rounded-xl border border-white/10 hover:text-white transition-colors">Discard Draft</button>
                 </div>
-            </div>
+            </div> */}
 
             <ChangePasswordModal
                 isOpen={isPasswordModalOpen}

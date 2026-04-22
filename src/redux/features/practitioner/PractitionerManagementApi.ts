@@ -20,11 +20,20 @@ export interface ECTSAccumulation {
 
 export interface InProgressMC {
     id: number;
-    name: string;
+    micro_credential_name: string;
+    micro_credential_id: number;
+    domain_name: string;
+    status: string;
+    attempts_used: number;
+    max_attempts: number;
+    attempts_remaining: number;
+    enrolled_at: string;
     progress_percentage: number;
-    last_accessed: string;
-    current_competency: string;
-    category?: string;
+    passed_competencies: number;
+    total_competencies: number;
+    access_expires_at?: string | null;
+    last_accessed?: string;
+    current_competency?: string;
 }
 
 export interface DashboardOverview {
@@ -94,6 +103,19 @@ export interface DegreePathwayProgress {
     completed_at: string | null;
 }
 
+export interface PractitionerCertificate {
+    id: number | string;
+    certificate_number: string;
+    recipient_name: string;
+    credential_name: string;
+    issue_date: string;
+    expiry_date?: string | null;
+    verification_url?: string;
+    is_valid: boolean;
+    image?: string | null;
+    file?: string | null;
+}
+
 export interface ApiResponse<T> {
     success: boolean;
     message: string;
@@ -127,6 +149,10 @@ export interface EnrolledCredentialsWithStateResponse extends ApiResponse<Enroll
 
 export interface DegreePathwayProgressResponse extends ApiResponse<DegreePathwayProgress[]> {
     degree_pathways: DegreePathwayProgress[];
+}
+
+export interface PractitionerCertificatesResponse extends ApiResponse<PractitionerCertificate[]> {
+    certificates: PractitionerCertificate[];
 }
 
 export interface DashboardOverviewResponse extends ApiResponse<DashboardOverview> {
@@ -230,6 +256,15 @@ export const PractitionerManagementApi = baseApi.injectEndpoints({
             }),
             providesTags: ["Practitioner"],
         }),
+
+        // Get all certificates for current user
+        getPractitionerCertificates: builder.query<PractitionerCertificatesResponse, void>({
+            query: () => ({
+                url: "/practitioner/dashboard/track-management/certificates/",
+                method: "GET",
+            }),
+            providesTags: ["Practitioner"],
+        }),
     }),
 });
 
@@ -244,5 +279,6 @@ export const {
     useGetSubscriptionStatusQuery,
     useGetEnrolledCredentialsWithStateQuery,
     useGetDegreePathwayProgressQuery,
+    useGetPractitionerCertificatesQuery,
 } = PractitionerManagementApi;
 
