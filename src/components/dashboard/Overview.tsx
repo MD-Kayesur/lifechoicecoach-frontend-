@@ -6,10 +6,11 @@ import {
     useGetECTSAccumulationQuery,
     useGetEarnedCredentialsQuery
 } from "@/redux/features/practitioner/PractitionerManagementApi";
-import { Loader2 } from "lucide-react";
+import { Loader2, Award, GraduationCap, BookOpen, CheckCircle } from "lucide-react";
 
 export const Overview = () => {
     const { data: overviewData, isLoading: isOverviewLoading } = useGetDashboardOverviewQuery();
+     console.log("overviewData",overviewData);
     const { data: inProgressData, isLoading: isInProgressLoading } = useGetInProgressMCsQuery();
     const { data: ectsData, isLoading: isEctsLoading } = useGetECTSAccumulationQuery();
     const { data: earnedData, isLoading: isEarnedLoading } = useGetEarnedCredentialsQuery();
@@ -28,19 +29,27 @@ export const Overview = () => {
     const lastEarned = earnedData?.credentials?.[0];
 
     const stats = [
-        { n: dashboard?.total_earned_credentials || '0', l: 'Credentials Earned', g: true },
-        { n: dashboard?.total_ects || ects?.total_ects || '0', l: 'ECTS Accumulated' },
-        { n: dashboard?.active_mc_count || inProgress.length || '0', l: 'In Progress' },
-        { n: dashboard?.competencies_verified || '0', l: 'Competencies Verified' }
+        { n: dashboard?.credentials_earned || '0', l: 'Credentials Earned', g: true, icon: Award },
+        { n: dashboard?.ects_accumulated || '0', l: 'ECTS Accumulated', icon: GraduationCap },
+        { n: dashboard?.in_progress_count || '0', l: 'In Progress', icon: BookOpen },
+        { n: dashboard?.competencies_verified || '0', l: 'Competencies Verified', icon: CheckCircle }
     ];
 
     return (
         <div className="animate-in fade-in duration-500">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div className="mb-8">
+                <h1 className="text-[24px] font-bold text-white mb-1">Welcome back, {dashboard?.practitioner_name}</h1>
+                <p className="text-white/45 text-[13px] font-mono">Practitioner ID: {dashboard?.practitioner_id}</p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 {stats.map((stat, i) => (
-                    <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4 transition-all hover:border-white/20">
-                        <div className={`font-serif text-[28px] font-bold text-white mb-0.5 ${stat.g ? 'text-gold' : ''}`}>{stat.n}</div>
-                        <div className="text-[11.5px] text-white/55 font-medium leading-tight">{stat.l}</div>
+                    <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-5 transition-all hover:border-gold/30 hover:bg-white/[0.07] group">
+                        <div className="flex justify-between items-start mb-3">
+                            <div className={`font-serif text-[32px] font-bold text-white ${stat.g ? 'text-gold' : ''}`}>{stat.n}</div>
+                            <stat.icon className={`w-5 h-5 ${stat.g ? 'text-gold' : 'text-white/30'} group-hover:scale-110 transition-transform`} />
+                        </div>
+                        <div className="text-[12px] text-white/55 font-medium leading-tight">{stat.l}</div>
                     </div>
                 ))}
             </div>

@@ -28,13 +28,15 @@ export interface InProgressMC {
 }
 
 export interface DashboardOverview {
-    total_earned_credentials: number;
-    total_ects: number;
-    active_mc_count: number;
-    points: number;
-    rank: string;
-    subscription_status: string;
-    competencies_verified?: number;
+    practitioner_id: string;
+    practitioner_name: string;
+    credentials_earned: number;
+    ects_accumulated: number;
+    in_progress_count: number;
+    competencies_verified: number;
+    points?: number;
+    rank?: string;
+    subscription_status?: string;
 }
 
 export interface SessionHistory {
