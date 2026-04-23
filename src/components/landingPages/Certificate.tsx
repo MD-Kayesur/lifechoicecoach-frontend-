@@ -15,10 +15,11 @@ export const Certificate = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
     const id = searchParams.get("id") || "01-01";
-    
+     
     // Fetch User Profile
     const { data: profileData } = useGetProfileQuery();
-    const userName = profileData?.profile?.name || "Practitioner Name";
+    console.log("Profile Data:", profileData);
+    const userName = profileData?.profile?.first_name + " " + profileData?.profile?.last_name || "Practitioner Name";
 
     // Fetch Micro-Credential Details from API
     const mcId = Number(id);
@@ -86,18 +87,18 @@ export const Certificate = () => {
             pdf.setFont("serif", "bold");
             pdf.setFontSize(22);
             pdf.setTextColor("#0B1F3A");
-            pdf.text(mc.name, pdfWidth / 2, 93, { align: "center" });
+            pdf.text(mc.name, pdfWidth / 2, 100, { align: "center" });
 
             // 3. Issue Date
             pdf.setFont("monospace", "bold");
             pdf.setFontSize(10);
             pdf.setTextColor("#1A1A1E");
             const issueDate = "07 March 2026";
-            pdf.text(issueDate, 78, 168);
+            pdf.text(issueDate, 65, 124.5);
 
             // 4. Certificate ID
             const certId = `IKS-${mc.id}-2026-4201-XKPM7`;
-            pdf.text(certId, 128, 180);
+            pdf.text(certId, 122, 124.5);
 
             pdf.save(`IKON-Skills-Certificate-${mc.name.replace(/\s+/g, '-')}.pdf`);
         };
