@@ -7,6 +7,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { FaLinkedin, FaFacebook } from "react-icons/fa";
 import Image from "next/image";
 import certPhoto from "@/assets/cirtificate/Untitled-2.png";
+import { QRCodeSVG } from "qrcode.react";
 
 export const Certificates = () => {
     const { data, isLoading } = useGetCertificatesQuery();
@@ -138,6 +139,16 @@ export const Certificates = () => {
                                                 </div>
                                                 <div className="absolute top-[59%] left-[41.5%] text-[4px] font-mono text-[#5B5655]">
                                                     {selectedCert.certificate_number}
+                                                </div>
+
+                                                {/* QR Code - Positioned exactly in the red marked area */}
+                                                <div className="absolute top-[52%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[2px] rounded-sm shadow-sm pointer-events-auto">
+                                                    <QRCodeSVG 
+                                                        value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${selectedCert.id}` : ''} 
+                                                        size={35}
+                                                        level="H"
+                                                        includeMargin={false}
+                                                    />
                                                 </div>
                                             </div>
                                         )}

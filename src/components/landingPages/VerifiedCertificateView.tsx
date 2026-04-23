@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import Image from "next/image";
 import certPhoto from "@/assets/cirtificate/Untitled-2.png";
 import { Loader2, ShieldCheck, Download, CheckCircle2 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import jsPDF from "jspdf";
 
 interface VerifiedCertificateViewProps {
@@ -169,6 +170,16 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
                             
                                 <span>{cert?.certificate_number || cert?.id}</span>
                             </div>
+                        </div>
+
+                        {/* QR Code */}
+                        <div className="absolute top-[52%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
+                            <QRCodeSVG 
+                                value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${id}` : ''} 
+                                size={100}
+                                level="H"
+                                includeMargin={false}
+                            />
                         </div>
                     </div>
 

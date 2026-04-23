@@ -11,6 +11,7 @@ import { useGetLessonCompetenciesQuery, MicroCredential, DomainHierarchy } from 
 import { useGetProfileQuery } from "@/redux/features/profile/profileApi";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { Download } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 
 export const Certificate = () => {
     const searchParams = useSearchParams();
@@ -172,6 +173,16 @@ export const Certificate = () => {
                                     <span className="opacity-50">ID:</span>
                                     <span>IKS-{mc.id}-2026-4201-XKPM7</span>
                                 </div>
+                            </div>
+
+                            {/* QR Code */}
+                            <div className="absolute top-[52%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
+                                <QRCodeSVG 
+                                    value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${id}` : ''} 
+                                    size={100}
+                                    level="H"
+                                    includeMargin={false}
+                                />
                             </div>
                         </div>
                     </div>
