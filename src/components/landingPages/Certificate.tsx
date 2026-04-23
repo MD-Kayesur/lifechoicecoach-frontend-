@@ -7,26 +7,34 @@ import certPhoto from "@/assets/cirtificate/Untitled-2.png";
 import ikonLogo from "@/assets/images/ikon_logo.png";
 import jsPDF from "jspdf";
 import { useRef, useMemo } from "react";
-import { useGetLessonCompetenciesQuery } from "@/redux/features/lesson/lessonCompetenciesApi";
+import { useGetLessonCompetenciesQuery, MicroCredential, DomainHierarchy } from "@/redux/features/lesson/lessonCompetenciesApi";
 import { useGetProfileQuery } from "@/redux/features/profile/profileApi";
 import { skipToken } from "@reduxjs/toolkit/query";
 
 export const Certificate = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const id = searchParams.get("id") || "01-01";
+    const id = searchParams.get("id");
      
     // Fetch User Profile
     const { data: profileData } = useGetProfileQuery();
     console.log("Profile Data:", profileData);
-    const userName = profileData?.profile?.first_name + " " + profileData?.profile?.last_name || "Practitioner Name";
+    const userName = (profileData?.profile?.first_name || "") + " " + (profileData?.profile?.last_name || "") || "Practitioner Name";
 
     // Fetch Micro-Credential Details from API
     const mcId = Number(id);
     const { data: apiResponse } = useGetLessonCompetenciesQuery(
         !isNaN(mcId) ? { micro_credential_id: mcId } : skipToken
     );
-
+    console.log("API Response:", apiResponse);
+    const domain: DomainHierarchy | undefined = apiResponse?.data?.domains?.[0];
+    const mc1: (MicroCredential & { domain_name?: string }) | undefined = domain?.micro_credentials?.[0];
+    
+    if (mc1) {
+        console.log(mc1.domain_name);        // "AI & Automaiton"
+        console.log(mc1.micro_credential); 
+    }
+    console.log("ID:", id);
     // Extract dynamic data
     const { dynamicMC, dynamicDomain } = useMemo(() => {
         if (!apiResponse?.data?.domains || apiResponse.data.domains.length === 0) {
@@ -44,7 +52,7 @@ export const Certificate = () => {
         level: dynamicMC.level || "6",
         ects: 10,
         cat: dynamicDomain?.domain || "01"
-    } : (MCS.find(item => item.id === id) || MCS[0]);
+    } : (MCS.find(item => item.id === (id || "01-01")) || MCS[0]);
 
     const category = dynamicDomain ? {
         id: dynamicDomain.domain,
@@ -87,7 +95,7 @@ export const Certificate = () => {
             pdf.setFont("serif", "bold");
             pdf.setFontSize(22);
             pdf.setTextColor("#0B1F3A");
-            pdf.text(mc.name, pdfWidth / 2, 100, { align: "center" });
+            pdf.text(mc1?.micro_credential || mc.name, pdfWidth / 2, 100, { align: "center" });
 
             // 3. Issue Date
             pdf.setFont("monospace", "bold");
@@ -139,7 +147,7 @@ export const Certificate = () => {
                             
                             {/* Micro-Credential Name Overlay */}
                             <div className="text-[1.8vw] lg:text-[20px] font-serif font-bold text-[#0B1F3A] mt-[1.5%]">
-                                {mc.name}
+                                {mc1?.micro_credential || mc.name}
                             </div>
 
                             {/* Meta Info Overlays (Simplified for UI) */}
