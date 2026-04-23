@@ -85,22 +85,31 @@ export const Certificate = () => {
 
             pdf.addImage(img, "JPEG", xOffset, yOffset, finalWidth, finalHeight);
 
+
+
+
+            // 1. Domain Name
+            pdf.setFont("serif", "bold");
+            pdf.setFontSize(13);
+            pdf.setTextColor(91, 86, 85); // Matches #5B5655
+            pdf.text(mc1?.domain_name || category.name || "", pdfWidth / 2, 52, { align: "center" });
+
             // 1. Recipient Name
             pdf.setFont("serif", "bold");
             pdf.setFontSize(28);
-            pdf.setTextColor("#5b5655ff");
+            pdf.setTextColor(91, 86, 85); // Matches #5B5655
             pdf.text(userName, pdfWidth / 2, 75, { align: "center" });
 
-            // 2. Micro-Credential Name
-            pdf.setFont("serif", "bold");
+            // 2. Micro-Credential Names
+            pdf.setFont("serif", "normal");
             pdf.setFontSize(22);
-            pdf.setTextColor("#5b5655ff");
-            pdf.text(mc1?.micro_credential || mc.name, pdfWidth / 2, 100, { align: "center" });
+            pdf.setTextColor(91, 86, 85);
+            pdf.text(mc1?.micro_credential || mc.name, pdfWidth / 2, 102, { align: "center" });
 
             // 3. Issue Date
-            pdf.setFont("monospace", "bold");
+            pdf.setFont("monospace", "normal");
             pdf.setFontSize(10);
-            pdf.setTextColor("#5b5655ff");
+            pdf.setTextColor(91, 86, 85);
             const issueDate = "07 March 2026";
             pdf.text(issueDate, 65, 124.5);
 
@@ -139,19 +148,19 @@ export const Certificate = () => {
                         <Image src={certPhoto} alt="Certificate Template" className="w-full h-auto" priority />
                         
                         {/* Dynamic Overlays */}
-                        {/* <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '18.5%' }}>
-                             <div className="text-[2.2vw] lg:text-[34px] font-serif font-bold text-[#0B1F3A] mt-22">
+                        {/* <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '23.5%' }}>
+                              <div className="text-[2.2vw] lg:text-[34px] font-serif font-bold text-[#5b5655]">
                                 {userName}
                             </div>
                             
-                             <div className="text-[1.8vw] lg:text-[28px] font-serif font-bold text-[#0B1F3A] mt-12">
+                              <div className="text-[1.8vw] lg:text-[28px] font-serif text-[#5b5655] mt-[2.5%]">
                                 {mc1?.micro_credential || mc.name}
                             </div>
 
-                             <div className="absolute mt-73.5 -ml-51 text-[0.8vw] lg:text-[10px] font-mono font-bold text-[#1A1A1E]">
+                              <div className="absolute top-[59%] left-[23%] text-[0.8vw] lg:text-[10.5px] font-mono text-[#5b5655]">
                                 07 March 2026
                             </div>
-                            <div className="absolute bottom-[18.2%] left-[40.5%] text-[0.8vw] lg:text-[10px] font-mono font-bold text-[#1A1A1E]">
+                            <div className="absolute top-[59%] left-[41.5%] text-[0.8vw] lg:text-[10.5px] font-mono text-[#5b5655]">
                                 IKS-{mc.id}-2026-4201-XKPM7
                             </div>
                         </div> */}
