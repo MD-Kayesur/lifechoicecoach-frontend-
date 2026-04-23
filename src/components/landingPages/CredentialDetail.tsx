@@ -7,6 +7,8 @@ import { useMemo, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Check, CreditCard, X, ShieldCheck, Globe, BookOpen } from "lucide-react";
 
+import { skipToken } from "@reduxjs/toolkit/query";
+
 export const CredentialDetail = () => {
     const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
@@ -19,14 +21,13 @@ export const CredentialDetail = () => {
     const id = searchParams.get("id");
 
     // Check if user already has access
-    const { data: accessData } = useCheckAccessQuery(Number(id), { 
-        skip: !id 
-    });
+    const mcId = id ? Number(id) : NaN;
+    const { data: accessData } = useCheckAccessQuery(!isNaN(mcId) ? mcId : skipToken);
     const canAccess = accessData?.access?.can_access;
 
     // Fetch data from API using micro_credential_id
     const { data: apiResponse, isLoading, isError } = useGetLessonCompetenciesQuery(
-        id ? { micro_credential_id: Number(id) } : undefined
+        !isNaN(mcId) ? { micro_credential_id: mcId } : skipToken
     );
 
     // Extract micro-credential and domain from the API response
@@ -190,7 +191,7 @@ export const CredentialDetail = () => {
                         )}
                         {canAccess && (
                             <button
-                                onClick={() => router.push(`/certificate?id=${id || '01-01'}`)}
+                                onClick={() => router.push(`/certificate?id=${id}`)}
                                 className="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 text-white text-[12px] font-black uppercase tracking-widest rounded-xl transition-all"
                             >
                                 View Sample Certificate

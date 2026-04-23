@@ -1,56 +1,56 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { MCS, DOMAINS } from "@/lib/data";
 import Image from "next/image";
 import certPhoto from "@/assets/cirtificate/Untitled-2.png";
-// import certPhoto from "@/assets/images/PHOTO-2026-04-10-12-51-07.jpeg";
 import ikonLogo from "@/assets/images/ikon_logo.png";
-import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
+import { useGetLessonCompetenciesQuery } from "@/redux/features/lesson/lessonCompetenciesApi";
+import { useGetProfileQuery } from "@/redux/features/profile/profileApi";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 export const Certificate = () => {
-    console.log(DOMAINS);
     const searchParams = useSearchParams();
-    console.log(searchParams);
-    const id = searchParams.get("id") || "02-02";
-    const mc = MCS.find(item => item.id === id) || MCS[0];
-    const category = DOMAINS.find(d => d.id === mc.cat);
-    console.log(category);
+    const router = useRouter();
+    const id = searchParams.get("id") || "01-01";
+    
+    // Fetch User Profile
+    const { data: profileData } = useGetProfileQuery();
+    const userName = profileData?.profile?.name || "Practitioner Name";
+
+    // Fetch Micro-Credential Details from API
+    const mcId = Number(id);
+    const { data: apiResponse } = useGetLessonCompetenciesQuery(
+        !isNaN(mcId) ? { micro_credential_id: mcId } : skipToken
+    );
+
+    // Extract dynamic data
+    const { dynamicMC, dynamicDomain } = useMemo(() => {
+        if (!apiResponse?.data?.domains || apiResponse.data.domains.length === 0) {
+            return { dynamicMC: null, dynamicDomain: null };
+        }
+        const domain = apiResponse.data.domains[0];
+        const mc = domain.micro_credentials?.[0] || null;
+        return { dynamicMC: mc, dynamicDomain: domain };
+    }, [apiResponse]);
+
+    // Fallback to static data if API not available or for static IDs
+    const mc = dynamicMC ? {
+        id: dynamicMC.id.toString(),
+        name: dynamicMC.micro_credential,
+        level: dynamicMC.level || "6",
+        ects: 10,
+        cat: dynamicDomain?.domain || "01"
+    } : (MCS.find(item => item.id === id) || MCS[0]);
+
+    const category = dynamicDomain ? {
+        id: dynamicDomain.domain,
+        name: dynamicDomain.name
+    } : (DOMAINS.find(d => d.id === mc.cat) || DOMAINS[0]);
 
     const certRef = useRef<HTMLDivElement>(null);
-
-
-
-    // const handleDownload = async () => {
-    //     if (!certRef.current) return;
-
-    //     try {
-    //         const canvas = await html2canvas(certRef.current, {
-    //             scale: 3, // High quality
-    //             useCORS: true,
-    //             logging: false,
-    //             backgroundColor: "#ffffff",
-    //             windowWidth: certRef.current.scrollWidth,
-    //             windowHeight: certRef.current.scrollHeight
-    //         });
-
-    //         const imgData = canvas.toDataURL("image/png");
-
-    //         // Create PDF in landscape orientation
-    //         const pdf = new jsPDF({
-    //             orientation: 'landscape',
-    //             unit: 'px',
-    //             format: [canvas.width, canvas.height]
-    //         });
-
-    //         pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-    //         pdf.save(`IKON-Skills-Certificate-${mc.id}.pdf`);
-    //     } catch (error) {
-    //         console.error("Error generating PDF:", error);
-    //     }
-    // };
 
     const handleDownload = () => {
         const img = new (window as any).Image();
@@ -63,11 +63,9 @@ export const Certificate = () => {
                 format: 'a4',
             });
 
-            // Calculate dimensions to fit A4 properly
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
 
-            // Background Image
             const imgWidth = img.width;
             const imgHeight = img.height;
             const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
@@ -78,14 +76,11 @@ export const Certificate = () => {
 
             pdf.addImage(img, "JPEG", xOffset, yOffset, finalWidth, finalHeight);
 
-            // --- Add Dynamic Text Over the Image ---
-
             // 1. Recipient Name
             pdf.setFont("serif", "bold");
             pdf.setFontSize(28);
             pdf.setTextColor("#0B1F3A");
-            const recipientName = "Edward Roy Krishnan"; // Or dynamic from state if available
-            pdf.text(recipientName, pdfWidth / 2, 70, { align: "center" });
+            pdf.text(userName, pdfWidth / 2, 70, { align: "center" });
 
             // 2. Micro-Credential Name
             pdf.setFont("serif", "bold");
@@ -98,15 +93,12 @@ export const Certificate = () => {
             pdf.setFontSize(10);
             pdf.setTextColor("#1A1A1E");
             const issueDate = "07 March 2026";
-            // Coordinates for the "Issued:" field
             pdf.text(issueDate, 78, 168);
 
             // 4. Certificate ID
             const certId = `IKS-${mc.id}-2026-4201-XKPM7`;
-            // Coordinates for the "Certificate ID:" field
             pdf.text(certId, 128, 180);
 
-            // Final Save
             pdf.save(`IKON-Skills-Certificate-${mc.name.replace(/\s+/g, '-')}.pdf`);
         };
 
@@ -114,11 +106,15 @@ export const Certificate = () => {
             alert("Failed to load certificate template image.");
         };
     };
+
     return (
         <div id="page-certificate" className="page active pt-[62px] min-h-screen bg-[#0a1628]">
             <div className="cert-layout max-w-[1200px] mx-auto px-8 md:px-12 py-10 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10">
                 <div className="animate-in fade-in slide-in-from-left-4 duration-700">
-                    <div className="cert-bc text-sm text-white/50 hover:text-white mb-6 cursor-pointer flex items-center gap-2 transition-colors" onClick={() => window.location.href = `/sample-mc?id=${mc.id}`}>
+                    <div 
+                        className="cert-bc text-sm text-white/50 hover:text-white mb-6 cursor-pointer flex items-center gap-2 transition-colors" 
+                        onClick={() => router.push(`/sample-mc?id=${id}`)}
+                    >
                         ← Back to Credential
                     </div>
                     <div className="header mb-8">
@@ -129,85 +125,31 @@ export const Certificate = () => {
                         </p>
                     </div>
 
-                    {/* Certificate Card */}
-                    <div>
-                        <Image src={certPhoto} alt="" />
-
-                    </div>
-                    {/* <div className="certificate bg-white border-2 border-gold rounded-[4px] relative overflow-hidden shadow-2xl scale-[0.98] origin-left">
-                        <div ref={certRef} className="cert-ob m-3 border-[1.5px] border-gold rounded-[2px] p-10 md:p-12 relative">
-
-                            <div className="cc absolute w-6 h-6 top-[-2px] left-[-2px] border-t-[3px] border-l-[3px] border-gold"></div>
-                            <div className="cc absolute w-6 h-6 top-[-2px] right-[-2px] border-t-[3px] border-r-[3px] border-gold"></div>
-                            <div className="cc absolute w-6 h-6 bottom-[-2px] left-[-2px] border-b-[3px] border-l-[3px] border-gold"></div>
-                            <div className="cc absolute w-6 h-6 bottom-[-2px] right-[-2px] border-b-[3px] border-r-[3px] border-gold"></div>
-
-
-                            <div className="cert-recipient-photo absolute top-10 right-10 w-[90px] h-[115px] border-[1.5px] border-gold rounded-[2px] overflow-hidden grayscale hover:grayscale-0 transition-all shadow-sm z-10 hidden md:block">
-                                <Image
-                                    src={certPhoto}
-                                    alt="Edward Roy Krishnan"
-                                    className="w-full h-full object-cover"
-                                />
+                    {/* Certificate Card with Dynamic Overlays */}
+                    <div className="relative group overflow-hidden rounded-xl border border-gold/20 shadow-2xl">
+                        <Image src={certPhoto} alt="Certificate Template" className="w-full h-auto" priority />
+                        
+                        {/* Dynamic Overlays */}
+                        <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '18.5%' }}>
+                            {/* Recipient Name Overlay */}
+                            <div className="text-[2.2vw] lg:text-[24px] font-serif font-bold text-[#0B1F3A] mb-[2%]">
+                                {userName}
+                            </div>
+                            
+                            {/* Micro-Credential Name Overlay */}
+                            <div className="text-[1.8vw] lg:text-[20px] font-serif font-bold text-[#0B1F3A] mt-[1.5%]">
+                                {mc.name}
                             </div>
 
-                            <div className="cert-hdr text-center pb-6 border-b border-gold/15 mb-8">
-                                <div className="cert-logo-row flex items-center justify-center gap-2 mb-2">
-                                    <Image src={ikonLogo} alt="IKON" className="h-7 w-auto object-contain filter brightness-0 saturate-100 invert-[18%] sepia-[82%] saturate-[1200%] hue-rotate-[340deg] brightness-[0.85]" />
-                                    <div className="cert-ln font-serif font-bold text-[21px] text-[#0B1F3A]">SKILLS<sup>™</sup></div>
-                                </div>
-                                <div className="cert-qa-line text-[10px] text-[#74798A] font-mono leading-relaxed">
-                                    Quality Assured by European International University, Paris · UAI 0756213W · 59 Rue Lamarck, 75018 Paris
-                                </div>
+                            {/* Meta Info Overlays (Simplified for UI) */}
+                            <div className="absolute bottom-[23%] left-[23.5%] text-[0.8vw] lg:text-[10px] font-mono font-bold text-[#1A1A1E]">
+                                07 March 2026
                             </div>
-
-                            <div className="cert-body text-center mb-8">
-                                <div className="cert-pres text-[11px] text-[#74798A] tracking-[2px] uppercase font-mono mb-2">This certifies that</div>
-                                <div className="cert-recipient font-serif text-[36px] font-bold text-[#0B1F3A] border-b-[1.5px] border-gold pb-2 inline-block mb-4">Edward Roy Krishnan</div>
-                                <div className="cert-earned text-[12.5px] text-[#3D4556] mb-4">has successfully earned the IKON SKILLS™ Micro-Credential in</div>
-                                <div className="cert-mc-name font-serif text-[27px] font-bold text-[#0B1F3A] leading-tight mb-2">{mc.name}</div>
-                                <div className="cert-domain text-[11px] text-gold font-mono font-bold tracking-[1px] mb-6">Category {mc.cat} · {category?.name}</div>
-                                <div className="cert-note text-[12px] text-[#3D4556] leading-relaxed max-w-[460px] mx-auto mb-8">
-                                    Having demonstrated mastery of all 10 core competencies as assessed by the IKON SKILLS™ AI-native assessment framework, in accordance with the European Qualifications Framework (EQF) standards.
-                                </div>
-
-                                <div className="cert-meta-row flex justify-center gap-6 md:gap-10 mb-8 flex-wrap">
-                                    <div className="cert-mb">
-                                        <div className="cert-ml text-[9.5px] font-mono text-[#74798A] tracking-[1px] uppercase mb-0.5">ECTS Credits</div>
-                                        <div className="cert-mv text-[13.5px] font-bold text-[#0B1F3A]">{mc.ects} ECTS</div>
-                                    </div>
-                                    <div className="cert-mb">
-                                        <div className="cert-ml text-[9.5px] font-mono text-[#74798A] tracking-[1px] uppercase mb-0.5">EQF Level</div>
-                                        <div className="cert-mv text-[13.5px] font-bold text-[#0B1F3A]">Level {mc.level}</div>
-                                    </div>
-                                    <div className="cert-mb">
-                                        <div className="cert-ml text-[9.5px] font-mono text-[#74798A] tracking-[1px] uppercase mb-0.5">Date of Issue</div>
-                                        <div className="cert-mv text-[13.5px] font-bold text-[#0B1F3A]">07 March 2026</div>
-                                    </div>
-                                    <div className="cert-mb">
-                                        <div className="cert-ml text-[9.5px] font-mono text-[#74798A] tracking-[1px] uppercase mb-0.5">Credential ID</div>
-                                        <div className="cert-mv text-[13.5px] font-bold text-[#0B1F3A]">IKS-{mc.id}-2026-4201</div>
-                                    </div>
-                                </div>
-
-                                <div className="cert-seal-row flex flex-col md:flex-row justify-between items-center md:items-end pt-6 border-t border-gold/15 gap-8">
-                                    <div className="cert-sig text-center">
-                                        <div className="cert-sig-line w-[130px] h-[1px] bg-[#0B1F3A]/40 mx-auto mb-2"></div>
-                                        <div className="cert-sig-n text-[10px] font-bold text-[#0B1F3A] font-mono">HON. KY. COL. PROF. DR. EDWARD ROY KRISHNAN</div>
-                                        <div className="cert-sig-t text-[8.5px] text-[#74798A] font-mono mt-1">Founder & CEO, IKON SKILLS™ · EIU-Paris</div>
-                                    </div>
-                                    <div className="cert-seal w-[80px] h-[80px] rounded-full border-[2.5px] border-gold bg-gold/5 flex flex-col items-center justify-center text-center p-2">
-                                        <div className="cert-seal-t text-[8.5px] font-bold text-gold font-mono leading-tight uppercase tracking-[0.4px]">IKON<br />SKILLS™<br />VERIFIED</div>
-                                    </div>
-                                    <div className="cert-sig text-center">
-                                        <div className="cert-sig-line w-[130px] h-[1px] bg-[#0B1F3A]/40 mx-auto mb-2"></div>
-                                        <div className="cert-sig-n text-[10px] font-bold text-[#0B1F3A] font-mono uppercase tracking-wider">Quality Assured</div>
-                                        <div className="cert-sig-t text-[8.5px] text-[#74798A] font-mono mt-1">European International University, Paris<br />UAI 0756213W</div>
-                                    </div>
-                                </div>
+                            <div className="absolute bottom-[18.2%] left-[40.5%] text-[0.8vw] lg:text-[10px] font-mono font-bold text-[#1A1A1E]">
+                                IKS-{mc.id}-2026-4201-XKPM7
                             </div>
                         </div>
-                    </div> */}
+                    </div>
                 </div>
 
                 <aside className="cv-sidebar sticky top-[92px] animate-in fade-in slide-in-from-right-4 duration-700">
@@ -216,17 +158,16 @@ export const Certificate = () => {
                             <span>🔒</span> Credential Verification
                         </div>
 
-                        {/* Sidebar Recipeint Photo */}
                         <div className="cv-profile-box flex items-center gap-4 mb-6 pb-6 border-b border-[#0B1F3A]/5">
                             <div className="w-[60px] h-[60px] rounded-full border-2 border-gold overflow-hidden bg-gold/5 shrink-0">
                                 <Image
                                     src={certPhoto}
-                                    alt="Edward Roy Krishnan"
+                                    alt={userName}
                                     className="w-full h-full object-cover"
                                 />
                             </div>
                             <div>
-                                <div className="text-[14px] font-bold text-[#0B1F3A]">Edward Roy Krishnan</div>
+                                <div className="text-[14px] font-bold text-[#0B1F3A]">{userName}</div>
                                 <div className="text-[10px] text-green-600 font-bold uppercase tracking-wider">✓ Verified Identity</div>
                             </div>
                         </div>
@@ -236,7 +177,7 @@ export const Certificate = () => {
                         </div>
                         <div className="space-y-3">
                             {[
-                                { l: 'Practitioner', v: 'Edward Roy Krishnan' },
+                                { l: 'Practitioner', v: userName },
                                 { l: 'Credential', v: mc.name },
                                 { l: 'Domain', v: `Cat ${mc.cat} · ${category?.name}` },
                                 { l: 'ECTS', v: `${mc.ects} ECTS · EQF ${mc.level}` },
@@ -252,10 +193,9 @@ export const Certificate = () => {
                         </div>
                     </div>
 
-                    <button onClick={handleDownload} className="btn-dl w-full bg-gold text-white font-bold text-[13.5px] py-3 rounded-xl shadow-[0_4px_0_#8a1e27] hover:bg-gold2 hover:translate-y-[2px] hover:shadow-[0_2px_0_#8a1e27] active:shadow-none active:translate-y-[4px] transition-all mb-3">
+                    <button onClick={handleDownload} className="btn-dl w-full bg-gold text-white font-bold text-[13.5px] py-3 rounded-xl shadow-[0_4px_0_#9a7e3a] hover:bg-gold2 hover:translate-y-[2px] hover:shadow-[0_2px_0_#9a7e3a] active:shadow-none active:translate-y-[4px] transition-all mb-3">
                         ⬇ Download Certificate (PDF)
                     </button>
-
 
                     <div className="note bg-[#F9F5EE] border border-gold/15 rounded-2xl p-4">
                         <div className="text-[12px] font-bold text-[#0B1F3A] mb-2">What this certificate proves</div>
