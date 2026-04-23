@@ -143,30 +143,30 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
                     <Image src={certPhoto} alt="Certificate Template" className="w-full h-auto" priority />
                     
                     {/* Dynamic Overlays */}
-                    <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '15.5%' }}>
+                    <div className="absolute inset-0 flex flex-col items-center mt-20 pointer-events-none mt-62"  >
                         {/* Domain Name */}
-                        <div className="text-[1.2vw] lg:text-[18px] font-serif font-bold text-[#5B5655]/70 uppercase tracking-[2px] mb-[1.5%]">
+                        <div className="text-[1.2vw] lg:text-[18px] font-serif font-bold text-[#5B5655]/70   tracking-[2px]  ">
                             {mc1?.domain_name || "Official IKON Skills Domain"}
                         </div>
                         
                         {/* Recipient Name */}
-                        <div className="text-[3vw] lg:text-[42px] font-serif font-bold text-[#5B5655]">
+                        <div className="text-[3vw]  mt-20 lg:text-[42px] font-serif font-bold text-[#5B5655]">
                             {userName}
                         </div>
                         
                         {/* Credential Name */}
-                        <div className="text-[2.2vw] lg:text-[32px] font-serif text-[#5B5655] mt-[2.5%]">
+                        <div className="text-[2.2vw] lg:text-[34px] font-serif mt-20 text-[#5B5655]  ">
                             {mc1?.micro_credential || cert?.credential_name || "Micro-Credential"}
                         </div>
 
                         {/* Bottom Info Row */}
-                        <div className="absolute bottom-[32.5%] w-full flex justify-center gap-[10%] text-[1vw] lg:text-[14px] font-mono text-[#5B5655]">
+                        <div className="absolute left-10 top-97 w-full flex justify-center gap-[16%] text-[1vw] lg:text-[16px] font-mono text-[#5B5655]">
                             <div className="flex gap-2">
-                                <span className="opacity-50">Issued:</span>
+                               
                                 <span>{cert?.issue_date ? new Date(cert.issue_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : "07 March 2026"}</span>
                             </div>
-                            <div className="flex gap-2">
-                                <span className="opacity-50">ID:</span>
+                            <div className="flex gap-2 ">
+                            
                                 <span>{cert?.certificate_number || cert?.id}</span>
                             </div>
                         </div>
