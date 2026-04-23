@@ -90,7 +90,7 @@ export const Badges = () => {
             </div>
 
             {/* Badges Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-6">
                 {badges.length > 0 ? (
                     badges.map((badge) => (
                         <div 
@@ -151,9 +151,9 @@ export const Badges = () => {
                                     {verifyingCode === badge.verification_code ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
                                     Verify
                                 </button>
-                                <button className="p-2.5 bg-white/5 hover:bg-white/10 text-white/40 hover:text-white rounded-xl transition-all border border-white/10">
+                                {/* <button className="p-2.5 bg-white/5 hover:bg-white/10 text-white/40 hover:text-white rounded-xl transition-all border border-white/10">
                                     <Share2 className="w-3.5 h-3.5" />
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                     ))
