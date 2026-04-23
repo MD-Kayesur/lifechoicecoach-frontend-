@@ -150,9 +150,8 @@ export const Certificate = () => {
                         <Image src={certPhoto} alt="Certificate Template" className="w-full h-auto" priority />
                         
                         {/* Dynamic Overlays */}
-                        <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '15.5%' }}>
-                             {/* Domain Name */}
-                             <div className="text-[1.2vw] lg:text-[18px] font-serif font-bold text-[#5B5655]/70 uppercase tracking-[2px] mb-[1.5%]">
+                        {/* <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '15.5%' }}>
+                              <div className="text-[1.2vw] lg:text-[18px] font-serif font-bold text-[#5B5655]/70 uppercase tracking-[2px] mb-[1.5%]">
                                 {mc1?.domain_name || category.name || "Official IKON Skills Domain"}
                             </div>
 
@@ -175,8 +174,7 @@ export const Certificate = () => {
                                 </div>
                             </div>
 
-                            {/* QR Code */}
-                            <div className="absolute top-[52%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
+                             <div className="absolute top-[52%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
                                 <QRCodeSVG 
                                     value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${id}` : ''} 
                                     size={100}
@@ -184,7 +182,7 @@ export const Certificate = () => {
                                     includeMargin={false}
                                 />
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 

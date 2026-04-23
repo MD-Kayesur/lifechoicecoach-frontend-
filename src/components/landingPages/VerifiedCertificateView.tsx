@@ -173,10 +173,10 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
                         </div>
 
                         {/* QR Code */}
-                        <div className="absolute top-[52%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
+                        <div className="absolute top-[42%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
                             <QRCodeSVG 
                                 value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${id}` : ''} 
-                                size={100}
+                                size={150}
                                 level="H"
                                 includeMargin={false}
                             />
