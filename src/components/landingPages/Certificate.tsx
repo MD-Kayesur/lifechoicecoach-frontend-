@@ -7,25 +7,34 @@ import certPhoto from "@/assets/cirtificate/Untitled-2.png";
 import ikonLogo from "@/assets/images/ikon_logo.png";
 import jsPDF from "jspdf";
 import { useRef, useMemo } from "react";
-import { useGetLessonCompetenciesQuery } from "@/redux/features/lesson/lessonCompetenciesApi";
+import { useGetLessonCompetenciesQuery, MicroCredential, DomainHierarchy } from "@/redux/features/lesson/lessonCompetenciesApi";
 import { useGetProfileQuery } from "@/redux/features/profile/profileApi";
 import { skipToken } from "@reduxjs/toolkit/query";
 
 export const Certificate = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const id = searchParams.get("id") || "01-01";
-    
+    const id = searchParams.get("id");
+     
     // Fetch User Profile
     const { data: profileData } = useGetProfileQuery();
-    const userName = profileData?.profile?.name || "Practitioner Name";
+    console.log("Profile Data:", profileData);
+    const userName = (profileData?.profile?.first_name || "") + " " + (profileData?.profile?.last_name || "") || "Practitioner Name";
 
     // Fetch Micro-Credential Details from API
     const mcId = Number(id);
     const { data: apiResponse } = useGetLessonCompetenciesQuery(
         !isNaN(mcId) ? { micro_credential_id: mcId } : skipToken
     );
-
+    console.log("API Response:", apiResponse);
+    const domain: DomainHierarchy | undefined = apiResponse?.data?.domains?.[0];
+    const mc1: (MicroCredential & { domain_name?: string }) | undefined = domain?.micro_credentials?.[0];
+    
+    if (mc1) {
+        console.log(mc1.domain_name);        // "AI & Automaiton"
+        console.log(mc1.micro_credential); 
+    }
+    console.log("ID:", id);
     // Extract dynamic data
     const { dynamicMC, dynamicDomain } = useMemo(() => {
         if (!apiResponse?.data?.domains || apiResponse.data.domains.length === 0) {
@@ -43,7 +52,7 @@ export const Certificate = () => {
         level: dynamicMC.level || "6",
         ects: 10,
         cat: dynamicDomain?.domain || "01"
-    } : (MCS.find(item => item.id === id) || MCS[0]);
+    } : (MCS.find(item => item.id === (id || "01-01")) || MCS[0]);
 
     const category = dynamicDomain ? {
         id: dynamicDomain.domain,
@@ -76,28 +85,37 @@ export const Certificate = () => {
 
             pdf.addImage(img, "JPEG", xOffset, yOffset, finalWidth, finalHeight);
 
+
+
+
+            // 1. Domain Name
+            pdf.setFont("serif", "bold");
+            pdf.setFontSize(13);
+            pdf.setTextColor(91, 86, 85); // Matches #5B5655
+            pdf.text(mc1?.domain_name || category.name || "", pdfWidth / 2, 52, { align: "center" });
+
             // 1. Recipient Name
             pdf.setFont("serif", "bold");
             pdf.setFontSize(28);
-            pdf.setTextColor("#0B1F3A");
-            pdf.text(userName, pdfWidth / 2, 70, { align: "center" });
+            pdf.setTextColor(91, 86, 85); // Matches #5B5655
+            pdf.text(userName, pdfWidth / 2, 75, { align: "center" });
 
-            // 2. Micro-Credential Name
-            pdf.setFont("serif", "bold");
+            // 2. Micro-Credential Names
+            pdf.setFont("serif", "normal");
             pdf.setFontSize(22);
-            pdf.setTextColor("#0B1F3A");
-            pdf.text(mc.name, pdfWidth / 2, 93, { align: "center" });
+            pdf.setTextColor(91, 86, 85);
+            pdf.text(mc1?.micro_credential || mc.name, pdfWidth / 2, 102, { align: "center" });
 
             // 3. Issue Date
-            pdf.setFont("monospace", "bold");
+            pdf.setFont("monospace", "normal");
             pdf.setFontSize(10);
-            pdf.setTextColor("#1A1A1E");
+            pdf.setTextColor(91, 86, 85);
             const issueDate = "07 March 2026";
-            pdf.text(issueDate, 78, 168);
+            pdf.text(issueDate, 65, 124.5);
 
             // 4. Certificate ID
             const certId = `IKS-${mc.id}-2026-4201-XKPM7`;
-            pdf.text(certId, 128, 180);
+            pdf.text(certId, 122, 124.5);
 
             pdf.save(`IKON-Skills-Certificate-${mc.name.replace(/\s+/g, '-')}.pdf`);
         };
@@ -130,25 +148,22 @@ export const Certificate = () => {
                         <Image src={certPhoto} alt="Certificate Template" className="w-full h-auto" priority />
                         
                         {/* Dynamic Overlays */}
-                        <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '18.5%' }}>
-                            {/* Recipient Name Overlay */}
-                            <div className="text-[2.2vw] lg:text-[24px] font-serif font-bold text-[#0B1F3A] mb-[2%]">
+                        {/* <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '23.5%' }}>
+                              <div className="text-[2.2vw] lg:text-[34px] font-serif font-bold text-[#5b5655]">
                                 {userName}
                             </div>
                             
-                            {/* Micro-Credential Name Overlay */}
-                            <div className="text-[1.8vw] lg:text-[20px] font-serif font-bold text-[#0B1F3A] mt-[1.5%]">
-                                {mc.name}
+                              <div className="text-[1.8vw] lg:text-[28px] font-serif text-[#5b5655] mt-[2.5%]">
+                                {mc1?.micro_credential || mc.name}
                             </div>
 
-                            {/* Meta Info Overlays (Simplified for UI) */}
-                            <div className="absolute bottom-[23%] left-[23.5%] text-[0.8vw] lg:text-[10px] font-mono font-bold text-[#1A1A1E]">
+                              <div className="absolute top-[59%] left-[23%] text-[0.8vw] lg:text-[10.5px] font-mono text-[#5b5655]">
                                 07 March 2026
                             </div>
-                            <div className="absolute bottom-[18.2%] left-[40.5%] text-[0.8vw] lg:text-[10px] font-mono font-bold text-[#1A1A1E]">
+                            <div className="absolute top-[59%] left-[41.5%] text-[0.8vw] lg:text-[10.5px] font-mono text-[#5b5655]">
                                 IKS-{mc.id}-2026-4201-XKPM7
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 
