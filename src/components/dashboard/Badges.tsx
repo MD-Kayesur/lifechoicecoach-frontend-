@@ -55,7 +55,7 @@ export const Badges = () => {
             if (result.is_valid) {
                 toast.success("Badge verified successfully!");
                 // Find badge name to show in success modal
-                const   = badges.find(b => b.verification_code === code);
+                const   badge= badges.find(b => b.verification_code === code);
                 if (badge) {
                     setSuccessBadgeName(badge.micro_credential_name);
                 }

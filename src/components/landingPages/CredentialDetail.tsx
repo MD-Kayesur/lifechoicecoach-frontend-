@@ -188,13 +188,14 @@ export const CredentialDetail = () => {
                                 Enroll as Practitioner
                             </button>
                         )}
-
-                        <button
-                            onClick={() => router.push(`/certificate?id=${id || '01-01'}`)}
-                            className="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 text-white text-[12px] font-black uppercase tracking-widest rounded-xl transition-all"
-                        >
-                            View Sample Certificate
-                        </button>
+                        {canAccess && (
+                            <button
+                                onClick={() => router.push(`/certificate?id=${id || '01-01'}`)}
+                                className="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 text-white text-[12px] font-black uppercase tracking-widest rounded-xl transition-all"
+                            >
+                                View Sample Certificate
+                            </button>
+                        )}
                     </div>
 
                     <div className="bg-white/5 border border-white/15 rounded-2xl p-6">
