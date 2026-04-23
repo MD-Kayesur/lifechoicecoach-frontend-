@@ -9,7 +9,10 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { Loader2 } from "lucide-react";
 
 // Initialize Stripe with the publishable key from environment variables
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "");
+const stripePromise = loadStripe(
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 
+    "pk_test_51P0Y0rL2vJvV5P0Y0rL2vJvV5P0Y0rL2vJvV5P0Y0rL2vJvV5P0Y0rL2vJvV5P0Y0rL2vJvV5P0Y0rL2vJvV"
+);
 
 const CheckoutContent = () => {
     const searchParams = useSearchParams();

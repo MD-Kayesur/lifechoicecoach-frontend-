@@ -36,7 +36,7 @@ export const certificateApi = baseApi.injectEndpoints({
         // Get all certificates for current user
         getCertificates: builder.query<CertificatesResponse, CertificateListParams | void>({
             query: (params) => ({
-                url: "/progress/certificates/",
+                url: "/progress/user/certificates/",
                 method: "GET",
                 params: params || {},
             }),
@@ -46,7 +46,7 @@ export const certificateApi = baseApi.injectEndpoints({
         // Verify a certificate by certificate number
         verifyCertificate: builder.query<CertificateVerifyResponse, { certificate_number: string; search?: string; ordering?: string }>({
             query: ({ certificate_number, ...params }) => ({
-                url: `/progress/certificates/verify/${certificate_number}/`,
+                url: `/progress/user/certificates/verify/${certificate_number}/`,
                 method: "GET",
                 params,
             }),
@@ -56,7 +56,7 @@ export const certificateApi = baseApi.injectEndpoints({
         // Get specific certificate details
         getCertificateById: builder.query<Certificate, string | number>({
             query: (id) => ({
-                url: `/progress/certificates/${id}/`,
+                url: `/progress/user/certificates/${id}/`,
                 method: "GET",
             }),
             providesTags: (result, error, id) => [{ type: "Certificate", id }],

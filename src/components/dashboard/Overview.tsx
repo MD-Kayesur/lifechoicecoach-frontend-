@@ -76,7 +76,7 @@ console.log("earnedData",earnedData);
                 </div>
             </section>
 
-            {lastEarned && (
+            {/* {lastEarned && (
                 <section>
                     <div className="text-[14.5px] font-bold text-white mb-3 tracking-wide">Last Earned Credential</div>
                     <div className="bg-gradient-to-br from-[#0B1F3A] to-[#142E55] border border-gold/40 rounded-2xl p-6 relative overflow-hidden group">
@@ -95,7 +95,7 @@ console.log("earnedData",earnedData);
                         </div>
                     </div>
                 </section>
-            )}
+            )} */}
         </div>
     );
 };

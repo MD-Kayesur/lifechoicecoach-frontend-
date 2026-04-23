@@ -10,6 +10,7 @@ import { useRef, useMemo } from "react";
 import { useGetLessonCompetenciesQuery, MicroCredential, DomainHierarchy } from "@/redux/features/lesson/lessonCompetenciesApi";
 import { useGetProfileQuery } from "@/redux/features/profile/profileApi";
 import { skipToken } from "@reduxjs/toolkit/query";
+import { Download } from "lucide-react";
 
 export const Certificate = () => {
     const searchParams = useSearchParams();
@@ -148,22 +149,31 @@ export const Certificate = () => {
                         <Image src={certPhoto} alt="Certificate Template" className="w-full h-auto" priority />
                         
                         {/* Dynamic Overlays */}
-                        {/* <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '23.5%' }}>
-                              <div className="text-[2.2vw] lg:text-[34px] font-serif font-bold text-[#5b5655]">
+                        <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '15.5%' }}>
+                             {/* Domain Name */}
+                             <div className="text-[1.2vw] lg:text-[18px] font-serif font-bold text-[#5B5655]/70 uppercase tracking-[2px] mb-[1.5%]">
+                                {mc1?.domain_name || category.name || "Official IKON Skills Domain"}
+                            </div>
+
+                             <div className="text-[3vw] lg:text-[42px] font-serif font-bold text-[#5b5655]">
                                 {userName}
                             </div>
                             
-                              <div className="text-[1.8vw] lg:text-[28px] font-serif text-[#5b5655] mt-[2.5%]">
+                             <div className="text-[2.2vw] lg:text-[32px] font-serif text-[#5b5655] mt-[2.5%]">
                                 {mc1?.micro_credential || mc.name}
                             </div>
 
-                              <div className="absolute top-[59%] left-[23%] text-[0.8vw] lg:text-[10.5px] font-mono text-[#5b5655]">
-                                07 March 2026
+                             <div className="absolute bottom-[32.5%] w-full flex justify-center gap-[10%] text-[1vw] lg:text-[14px] font-mono text-[#5b5655]">
+                                <div className="flex gap-2">
+                                    <span className="opacity-50">Issued:</span>
+                                    <span>07 March 2026</span>
+                                </div>
+                                <div className="flex gap-2">
+                                    <span className="opacity-50">ID:</span>
+                                    <span>IKS-{mc.id}-2026-4201-XKPM7</span>
+                                </div>
                             </div>
-                            <div className="absolute top-[59%] left-[41.5%] text-[0.8vw] lg:text-[10.5px] font-mono text-[#5b5655]">
-                                IKS-{mc.id}-2026-4201-XKPM7
-                            </div>
-                        </div> */}
+                        </div>
                     </div>
                 </div>
 
@@ -208,8 +218,8 @@ export const Certificate = () => {
                         </div>
                     </div>
 
-                    <button onClick={handleDownload} className="btn-dl w-full bg-gold text-white font-bold text-[13.5px] py-3 rounded-xl shadow-[0_4px_0_#9a7e3a] hover:bg-gold2 hover:translate-y-[2px] hover:shadow-[0_2px_0_#9a7e3a] active:shadow-none active:translate-y-[4px] transition-all mb-3">
-                        ⬇ Download Certificate (PDF)
+                    <button onClick={handleDownload} className="btn-dl w-full bg-gold text-white font-bold text-[13.5px] py-3 rounded-xl shadow-[0_4px_0_#9a7e3a] hover:bg-gold2 hover:translate-y-[2px] hover:shadow-[0_2px_0_#9a7e3a] active:shadow-none active:translate-y-[4px] transition-all mb-3 flex items-center justify-center gap-2">
+                        <Download size={18} /> Download Certificate (PDF)
                     </button>
 
                     <div className="note bg-[#F9F5EE] border border-gold/15 rounded-2xl p-4">
@@ -220,6 +230,7 @@ export const Certificate = () => {
                     </div>
                 </aside>
             </div>
+
         </div>
     );
 };
