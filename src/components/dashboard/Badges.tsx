@@ -197,6 +197,10 @@ const VerificationSuccessModal = ({ name, onClose }: { name: string, onClose: ()
                                 const pdfWidth = pdf.internal.pageSize.getWidth();
                                 const pdfHeight = pdf.internal.pageSize.getHeight();
 
+                                // Fill white background to prevent black transparency issues
+                                pdf.setFillColor(255, 255, 255);
+                                pdf.rect(0, 0, pdfWidth, pdfHeight, "F");
+
                                 // Background Badge Image
                                 const imgWidth = img.width;
                                 const imgHeight = img.height;
@@ -233,12 +237,18 @@ const VerificationSuccessModal = ({ name, onClose }: { name: string, onClose: ()
                                     }
                                 });
 
-                                const centerY = yOffset + (finalHeight / 2) + 12; // Adjusted offset for badge center
+                                const textVerticalOffset = 24;   // MT - Adjust this to move text up/down
+                                const textHorizontalOffset = 0; // Adjust this to move text left/right
+                                const lineSpacing = 10;          // Adjust this for gap between lines
+                                
+                                const centerX = (pdfWidth / 2) + textHorizontalOffset;
+                                const centerY = yOffset + (finalHeight / 2) + textVerticalOffset;
+                                
                                 if (line2) {
-                                    pdf.text(line1, pdfWidth / 2, centerY - 4, { align: "center" });
-                                    pdf.text(line2, pdfWidth / 2, centerY + 6, { align: "center" });
+                                    pdf.text(line1, centerX, centerY - (lineSpacing / 2) + 1, { align: "center" });
+                                    pdf.text(line2, centerX, centerY + (lineSpacing / 2) + 1, { align: "center" });
                                 } else {
-                                    pdf.text(line1, pdfWidth / 2, centerY, { align: "center" });
+                                    pdf.text(line1, centerX, centerY, { align: "center" });
                                 }
 
                                 pdf.save(`IKON-Badge-${name.replace(/\s+/g, '-')}.pdf`);
@@ -279,7 +289,7 @@ const VerificationSuccessModal = ({ name, onClose }: { name: string, onClose: ()
                                             {/* Overlaying the Micro-Credential Name on the Badge */}
                                             <div className="absolute inset-0 flex items-center justify-center px-12 pt-16">
                                                 <span className="text-white font-bold text-[18px] leading-tight font-outfit uppercase tracking-tight text-center max-w-[180px]">
-                                                    {name}
+                                                    {/* {name} */}
                                                 </span>
                                             </div>
                                         </div>
