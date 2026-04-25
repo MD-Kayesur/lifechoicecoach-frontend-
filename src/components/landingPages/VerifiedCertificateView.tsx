@@ -8,7 +8,7 @@ import { useMemo } from "react";
 import Image from "next/image";
 import certPhoto from "@/assets/cirtificate/Untitled-2.png";
 import { Loader2, ShieldCheck, Download, CheckCircle2 } from "lucide-react";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeSVG, QRCodeCanvas } from "qrcode.react";
 import jsPDF from "jspdf";
 
 interface VerifiedCertificateViewProps {
@@ -91,6 +91,18 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
 
             // 5. Certificate ID
             pdf.text(cert?.certificate_number || `IKS-${id}-2026`, 122, 124.5);
+
+            // 6. QR Code
+            const qrCanvas = document.getElementById("qr-code-canvas") as HTMLCanvasElement;
+            if (qrCanvas) {
+                const qrImage = qrCanvas.toDataURL("image/png");
+                // Position it centered between the date and ID, or just centered
+                // Based on UI: top-[42%] left-[50%]
+                // 42% of 297mm is ~124.7mm. We'll use 124.5 to align with text baseline or slightly adjusted.
+                // Let's place it so it's centered at (pdfWidth/2, 120) with size 25mm
+                const qrSize = 22;
+                pdf.addImage(qrImage, "PNG", (pdfWidth - qrSize) / 2, 114, qrSize, qrSize);
+            }
 
             pdf.save(`Verified-Certificate-${cert?.certificate_number || id}.pdf`);
         };
@@ -180,6 +192,15 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
                                 level="H"
                                 includeMargin={false}
                             />
+                            {/* Hidden canvas for PDF export */}
+                            <div style={{ display: 'none' }}>
+                                <QRCodeCanvas
+                                    id="qr-code-canvas"
+                                    value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${id}` : ''}
+                                    size={500}
+                                    level="H"
+                                />
+                            </div>
                         </div>
                     </div>
 

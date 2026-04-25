@@ -11,7 +11,7 @@ import { useGetLessonCompetenciesQuery, MicroCredential, DomainHierarchy } from 
 import { useGetProfileQuery } from "@/redux/features/profile/profileApi";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { Download } from "lucide-react";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeSVG, QRCodeCanvas } from "qrcode.react";
 
 export const Certificate = () => {
     const searchParams = useSearchParams();
@@ -119,6 +119,14 @@ export const Certificate = () => {
             const certId = `IKS-${mc.id}-2026-4201-XKPM7`;
             pdf.text(certId, 122, 124.5);
 
+            // 5. QR Code
+            const qrCanvas = document.getElementById("qr-code-canvas-sample") as HTMLCanvasElement;
+            if (qrCanvas) {
+                const qrImage = qrCanvas.toDataURL("image/png");
+                const qrSize = 22;
+                pdf.addImage(qrImage, "PNG", (pdfWidth - qrSize) / 2, 114, qrSize, qrSize);
+            }
+
             pdf.save(`IKON-Skills-Certificate-${mc.name.replace(/\s+/g, '-')}.pdf`);
         };
 
@@ -150,7 +158,7 @@ export const Certificate = () => {
                         <Image src={certPhoto} alt="Certificate Template" className="w-full h-auto" priority />
                         
                         {/* Dynamic Overlays */}
-                        {/* <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '15.5%' }}>
+                        <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '15.5%' }}>
                               <div className="text-[1.2vw] lg:text-[18px] font-serif font-bold text-[#5B5655]/70 uppercase tracking-[2px] mb-[1.5%]">
                                 {mc1?.domain_name || category.name || "Official IKON Skills Domain"}
                             </div>
@@ -181,8 +189,17 @@ export const Certificate = () => {
                                     level="H"
                                     includeMargin={false}
                                 />
+                                {/* Hidden canvas for PDF export */}
+                                <div style={{ display: 'none' }}>
+                                    <QRCodeCanvas
+                                        id="qr-code-canvas-sample"
+                                        value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${id}` : ''}
+                                        size={800}
+                                        level="H"
+                                    />
+                                </div>
                             </div>
-                        </div> */}
+                        </div>
                     </div>
                 </div>
 
