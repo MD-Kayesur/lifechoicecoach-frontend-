@@ -123,8 +123,8 @@ export const Certificate = () => {
             const qrCanvas = document.getElementById("qr-code-canvas-sample") as HTMLCanvasElement;
             if (qrCanvas) {
                 const qrImage = qrCanvas.toDataURL("image/png");
-                const qrSize = 22;
-                pdf.addImage(qrImage, "PNG", (pdfWidth - qrSize) / 2, 114, qrSize, qrSize);
+                const qrSize = 38;
+                pdf.addImage(qrImage, "PNG", (pdfWidth - qrSize) / 2, 152 - (qrSize / 2), qrSize, qrSize);
             }
 
             pdf.save(`IKON-Skills-Certificate-${mc.name.replace(/\s+/g, '-')}.pdf`);
@@ -158,43 +158,42 @@ export const Certificate = () => {
                         <Image src={certPhoto} alt="Certificate Template" className="w-full h-auto" priority />
                         
                         {/* Dynamic Overlays */}
-                        <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '15.5%' }}>
-                              <div className="text-[1.2vw] lg:text-[18px] font-serif font-bold text-[#5B5655]/70 uppercase tracking-[2px] mb-[1.5%]">
+                        <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '22.5%' }}>
+                              <div className="text-[1.2vw] lg:text-[13px] font-serif font-bold text-[#5B5655]/70   tracking-[2px] mb-[1.5%]">
                                 {mc1?.domain_name || category.name || "Official IKON Skills Domain"}
                             </div>
 
-                             <div className="text-[3vw] lg:text-[42px] font-serif font-bold text-[#5b5655]">
+                             <div className="text-[3vw] lg:text-[42px] font-serif mt-[2.5%] font-bold text-[#5b5655]">
                                 {userName}
                             </div>
                             
-                             <div className="text-[2.2vw] lg:text-[32px] font-serif text-[#5b5655] mt-[2.5%]">
+                             <div className="text-[2.2vw] lg:text-[32px] font-serif text-[#5b5655] mt-[6.5%]">
                                 {mc1?.micro_credential || mc.name}
                             </div>
 
-                             <div className="absolute bottom-[32.5%] w-full flex justify-center gap-[10%] text-[1vw] lg:text-[14px] font-mono text-[#5b5655]">
-                                <div className="flex gap-2">
-                                    <span className="opacity-50">Issued:</span>
+                             <div className="absolute md:left-[7.5%] md:top-[40.5%] w-full flex justify-center gap-[13%] text-[1vw] lg:text-[14px] font-mono text-[#5b5655]">
+                                <div className="flex text-[12px] gap-2">
+                                    
                                     <span>07 March 2026</span>
                                 </div>
                                 <div className="flex gap-2">
-                                    <span className="opacity-50">ID:</span>
+                                
                                     <span>IKS-{mc.id}-2026-4201-XKPM7</span>
                                 </div>
                             </div>
 
-                             <div className="absolute top-[52%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
+                             <div className="absolute  md:top-[51%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
                                 <QRCodeSVG 
                                     value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${id}` : ''} 
-                                    size={100}
+                                    size={130}
                                     level="H"
                                     includeMargin={false}
                                 />
-                                {/* Hidden canvas for PDF export */}
-                                <div style={{ display: 'none' }}>
+                                 <div style={{ display: 'none' }}>
                                     <QRCodeCanvas
                                         id="qr-code-canvas-sample"
                                         value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${id}` : ''}
-                                        size={800}
+                                        size={500}
                                         level="H"
                                     />
                                 </div>

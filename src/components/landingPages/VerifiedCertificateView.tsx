@@ -98,10 +98,9 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
                 const qrImage = qrCanvas.toDataURL("image/png");
                 // Position it centered between the date and ID, or just centered
                 // Based on UI: top-[42%] left-[50%]
-                // 42% of 297mm is ~124.7mm. We'll use 124.5 to align with text baseline or slightly adjusted.
-                // Let's place it so it's centered at (pdfWidth/2, 120) with size 25mm
-                const qrSize = 22;
-                pdf.addImage(qrImage, "PNG", (pdfWidth - qrSize) / 2, 114, qrSize, qrSize);
+                // 42% of 297mm is ~124.7mm. We'll use 124.5 to align with text center.
+                const qrSize = 30;
+                pdf.addImage(qrImage, "PNG", (pdfWidth - qrSize) / 2, 124.5 - (qrSize / 2), qrSize, qrSize);
             }
 
             pdf.save(`Verified-Certificate-${cert?.certificate_number || id}.pdf`);
