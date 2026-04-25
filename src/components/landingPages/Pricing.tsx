@@ -34,13 +34,13 @@ export const Pricing = () => {
             <FinalCTA />
 
             {/* Accreditation Footer */}
-            <div className="py-20 border-t border-white/5 text-center bg-[#02070e]">
+            {/* <div className="py-20 border-t border-white/5 text-center bg-[#02070e]">
                 <p className="text-[11px] text-white/30 max-w-[800px] mx-auto leading-relaxed px-6">
                     IKON SKILLS™ Micro-Credentials are quality assured by European International University, Paris (EIU-Paris). 
                     All accreditations and rankings listed on this platform are held by EIU-Paris and underpin the academic 
                     standing of every credential issued.
                 </p>
-            </div>
+            </div> */}
         </div>
     );
 };

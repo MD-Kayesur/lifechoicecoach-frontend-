@@ -59,6 +59,11 @@ export const PlanComparison = () => {
                         </tbody>
                     </table>
                 </div>
+                 <div className="mt-2">
+                <p className=" text-white text-[14px] leading-relaxed">
+                 All plans include unlimited competency reattempts per Micro-Credential. IKON Practitioners reattempt until the 75% benchmark is achieved. There is no additional charge for reattempts.
+                </p>
+            </div>
             </div>
         </section>
     );

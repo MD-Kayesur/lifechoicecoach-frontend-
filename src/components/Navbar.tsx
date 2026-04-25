@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-
+ 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   const baseLinks = [
@@ -83,14 +84,23 @@ export function Navbar() {
 
       {/* Actions */}
       <div className="flex items-center gap-3">
-        <a
+        {/* <a
           href="https://wa.me/66968412564"
           target="_blank"
           rel="noopener noreferrer"
           className="hidden sm:block bg-gold text-white text-[13px] font-bold px-[18px] py-[8.5px] rounded-[7px] shadow-[0_4px_0_#8a1e27] hover:bg-[#e0323f] hover:translate-y-[2px] hover:shadow-[0_2px_0_#8a1e27] transition-all font-outfit"
         >
           Enroll as IKON Practitioner
-        </a>
+        </a> */}
+        {/* New Button: Become an IKON Accredited Practitioner */}
+        <button
+          onClick={() => {
+            router.push("/catalog");
+          }}
+          className="hidden sm:block bg-gradient-to-r from-gold to-[#9d6c00] hover:from-[#8a1e27] hover:to-[#7c5a05] text-white text-[13px] font-bold px-[20px] py-[8.5px] rounded-[7px] shadow-[0_4px_0_#8a1e27] hover:shadow-[0_2px_0_#8a1e27] hover:translate-y-[2px] transition-all font-outfit"
+        >
+          Become an IKON Accredited Practitioner
+        </button>
 
         {mounted && (
           <>
