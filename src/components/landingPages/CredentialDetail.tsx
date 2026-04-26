@@ -39,26 +39,41 @@ export const CredentialDetail = () => {
         !isNaN(mcId) ? { micro_credential_id: mcId } : skipToken
     );
 
-    // Fetch completed sessions for this micro-credential
+    // Fetch all sessions for this micro-credential to check status
     const { data: sessionsData } = useGetSessionsQuery(
         canAccess && !isNaN(mcId) 
-            ? { micro_credential: mcId, status: 'completed' } 
+            ? { micro_credential: mcId } 
             : skipToken
     );
-console.log("sessionsData",sessionsData);
-    const completedCompetencyIds = useMemo(() => {
-        return sessionsData?.sessions?.map(s => Number(s.competency)) || [];
-    }, [sessionsData]);
 
-    const competencyToSessionMap = useMemo(() => {
-        const map: Record<number, number | string> = {};
+    const competencyStatusMap = useMemo(() => {
+        const map: Record<number, { status: string; sessionId: string | number }> = {};
         sessionsData?.sessions?.forEach(s => {
-            if (s.status === 'completed') {
-                map[Number(s.competency)] = s.id;
+            const compId = Number(s.competency);
+            // If multiple sessions exist, we might want the latest or a priority (completed > in_progress)
+            // For now, let's just map it.
+            if (!map[compId] || s.status === 'completed') {
+                map[compId] = { status: s.status, sessionId: s.id };
             }
         });
         return map;
     }, [sessionsData]);
+
+    const completedCompetencyIds = useMemo(() => {
+        return Object.entries(competencyStatusMap)
+            .filter(([_, val]) => val.status === 'completed')
+            .map(([id, _]) => Number(id));
+    }, [competencyStatusMap]);
+
+    const competencyToSessionMap = useMemo(() => {
+        const map: Record<number, number | string> = {};
+        Object.entries(competencyStatusMap).forEach(([compId, val]) => {
+            if (val.status === 'completed') {
+                map[Number(compId)] = val.sessionId;
+            }
+        });
+        return map;
+    }, [competencyStatusMap]);
     // Extract micro-credential and domain from the API response
     const { mc, domain } = useMemo(() => {
         if (!apiResponse?.data?.domains || apiResponse.data.domains.length === 0) {
@@ -74,6 +89,7 @@ console.log("sessionsData",sessionsData);
             domain: firstDomain
         };
     }, [apiResponse]);
+     console.log("mc",mc);
 
     if (isLoading) {
         return (
@@ -166,15 +182,27 @@ console.log("sessionsData",sessionsData);
                                 className={cn(
                                     "flex flex-col text-left gap-2 p-4 rounded-lg bg-white/5 border border-white/10 transition-all group relative",
                                     canAccess ? "hover:border-gold/40 hover:bg-gold/10 cursor-pointer" : "hover:border-white/20 cursor-pointer",
-                                    completedCompetencyIds.includes(Number(comp.id)) && "border-green-500/50 bg-green-500/5"
+                                    competencyStatusMap[Number(comp.id)]?.status === 'completed' && "border-green-500/50 bg-green-500/5",
+                                    competencyStatusMap[Number(comp.id)]?.status === 'in_progress' && "border-blue-500/50 bg-blue-500/5",
+                                    competencyStatusMap[Number(comp.id)]?.status === 'failed' && "border-red-500/50 bg-red-500/5"
                                 )}
                             >
                                 <div className="flex items-center justify-between w-full">
                                     <div className="text-[10px] font-bold text-gold font-mono uppercase tracking-wider">C{String(i + 1).padStart(2, '0')}</div>
                                     <div className="flex items-center gap-2">
-                                        {completedCompetencyIds.includes(Number(comp.id)) && (
+                                        {competencyStatusMap[Number(comp.id)]?.status === 'completed' && (
                                             <div className="px-2 py-0.5 rounded-full bg-green-500/20 border border-green-500/30 text-green-500 text-[8px] font-bold uppercase tracking-wider">
                                                 Completed
+                                            </div>
+                                        )}
+                                        {competencyStatusMap[Number(comp.id)]?.status === 'in_progress' && (
+                                            <div className="px-2 py-0.5 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-500 text-[8px] font-bold uppercase tracking-wider">
+                                                In Progress
+                                            </div>
+                                        )}
+                                        {competencyStatusMap[Number(comp.id)]?.status === 'failed' && (
+                                            <div className="px-2 py-0.5 rounded-full bg-red-500/20 border border-red-500/30 text-red-500 text-[8px] font-bold uppercase tracking-wider">
+                                                Failed
                                             </div>
                                         )}
                                         <div className="text-[9px] text-white/30 font-mono group-hover:text-gold/50 transition-colors">ID: {comp.code || comp.id}</div>

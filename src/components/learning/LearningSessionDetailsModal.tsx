@@ -15,7 +15,7 @@ export const LearningSessionDetailsModal = ({ isOpen, onClose, sessionId }: Lear
     });
 
     const session = response?.session;
-
+console.log("session",session);
     if (!isOpen) return null;
 
     return (
