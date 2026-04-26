@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Calendar, MessageSquare, Award, Clock, ChevronRight, ShieldCheck, Bot } from 'lucide-react';
+import { X, Calendar, MessageSquare, Award, Clock, ChevronRight, ShieldCheck, Bot, User } from 'lucide-react';
 import { useGetSessionByIdQuery } from '@/redux/features/learning/LearningSessionApi';
 import { cn } from '@/lib/utils';
 
@@ -24,7 +24,7 @@ export const LearningSessionDetailsModal = ({ isOpen, onClose, sessionId }: Lear
                 className="absolute inset-0 bg-[#040812]/95 backdrop-blur-xl animate-in fade-in duration-300"
                 onClick={onClose}
             ></div>
-            <div className="relative w-full max-w-[650px] max-h-[90vh] bg-[#0a111e] border border-gold/30 rounded-[24px] shadow-[0_0_100px_rgba(196,136,14,0.2)] overflow-hidden animate-in zoom-in-95 fade-in duration-300 flex flex-col">
+            <div className="relative w-full max-w-[850px] max-h-[90vh] bg-[#0a111e] border border-gold/30 rounded-[24px] shadow-[0_0_100px_rgba(196,136,14,0.2)] overflow-hidden animate-in zoom-in-95 fade-in duration-300 flex flex-col">
                 {/* Header Decoration */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-green-500/50 to-transparent"></div>
                 
@@ -111,37 +111,47 @@ export const LearningSessionDetailsModal = ({ isOpen, onClose, sessionId }: Lear
 
                             {/* Interaction History */}
                             <div className="space-y-6">
-                                <div className="flex items-center justify-between">
-                                    <div className="text-[11px] font-bold text-white/40 uppercase tracking-[2px] font-mono">Interaction Log</div>
+                                <div className="flex items-center justify-between mb-8">
+                                    <div className="text-[11px] font-bold text-white/40 uppercase tracking-[2px] font-mono">Learning Dialogue History</div>
                                     <div className="h-[1px] flex-1 bg-white/10 ml-4"></div>
                                 </div>
-                                <div className="space-y-8 relative before:absolute before:left-4 before:top-4 before:bottom-4 before:w-[1px] before:bg-gradient-to-b before:from-gold/50 before:via-white/10 before:to-transparent">
+                                <div className="space-y-10">
                                     {session.interactions?.map((interaction: any, idx: number) => (
-                                        <div key={idx} className="relative pl-10 group">
-                                            <div className="absolute left-[13px] top-1.5 w-2 h-2 rounded-full bg-gold border border-[#0a111e] shadow-[0_0_10px_rgba(196,136,14,0.5)] group-hover:scale-125 transition-transform duration-300"></div>
-                                            <div className="space-y-4">
-                                                <div className="flex items-center justify-between">
-                                                    <span className="text-[10px] text-white/30 font-mono uppercase">Interaction #{interaction.interaction_number || idx + 1}</span>
-                                                    <span className="text-[9px] text-white/20 font-mono italic">{interaction.interaction_type}</span>
-                                                </div>
-                                                
-                                                <div className="p-5 rounded-2xl bg-white/5 border border-white/10 text-[13.5px] text-white/70 leading-relaxed relative overflow-hidden">
-                                                    <div className="absolute top-0 left-0 w-1 h-full bg-white/10"></div>
-                                                    <span className="text-white/20 mr-2 text-xl font-serif leading-none italic select-none">“</span>
-                                                    {interaction.learner_input}
-                                                    <span className="text-white/20 ml-2 text-xl font-serif leading-none italic select-none">”</span>
-                                                </div>
-                                                
-                                                <div className="p-6 rounded-2xl bg-[#0d1726] border border-white/10 text-[14px] text-white/90 leading-relaxed shadow-xl">
-                                                    <div className="flex items-center gap-2 text-[10px] text-gold font-bold uppercase tracking-wider mb-4">
-                                                        <Bot size={14} />
-                                                        AI Learning Coach
+                                        <div key={idx} className="space-y-6">
+                                            {/* AI Response (Left) */}
+                                            <div className="flex justify-start pr-12 animate-in slide-in-from-left-4 duration-500">
+                                                <div className="flex gap-4 max-w-[90%]">
+                                                    <div className="w-9 h-9 rounded-xl bg-gold/10 border border-gold/20 flex items-center justify-center text-gold shrink-0 mt-1 shadow-lg shadow-gold/5">
+                                                        <Bot size={18} />
                                                     </div>
-                                                    <div className="whitespace-pre-wrap opacity-90 font-medium">
-                                                        {interaction.ai_response}
+                                                    <div className="space-y-1.5">
+                                                        <div className="flex items-center gap-2 ml-1">
+                                                            <div className="text-[10px] text-gold font-bold uppercase tracking-widest">AI Learning Coach</div>
+                                                            <div className="text-[9px] text-white/20 font-mono italic">#{interaction.interaction_number || idx + 1} • {interaction.interaction_type}</div>
+                                                        </div>
+                                                        <div className="p-5 rounded-2xl rounded-tl-none bg-white/5 border border-white/10 text-[14px] text-white/90 leading-relaxed shadow-xl backdrop-blur-sm whitespace-pre-wrap">
+                                                            {interaction.ai_response}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            {/* Learner Input (Right) */}
+                                            {interaction.learner_input && (
+                                                <div className="flex justify-end pl-12 animate-in slide-in-from-right-4 duration-500">
+                                                    <div className="flex flex-row-reverse gap-4 max-w-[85%]">
+                                                        <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 shrink-0 mt-1">
+                                                            <User size={18} />
+                                                        </div>
+                                                        <div className="space-y-1.5 text-right">
+                                                            <div className="text-[10px] text-white/40 font-bold uppercase tracking-widest mr-1">Learner Response</div>
+                                                            <div className="p-5 rounded-2xl rounded-tr-none bg-gold text-white text-[14px] leading-relaxed shadow-2xl shadow-gold/10 font-medium">
+                                                                {interaction.learner_input}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
