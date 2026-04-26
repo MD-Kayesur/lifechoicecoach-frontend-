@@ -8,9 +8,13 @@ import { createPortal } from "react-dom";
 import { Check, CreditCard, X, ShieldCheck, Globe, BookOpen } from "lucide-react";
 
 import { skipToken } from "@reduxjs/toolkit/query";
+import { cn } from "@/lib/utils";
+import { LearningSessionModal } from "../learning/LearningSessionModal";
 
 export const CredentialDetail = () => {
     const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
+    const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
+    const [selectedCompetency, setSelectedCompetency] = useState<any>(null);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -38,7 +42,8 @@ export const CredentialDetail = () => {
 
         const firstDomain = apiResponse.data.domains[0];
         const firstMC = firstDomain.micro_credentials?.[0] || null;
-
+         
+        
         return {
             mc: firstMC,
             domain: firstDomain
@@ -55,7 +60,7 @@ export const CredentialDetail = () => {
             </div>
         );
     }
-
+ 
     if (isError || !mc) {
         return (
             <div className="pt-[62px] min-h-screen bg-[#0a1628] flex items-center justify-center">
@@ -117,14 +122,34 @@ export const CredentialDetail = () => {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-10">
                         {mc.competencies?.map((comp, i) => (
-                            <div key={comp.id} className="flex flex-col gap-2 p-4 rounded-lg bg-white/5 border border-white/10 hover:border-gold/40 hover:bg-gold/10 transition-all group">
-                                <div className="flex items-center justify-between">
+                            <button 
+                                key={comp.id} 
+                                onClick={() => {
+                                    if (canAccess) {
+                                        setSelectedCompetency(comp);
+                                        setIsSessionModalOpen(true);
+                                    } else {
+                                        setIsPricingModalOpen(true);
+                                    }
+                                }}
+                                className={cn(
+                                    "flex flex-col text-left gap-2 p-4 rounded-lg bg-white/5 border border-white/10 transition-all group",
+                                    canAccess ? "hover:border-gold/40 hover:bg-gold/10 cursor-pointer" : "hover:border-white/20 cursor-pointer"
+                                )}
+                            >
+                                <div className="flex items-center justify-between w-full">
                                     <div className="text-[10px] font-bold text-gold font-mono uppercase tracking-wider">C{String(i + 1).padStart(2, '0')}</div>
                                     <div className="text-[9px] text-white/30 font-mono group-hover:text-gold/50 transition-colors">ID: {comp.code || comp.id}</div>
                                 </div>
                                 <div className="text-[14px] font-bold text-white/90 leading-snug">{comp.title}</div>
                                 <div className="text-[12px] text-white/50 leading-relaxed font-medium">{comp.description}</div>
-                            </div>
+                                {!canAccess && (
+                                    <div className="mt-1 flex items-center gap-1.5 text-[10px] font-bold text-gold/60 uppercase tracking-tight">
+                                        <ShieldCheck size={12} />
+                                        Enroll to Start Session
+                                    </div>
+                                )}
+                            </button>
                         )) || (
                                 <div className="col-span-full py-4 text-white/50 text-sm italic">Competency details are being finalized for this credential.</div>
                             )}
@@ -288,6 +313,17 @@ export const CredentialDetail = () => {
                         </div>
                     </div>
                 </div>,
+                document.body
+            )}
+            {/* LEARNING SESSION MODAL */}
+            {isSessionModalOpen && mounted && createPortal(
+                <LearningSessionModal 
+                    isOpen={isSessionModalOpen}
+                    onClose={() => setIsSessionModalOpen(false)}
+                    competency={selectedCompetency}
+                    microCredentialId={mc.id}
+                    domainId={domain?.id || 0}
+                />,
                 document.body
             )}
         </div>

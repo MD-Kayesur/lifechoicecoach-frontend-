@@ -97,13 +97,13 @@ export const CheckoutForm = ({ id }: CheckoutFormProps) => {
                     toast.error(confirmError.message || "Payment authentication failed");
                 } else if (paymentIntent && paymentIntent.status === "succeeded") {
                     toast.success("Payment confirmed and enrollment successful!");
-                    router.push("/dashboard?tab=My Learning");
+                    router.push(`/sample-mc?id=${id}`);
                 } else {
                     toast.error("Payment status: " + (paymentIntent?.status || "unknown"));
                 }
             } else if (result.success || !result.error) {
                 toast.success(result.message || "Enrollment successful!");
-                router.push("/dashboard?tab=My Learning");
+                router.push(`/sample-mc?id=${id}`);
             } else {
                 toast.error(result.message || "Enrollment failed");
             }

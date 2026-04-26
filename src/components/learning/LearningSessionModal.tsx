@@ -1,0 +1,290 @@
+import React, { useState } from 'react';
+import { X, Loader2, PlayCircle, ShieldCheck, Zap } from 'lucide-react';
+import { useStartAiSessionMutation, useInteractAiSessionMutation } from '@/redux/features/learning/aiLearningApi';
+import { toast } from 'sonner';
+import { Send, User, Bot, Sparkles, ChevronLeft } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+interface LearningSessionModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    competency: {
+        id: number;
+        title: string;
+        description: string;
+        code?: string | number;
+    } | null;
+    microCredentialId: number;
+    domainId: number;
+}
+
+export const LearningSessionModal = ({ isOpen, onClose, competency, microCredentialId, domainId }: LearningSessionModalProps) => {
+    const [startSession, { isLoading: isStarting }] = useStartAiSessionMutation();
+    const [interactSession, { isLoading: isInteracting }] = useInteractAiSessionMutation();
+    
+    const [hasStarted, setHasStarted] = useState(false);
+    const [messages, setMessages] = useState<{ role: 'user' | 'ai'; content: string }[]>([]);
+    const [inputValue, setInputValue] = useState('');
+    const scrollRef = React.useRef<HTMLDivElement>(null);
+
+    React.useEffect(() => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+    }, [messages]);
+
+    if (!isOpen || !competency) return null;
+
+    const handleStartSession = async () => {
+        try {
+            const result = await startSession({
+                micro_credential_id: microCredentialId,
+                competency_id: competency.id,
+                domain_id: domainId,
+            }).unwrap();
+
+            if (result.success || result.current_competency) {
+                toast.success("Learning session started!");
+                setHasStarted(true);
+                // Initial AI message
+                setMessages([
+                    { 
+                        role: 'ai', 
+                        content: `Hello! I'm your AI guide for this competency: "${competency.title}". \n\nI'll help you master this skill through interactive dialogue. What would you like to start with?` 
+                    }
+                ]);
+            } else {
+                toast.error(result.message || "Failed to start learning session");
+            }
+        } catch (error: any) {
+            console.error("Session start error:", error);
+            toast.error(error?.data?.message || "An error occurred while starting the session");
+        }
+    };
+
+    const handleSendMessage = async (e?: React.FormEvent) => {
+        e?.preventDefault();
+        if (!inputValue.trim() || isInteracting) return;
+
+        const userMsg = inputValue.trim();
+        setInputValue('');
+        setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+
+        try {
+            const result = await interactSession({
+                micro_credential_id: microCredentialId,
+                competency_id: competency.id,
+                domain_id: domainId,
+                user_input: userMsg
+            }).unwrap();
+
+            if (result.ai_response || result.message) {
+                setMessages(prev => [...prev, { role: 'ai', content: result.ai_response || result.message }]);
+            }
+        } catch (error: any) {
+            toast.error("Failed to get AI response");
+            console.error("Interaction error:", error);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
+            <div 
+                className="absolute inset-0 bg-[#040812]/90 backdrop-blur-md animate-in fade-in duration-300"
+                onClick={onClose}
+            ></div>
+            <div className={cn(
+                "relative w-full bg-[#0a111e] border border-gold/30 rounded-[24px] shadow-[0_0_100px_rgba(196,136,14,0.15)] overflow-hidden animate-in zoom-in-95 fade-in duration-300 flex flex-col transition-all",
+                hasStarted ? "max-w-[700px] h-[80vh]" : "max-w-[480px]"
+            )}>
+                {/* Header Decoration */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold/50 to-transparent z-50"></div>
+                
+                {hasStarted ? (
+                    // CHAT INTERFACE
+                    <div className="flex flex-col h-full">
+                        {/* Chat Header */}
+                        <div className="p-4 sm:p-6 border-b border-white/10 bg-white/5 flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <button 
+                                    onClick={() => setHasStarted(false)}
+                                    className="p-2 hover:bg-white/5 rounded-full text-white/40 hover:text-white transition-all"
+                                >
+                                    <ChevronLeft size={20} />
+                                </button>
+                                <div>
+                                    <h3 className="text-white font-serif font-bold text-lg leading-tight truncate max-w-[200px] sm:max-w-md">
+                                        {competency.title}
+                                    </h3>
+                                    <div className="flex items-center gap-2 mt-1">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                                        <span className="text-[10px] text-white/40 uppercase font-mono tracking-widest">AI Learning Assistant</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={onClose}
+                                className="text-white/30 hover:text-white transition-colors"
+                            >
+                                <X size={24} />
+                            </button>
+                        </div>
+
+                        {/* Messages Area */}
+                        <div 
+                            ref={scrollRef}
+                            className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6 custom-scrollbar"
+                        >
+                            {messages.map((msg, i) => (
+                                <div 
+                                    key={i} 
+                                    className={cn(
+                                        "flex gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300",
+                                        msg.role === 'user' ? "flex-row-reverse" : "flex-row"
+                                    )}
+                                >
+                                    <div className={cn(
+                                        "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
+                                        msg.role === 'user' ? "bg-gold/20 text-gold" : "bg-white/5 text-primary"
+                                    )}>
+                                        {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
+                                    </div>
+                                    <div className={cn(
+                                        "max-w-[85%] p-4 rounded-2xl text-[14px] leading-relaxed",
+                                        msg.role === 'user' 
+                                            ? "bg-gold text-white rounded-tr-none" 
+                                            : "bg-white/5 text-white/80 border border-white/10 rounded-tl-none"
+                                    )}>
+                                        {msg.content.split('\n').map((line, idx) => (
+                                            <React.Fragment key={idx}>
+                                                {line}
+                                                <br />
+                                            </React.Fragment>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                            {isInteracting && (
+                                <div className="flex gap-4 animate-pulse">
+                                    <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
+                                        <Bot size={16} className="text-primary/50" />
+                                    </div>
+                                    <div className="bg-white/5 border border-white/10 p-4 rounded-2xl rounded-tl-none">
+                                        <div className="flex gap-1">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-white/20 animate-bounce"></div>
+                                            <div className="w-1.5 h-1.5 rounded-full bg-white/20 animate-bounce [animation-delay:0.2s]"></div>
+                                            <div className="w-1.5 h-1.5 rounded-full bg-white/20 animate-bounce [animation-delay:0.4s]"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Input Area */}
+                        <form 
+                            onSubmit={handleSendMessage}
+                            className="p-4 sm:p-6 bg-[#0d1726] border-t border-white/10"
+                        >
+                            <div className="relative group">
+                                <input 
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    placeholder="Type your question here..."
+                                    className="w-full bg-white/5 border border-white/10 focus:border-gold/50 rounded-2xl py-4 pl-5 pr-14 text-white placeholder:text-white/20 outline-none transition-all"
+                                />
+                                <button 
+                                    type="submit"
+                                    disabled={!inputValue.trim() || isInteracting}
+                                    className="absolute right-2 top-2 bottom-2 w-10 bg-gold text-white rounded-xl flex items-center justify-center hover:bg-gold2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                >
+                                    <Send size={18} />
+                                </button>
+                            </div>
+                            <div className="mt-3 flex items-center justify-center gap-2">
+                                <Sparkles size={12} className="text-gold/50" />
+                                <span className="text-[10px] text-white/30 uppercase tracking-[1px] font-medium">AI-Powered Skill Coaching</span>
+                            </div>
+                        </form>
+                    </div>
+                ) : (
+                    // START SESSION VIEW
+                    <div className="p-8">
+                        {/* Close Button */}
+                        <button 
+                            onClick={onClose}
+                            className="absolute top-6 right-6 text-white/30 hover:text-white transition-colors"
+                        >
+                            <X size={24} />
+                        </button>
+
+                        {/* Content */}
+                        <div className="mb-8">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/10 border border-gold/20 text-gold text-[10px] font-bold uppercase tracking-widest mb-4">
+                                <Zap size={12} fill="currentColor" />
+                                Ready to Start
+                            </div>
+                            <h3 className="text-white font-serif font-bold text-2xl mb-2">
+                                {competency.title}
+                            </h3>
+                            <div className="text-white/40 text-[11px] font-mono mb-4">
+                                COMPETENCY ID: {competency.code || competency.id}
+                            </div>
+                            <p className="text-white/60 text-[14px] leading-relaxed">
+                                {competency.description}
+                            </p>
+                        </div>
+
+                        {/* Features/Info */}
+                        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-8 space-y-4">
+                            <div className="flex items-start gap-4">
+                                <div className="w-8 h-8 rounded-lg bg-gold/10 flex items-center justify-center shrink-0">
+                                    <PlayCircle size={18} className="text-gold" />
+                                </div>
+                                <div>
+                                    <div className="text-[13px] font-bold text-white mb-0.5">Interactive AI Session</div>
+                                    <div className="text-[11px] text-white/40">Step-by-step guided learning and real-time feedback</div>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-4">
+                                <div className="w-8 h-8 rounded-lg bg-gold/10 flex items-center justify-center shrink-0">
+                                    <ShieldCheck size={18} className="text-gold" />
+                                </div>
+                                <div>
+                                    <div className="text-[13px] font-bold text-white mb-0.5">Proof of Skill Verification</div>
+                                    <div className="text-[11px] text-white/40">Your progress is verified against EQF-aligned rubrics</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Actions */}
+                        <button 
+                            onClick={handleStartSession}
+                            disabled={isStarting}
+                            className="w-full h-14 bg-gold hover:bg-gold2 disabled:bg-gold/50 disabled:cursor-not-allowed text-white font-bold rounded-2xl shadow-[0_4px_0_#9a7e3a] hover:translate-y-[1px] hover:shadow-[0_3px_0_#9a7e3a] transition-all flex items-center justify-center gap-3 text-[15px]"
+                        >
+                            {isStarting ? (
+                                <>
+                                    <Loader2 size={20} className="animate-spin" />
+                                    Initializing Session...
+                                </>
+                            ) : (
+                                <>
+                                    <PlayCircle size={20} />
+                                    Start Learning Session
+                                </>
+                            )}
+                        </button>
+                        
+                        <button 
+                            onClick={onClose}
+                            disabled={isStarting}
+                            className="w-full mt-3 text-white/30 hover:text-white text-[12px] font-medium transition-all"
+                        >
+                            Maybe Later
+                        </button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
