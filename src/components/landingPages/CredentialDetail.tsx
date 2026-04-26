@@ -5,17 +5,22 @@ import {
 } from "@/redux/features/enrollment/EnrollmentManagementapi";
 import { useMemo, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Check, CreditCard, X, ShieldCheck, Globe, BookOpen } from "lucide-react";
+import { Check, CreditCard, X, ShieldCheck, Globe, BookOpen, Zap } from "lucide-react";
 
 import { skipToken } from "@reduxjs/toolkit/query";
 import { cn } from "@/lib/utils";
 import { LearningSessionModal } from "../learning/LearningSessionModal";
-
+ import { useGetSessionsQuery } from "@/redux/features/learning/LearningSessionApi";
+import { LearningSessionDetailsModal } from "../learning/LearningSessionDetailsModal";
 export const CredentialDetail = () => {
     const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
     const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
+    const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [selectedCompetency, setSelectedCompetency] = useState<any>(null);
+    const [selectedSessionId, setSelectedSessionId] = useState<string | number | null>(null);
     const [mounted, setMounted] = useState(false);
+
+
 
     useEffect(() => {
         setMounted(true);
@@ -34,6 +39,26 @@ export const CredentialDetail = () => {
         !isNaN(mcId) ? { micro_credential_id: mcId } : skipToken
     );
 
+    // Fetch completed sessions for this micro-credential
+    const { data: sessionsData } = useGetSessionsQuery(
+        canAccess && !isNaN(mcId) 
+            ? { micro_credential: mcId, status: 'completed' } 
+            : skipToken
+    );
+console.log("sessionsData",sessionsData);
+    const completedCompetencyIds = useMemo(() => {
+        return sessionsData?.sessions?.map(s => Number(s.competency)) || [];
+    }, [sessionsData]);
+
+    const competencyToSessionMap = useMemo(() => {
+        const map: Record<number, number | string> = {};
+        sessionsData?.sessions?.forEach(s => {
+            if (s.status === 'completed') {
+                map[Number(s.competency)] = s.id;
+            }
+        });
+        return map;
+    }, [sessionsData]);
     // Extract micro-credential and domain from the API response
     const { mc, domain } = useMemo(() => {
         if (!apiResponse?.data?.domains || apiResponse.data.domains.length === 0) {
@@ -126,20 +151,34 @@ export const CredentialDetail = () => {
                                 key={comp.id} 
                                 onClick={() => {
                                     if (canAccess) {
-                                        setSelectedCompetency(comp);
-                                        setIsSessionModalOpen(true);
+                                        const sessionId = competencyToSessionMap[Number(comp.id)];
+                                        if (sessionId) {
+                                            setSelectedSessionId(sessionId);
+                                            setIsDetailsModalOpen(true);
+                                        } else {
+                                            setSelectedCompetency(comp);
+                                            setIsSessionModalOpen(true);
+                                        }
                                     } else {
                                         setIsPricingModalOpen(true);
                                     }
                                 }}
                                 className={cn(
-                                    "flex flex-col text-left gap-2 p-4 rounded-lg bg-white/5 border border-white/10 transition-all group",
-                                    canAccess ? "hover:border-gold/40 hover:bg-gold/10 cursor-pointer" : "hover:border-white/20 cursor-pointer"
+                                    "flex flex-col text-left gap-2 p-4 rounded-lg bg-white/5 border border-white/10 transition-all group relative",
+                                    canAccess ? "hover:border-gold/40 hover:bg-gold/10 cursor-pointer" : "hover:border-white/20 cursor-pointer",
+                                    completedCompetencyIds.includes(Number(comp.id)) && "border-green-500/50 bg-green-500/5"
                                 )}
                             >
                                 <div className="flex items-center justify-between w-full">
                                     <div className="text-[10px] font-bold text-gold font-mono uppercase tracking-wider">C{String(i + 1).padStart(2, '0')}</div>
-                                    <div className="text-[9px] text-white/30 font-mono group-hover:text-gold/50 transition-colors">ID: {comp.code || comp.id}</div>
+                                    <div className="flex items-center gap-2">
+                                        {completedCompetencyIds.includes(Number(comp.id)) && (
+                                            <div className="px-2 py-0.5 rounded-full bg-green-500/20 border border-green-500/30 text-green-500 text-[8px] font-bold uppercase tracking-wider">
+                                                Completed
+                                            </div>
+                                        )}
+                                        <div className="text-[9px] text-white/30 font-mono group-hover:text-gold/50 transition-colors">ID: {comp.code || comp.id}</div>
+                                    </div>
                                 </div>
                                 <div className="text-[14px] font-bold text-white/90 leading-snug">{comp.title}</div>
                                 <div className="text-[12px] text-white/50 leading-relaxed font-medium">{comp.description}</div>
@@ -147,6 +186,12 @@ export const CredentialDetail = () => {
                                     <div className="mt-1 flex items-center gap-1.5 text-[10px] font-bold text-gold/60 uppercase tracking-tight">
                                         <ShieldCheck size={12} />
                                         Enroll to Start Session
+                                    </div>
+                                )}
+                                {canAccess && !completedCompetencyIds.includes(Number(comp.id)) && (
+                                    <div className="mt-1 flex items-center gap-1.5 text-[10px] font-bold text-white/30 uppercase tracking-tight group-hover:text-gold/60 transition-colors">
+                                        <Zap size={12} />
+                                        Start Learning Session
                                     </div>
                                 )}
                             </button>
@@ -323,6 +368,16 @@ export const CredentialDetail = () => {
                     competency={selectedCompetency}
                     microCredentialId={mc.id}
                     domainId={domain?.id || 0}
+                />,
+                document.body
+            )}
+
+            {/* SESSION DETAILS MODAL */}
+            {isDetailsModalOpen && mounted && createPortal(
+                <LearningSessionDetailsModal 
+                    isOpen={isDetailsModalOpen}
+                    onClose={() => setIsDetailsModalOpen(false)}
+                    sessionId={selectedSessionId}
                 />,
                 document.body
             )}

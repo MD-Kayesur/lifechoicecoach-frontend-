@@ -45,11 +45,12 @@ export interface InteractSessionRequest {
 export const LearningSessionApi = baseApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
-        // Get all learning sessions for the authenticated user
-        getSessions: builder.query<LearningSession[], void>({
-            query: () => ({
+        // Get all learning sessions for the authenticated user with optional filters
+        getSessions: builder.query<{ success: boolean; message: string; sessions: LearningSession[] }, { micro_credential?: number; status?: string } | void>({
+            query: (params) => ({
                 url: "/learning/sessions/",
                 method: "GET",
+                params: params || {},
             }),
             providesTags: ["LearningSession"],
         }),
