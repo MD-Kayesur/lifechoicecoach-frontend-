@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { Building2, Briefcase, Handshake } from "lucide-react";
+import { PractitionerModal } from "./PractitionerModal";
 
 export const InstitutionalPricing = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     return (
         <section className="py-24 px-6 bg-[#02070e]">
             <div className="max-w-[1200px] mx-auto">
@@ -37,7 +41,10 @@ export const InstitutionalPricing = () => {
                                 </li>
                             ))}
                         </ul>
-                        <button className="w-full bg-[#C43030] hover:bg-[#A32828] text-white font-bold py-4 rounded-xl shadow-[0_4px_0_#8B1E1E] transition-all">
+                        <button 
+                            onClick={() => setIsModalOpen(true)}
+                            className="w-full bg-[#C43030] hover:bg-[#A32828] text-white font-bold py-4 rounded-xl shadow-[0_4px_0_#8B1E1E] transition-all active:translate-y-[2px] active:shadow-[0_2px_0_#8B1E1E]"
+                        >
                             Request Institutional Quote
                         </button>
                     </div>
@@ -66,7 +73,10 @@ export const InstitutionalPricing = () => {
                                 </li>
                             ))}
                         </ul>
-                        <button className="w-full bg-[#C43030] hover:bg-[#A32828] text-white font-bold py-4 rounded-xl shadow-[0_4px_0_#8B1E1E] transition-all">
+                        <button 
+                            onClick={() => setIsModalOpen(true)}
+                            className="w-full bg-[#C43030] hover:bg-[#A32828] text-white font-bold py-4 rounded-xl shadow-[0_4px_0_#8B1E1E] transition-all active:translate-y-[2px] active:shadow-[0_2px_0_#8B1E1E]"
+                        >
                             Request Corporate Quote
                         </button>
                     </div>
@@ -95,12 +105,20 @@ export const InstitutionalPricing = () => {
                                 </li>
                             ))}
                         </ul>
-                        <button className="w-full bg-[#C43030] hover:bg-[#A32828] text-white font-bold py-4 rounded-xl shadow-[0_4px_0_#8B1E1E] transition-all">
+                        <button 
+                            onClick={() => setIsModalOpen(true)}
+                            className="w-full bg-[#C43030] hover:bg-[#A32828] text-white font-bold py-4 rounded-xl shadow-[0_4px_0_#8B1E1E] transition-all active:translate-y-[2px] active:shadow-[0_2px_0_#8B1E1E]"
+                        >
                             Become a Partner
                         </button>
                     </div>
                 </div>
             </div>
+
+            <PractitionerModal 
+                isOpen={isModalOpen} 
+                onClose={() => setIsModalOpen(false)} 
+            />
         </section>
     );
 };
