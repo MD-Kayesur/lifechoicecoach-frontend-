@@ -23,6 +23,7 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
     const [interactSession, { isLoading: isInteracting }] = useInteractAiSessionMutation();
     
     const [hasStarted, setHasStarted] = useState(false);
+    const [sessionId, setSessionId] = useState<string | number | null>(null);
     const [messages, setMessages] = useState<{ role: 'user' | 'ai'; content: string }[]>([]);
     const [inputValue, setInputValue] = useState('');
     const scrollRef = React.useRef<HTMLDivElement>(null);
@@ -43,16 +44,35 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
                 domain_id: domainId,
             }).unwrap();
 
-            if (result.success || result.current_competency) {
-                toast.success("Learning session started!");
-                setHasStarted(true);
-                // Initial AI message
-                setMessages([
-                    { 
-                        role: 'ai', 
-                        content: `Hello! I'm your AI guide for this competency: "${competency.title}". \n\nI'll help you master this skill through interactive dialogue. What would you like to start with?` 
-                    }
-                ]);
+            const sid = result.learning_session?.session?.id || result.session_id || result.id || result.data?.session_id;
+
+            if (sid) {
+                setSessionId(sid);
+
+                // First hit with only token (empty message)
+                try {
+                    const firstInteract = await interactSession({ sessionId: sid }).unwrap();
+                    
+                    // Open chat on any successful response
+                    setHasStarted(true);
+                    toast.success("Learning session started!");
+                    
+                    const aiContent = firstInteract.message || 
+                                     firstInteract.response || 
+                                     firstInteract.ai_response || 
+                                     firstInteract.text || 
+                                     `Hello! I'm your AI guide for this competency: "${competency.title}". \n\nHow can I help you master this skill today?`;
+
+                    setMessages([
+                        { 
+                            role: 'ai', 
+                            content: aiContent
+                        }
+                    ]);
+                } catch (err) {
+                    console.error("Initial interaction error:", err);
+                    toast.error("Failed to connect with AI coach");
+                }
             } else {
                 toast.error(result.message || "Failed to start learning session");
             }
@@ -64,7 +84,7 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
 
     const handleSendMessage = async (e?: React.FormEvent) => {
         e?.preventDefault();
-        if (!inputValue.trim() || isInteracting) return;
+        if (!inputValue.trim() || isInteracting || !sessionId) return;
 
         const userMsg = inputValue.trim();
         setInputValue('');
@@ -72,14 +92,15 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
 
         try {
             const result = await interactSession({
-                micro_credential_id: microCredentialId,
-                competency_id: competency.id,
-                domain_id: domainId,
-                user_input: userMsg
+                sessionId,
+                message: userMsg
             }).unwrap();
 
-            if (result.ai_response || result.message) {
-                setMessages(prev => [...prev, { role: 'ai', content: result.ai_response || result.message }]);
+            if (result.message || result.response || result.ai_response) {
+                setMessages(prev => [...prev, { 
+                    role: 'ai', 
+                    content: result.message || result.response || result.ai_response 
+                }]);
             }
         } catch (error: any) {
             toast.error("Failed to get AI response");

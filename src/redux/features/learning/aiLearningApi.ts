@@ -28,14 +28,16 @@ export const aiLearningApi = createApi({
                 };
             },
         }),
-        interactAiSession: builder.mutation<any, { micro_credential_id: number; competency_id: number; domain_id: number; user_input: string }>({
-            query: (data) => {
+        interactAiSession: builder.mutation<any, { sessionId: string | number; message?: string }>({
+            query: ({ sessionId, message }) => {
                 const token = Cookies.get("accessToken") || "";
                 return {
-                    url: "/backend/learning/sessions/interact",
+                    url: `/session/${sessionId}/interact`,
                     method: "POST",
                     body: {
-                        ...data,
+                        message: message || "",
+                        answer: "",
+                        response: "",
                         auth_token: token,
                     },
                 };
