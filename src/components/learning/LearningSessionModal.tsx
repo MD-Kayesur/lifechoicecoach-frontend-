@@ -40,7 +40,7 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
         try {
             const result = await startSession({
                 competency_id: competency.id,
-            }).unwrap();
+            }).unwrap() as any;
 
             const sessionData = result.learning_session?.session || result.session;
             const sid = sessionData?.id || result.session_id || result.id || result.data?.session_id;
@@ -52,9 +52,11 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
                 const existingInteractions = sessionData?.interactions || [];
                 const formattedMessages = existingInteractions.flatMap((int: any) => {
                     const msgs = [];
-                    if (int.ai_response) msgs.push({ role: 'ai' as const, content: int.ai_response });
-                    if (int.learner_input && int.learner_input !== 'hi') { // Filter out placeholder 'hi' if needed, but keeping it for now as per history
+                    if (int.learner_input) {
                         msgs.push({ role: 'user' as const, content: int.learner_input });
+                    }
+                    if (int.ai_response) {
+                        msgs.push({ role: 'ai' as const, content: int.ai_response });
                     }
                     return msgs;
                 });
@@ -62,16 +64,18 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
 
                 // First hit with only token (empty message) to get the latest state/prompt
                 try {
-                    const firstInteract = await interactSession({ sessionId: sid }).unwrap();
+                    const firstInteract = await interactSession({ sessionId: sid }).unwrap() as any;
                     
                     // Open chat on any successful response
                     setHasStarted(true);
                     toast.success("Learning session started!");
                     
-                    const aiContent = firstInteract.message || 
+                    const aiContent = firstInteract.ai_response || 
+                                     firstInteract.message || 
                                      firstInteract.response || 
-                                     firstInteract.ai_response || 
-                                     firstInteract.text;
+                                     firstInteract.text ||
+                                     firstInteract.interaction?.ai_response ||
+                                     firstInteract.data?.ai_response;
 
                     if (aiContent) {
                         setMessages(prev => [...prev, { 
@@ -110,12 +114,19 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
             const result = await interactSession({
                 sessionId,
                 message: userMsg
-            }).unwrap();
+            }).unwrap() as any;
 
-            if (result.message || result.response || result.ai_response) {
+            const aiContent = result.ai_response || 
+                             result.message || 
+                             result.response || 
+                             result.text ||
+                             result.interaction?.ai_response ||
+                             result.data?.ai_response;
+
+            if (aiContent) {
                 setMessages(prev => [...prev, { 
                     role: 'ai', 
-                    content: result.message || result.response || result.ai_response 
+                    content: aiContent 
                 }]);
             }
         } catch (error: any) {
