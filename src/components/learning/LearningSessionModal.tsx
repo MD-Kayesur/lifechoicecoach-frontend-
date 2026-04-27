@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { X, Loader2, PlayCircle, ShieldCheck, Zap } from 'lucide-react';
 import { useInteractAiSessionMutation } from '@/redux/features/learning/aiLearningApi';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { toast } from 'sonner';
 import { Send, User, Bot, Sparkles, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -203,12 +205,40 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
                                             ? "bg-gold text-white rounded-tr-none" 
                                             : "bg-white/5 text-white/80 border border-white/10 rounded-tl-none"
                                     )}>
-                                        {msg.content.split('\n').map((line, idx) => (
-                                            <React.Fragment key={idx}>
-                                                {line}
-                                                <br />
-                                            </React.Fragment>
-                                        ))}
+                                        {msg.role === 'ai' ? (
+                                            <ReactMarkdown 
+                                                remarkPlugins={[remarkGfm]}
+                                                components={{
+                                                    h1: ({...props}) => <h1 className="text-2xl font-extrabold mb-5 text-white tracking-tight" {...props} />,
+                                                    h2: ({...props}) => <h2 className="text-xl font-extrabold mb-4 mt-6 text-white tracking-tight" {...props} />,
+                                                    h3: ({...props}) => <h3 className="text-lg font-extrabold mb-3 mt-5 text-white tracking-tight" {...props} />,
+                                                    p: ({...props}) => <p className="mb-4 last:mb-0" {...props} />,
+                                                    ul: ({...props}) => <ul className="list-disc ml-4 mb-4" {...props} />,
+                                                    ol: ({...props}) => <ol className="list-decimal ml-4 mb-4" {...props} />,
+                                                    li: ({...props}) => <li className="mb-1" {...props} />,
+                                                    table: ({...props}) => (
+                                                        <div className="overflow-x-auto my-4 rounded-xl border border-white/10 bg-white/5">
+                                                            <table className="w-full border-collapse" {...props} />
+                                                        </div>
+                                                    ),
+                                                    thead: ({...props}) => <thead className="bg-white/10" {...props} />,
+                                                    th: ({...props}) => <th className="px-4 py-2 text-left text-xs font-bold uppercase text-white/50 border-b border-white/10" {...props} />,
+                                                    td: ({...props}) => <td className="px-4 py-2 border-b border-white/10 text-sm text-white/70" {...props} />,
+                                                    strong: ({...props}) => <strong className="text-gold font-bold" {...props} />,
+                                                    code: ({...props}) => <code className="bg-white/10 px-1.5 py-0.5 rounded text-gold text-sm" {...props} />,
+                                                    blockquote: ({...props}) => <blockquote className="border-l-4 border-gold/50 pl-4 py-1 my-4 italic text-white/60" {...props} />,
+                                                }}
+                                            >
+                                                {msg.content}
+                                            </ReactMarkdown>
+                                        ) : (
+                                            msg.content.split('\n').map((line, idx) => (
+                                                <React.Fragment key={idx}>
+                                                    {line}
+                                                    <br />
+                                                </React.Fragment>
+                                            ))
+                                        )}
                                     </div>
                                 </div>
                             ))}
