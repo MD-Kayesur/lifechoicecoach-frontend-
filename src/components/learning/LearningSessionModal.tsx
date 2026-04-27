@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { X, Loader2, PlayCircle, ShieldCheck, Zap } from 'lucide-react';
-import { useStartAiSessionMutation, useInteractAiSessionMutation } from '@/redux/features/learning/aiLearningApi';
+import { useInteractAiSessionMutation } from '@/redux/features/learning/aiLearningApi';
 import { toast } from 'sonner';
 import { Send, User, Bot, Sparkles, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useStartSessionMutation } from '@/redux/features/learning/LearningSessionApi';
 
 interface LearningSessionModalProps {
     isOpen: boolean;
@@ -19,9 +20,8 @@ interface LearningSessionModalProps {
 }
 
 export const LearningSessionModal = ({ isOpen, onClose, competency, microCredentialId, domainId }: LearningSessionModalProps) => {
-    const [startSession, { isLoading: isStarting }] = useStartAiSessionMutation();
+    const [startSession, { isLoading: isStarting }] = useStartSessionMutation();
     const [interactSession, { isLoading: isInteracting }] = useInteractAiSessionMutation();
-    
     const [hasStarted, setHasStarted] = useState(false);
     const [sessionId, setSessionId] = useState<string | number | null>(null);
     const [messages, setMessages] = useState<{ role: 'user' | 'ai'; content: string }[]>([]);
@@ -39,17 +39,28 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
     const handleStartSession = async () => {
         try {
             const result = await startSession({
-                micro_credential_id: microCredentialId,
                 competency_id: competency.id,
-                domain_id: domainId,
             }).unwrap();
 
-            const sid = result.learning_session?.session?.id || result.session_id || result.id || result.data?.session_id;
+            const sessionData = result.learning_session?.session || result.session;
+            const sid = sessionData?.id || result.session_id || result.id || result.data?.session_id;
 
             if (sid) {
                 setSessionId(sid);
 
-                // First hit with only token (empty message)
+                // Load existing interactions if any
+                const existingInteractions = sessionData?.interactions || [];
+                const formattedMessages = existingInteractions.flatMap((int: any) => {
+                    const msgs = [];
+                    if (int.ai_response) msgs.push({ role: 'ai' as const, content: int.ai_response });
+                    if (int.learner_input && int.learner_input !== 'hi') { // Filter out placeholder 'hi' if needed, but keeping it for now as per history
+                        msgs.push({ role: 'user' as const, content: int.learner_input });
+                    }
+                    return msgs;
+                });
+                setMessages(formattedMessages);
+
+                // First hit with only token (empty message) to get the latest state/prompt
                 try {
                     const firstInteract = await interactSession({ sessionId: sid }).unwrap();
                     
@@ -60,15 +71,20 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
                     const aiContent = firstInteract.message || 
                                      firstInteract.response || 
                                      firstInteract.ai_response || 
-                                     firstInteract.text || 
-                                     `Hello! I'm your AI guide for this competency: "${competency.title}". \n\nHow can I help you master this skill today?`;
+                                     firstInteract.text;
 
-                    setMessages([
-                        { 
+                    if (aiContent) {
+                        setMessages(prev => [...prev, { 
                             role: 'ai', 
                             content: aiContent
-                        }
-                    ]);
+                        }]);
+                    } else if (formattedMessages.length === 0) {
+                        // Fallback only if no history and no new response
+                        setMessages([{ 
+                            role: 'ai', 
+                            content: `Hello! I'm your AI guide for this competency: "${competency.title}". \n\nHow can I help you master this skill today?` 
+                        }]);
+                    }
                 } catch (err) {
                     console.error("Initial interaction error:", err);
                     toast.error("Failed to connect with AI coach");
