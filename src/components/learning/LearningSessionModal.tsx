@@ -209,9 +209,9 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
                                             <ReactMarkdown 
                                                 remarkPlugins={[remarkGfm]}
                                                 components={{
-                                                    h1: ({...props}) => <h1 className="text-2xl font-extrabold mb-5 text-white tracking-tight" {...props} />,
-                                                    h2: ({...props}) => <h2 className="text-xl font-extrabold mb-4 mt-6 text-white tracking-tight" {...props} />,
-                                                    h3: ({...props}) => <h3 className="text-lg font-extrabold mb-3 mt-5 text-white tracking-tight" {...props} />,
+                                                    h1: ({...props}) => <h1 className="text-4xl font-extrabold mb-6 text-white tracking-tight" {...props} />,
+                                                    h2: ({...props}) => <h2 className="text-2xl font-extrabold mb-5 mt-8 text-white tracking-tight" {...props} />,
+                                                    h3: ({...props}) => <h3 className="text-2xl font-extrabold mb-4 mt-7 text-white tracking-tight" {...props} />,
                                                     p: ({...props}) => <p className="mb-4 last:mb-0" {...props} />,
                                                     ul: ({...props}) => <ul className="list-disc ml-4 mb-4" {...props} />,
                                                     ol: ({...props}) => <ol className="list-decimal ml-4 mb-4" {...props} />,
