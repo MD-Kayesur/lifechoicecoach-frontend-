@@ -8,6 +8,7 @@ export interface LearningInteraction {
     learner_input: string;
     formative_passed?: boolean;
     created_at?: string;
+    interaction_number?: number;
 }
 
 export interface LearningSession {
@@ -20,6 +21,17 @@ export interface LearningSession {
     end_time?: string | null;
     interactions: LearningInteraction[];
     final_score?: number | null;
+    mastery_achieved?: boolean;
+    completed_at?: string;
+    started_at?: string;
+    interaction_count?: number;
+    max_interactions?: number;
+}
+
+export interface GetSessionResponse {
+    success: boolean;
+    message: string;
+    session: LearningSession;
 }
 
 export interface StartSessionRequest {
@@ -66,7 +78,7 @@ export const LearningSessionApi = baseApi.injectEndpoints({
         }),
 
         // Get details of a specific learning session with all interactions
-        getSessionById: builder.query<LearningSession, string | number>({
+        getSessionById: builder.query<GetSessionResponse, string | number>({
             query: (sessionId) => ({
                 url: `/learning/sessions/${sessionId}/`,
                 method: "GET",
