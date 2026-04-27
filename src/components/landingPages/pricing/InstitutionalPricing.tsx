@@ -1,9 +1,17 @@
 import { useState } from "react";
 import { Building2, Briefcase, Handshake } from "lucide-react";
 import { PractitionerModal } from "./PractitionerModal";
+import { PartnershipModal, PartnershipType } from "./PartnershipModal";
 
 export const InstitutionalPricing = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isPractitionerModalOpen, setIsPractitionerModalOpen] = useState(false);
+    const [isPartnershipModalOpen, setIsPartnershipModalOpen] = useState(false);
+    const [partnershipType, setPartnershipType] = useState<PartnershipType>("academic");
+
+    const openPartnershipModal = (type: PartnershipType) => {
+        setPartnershipType(type);
+        setIsPartnershipModalOpen(true);
+    };
 
     return (
         <section className="py-24 px-6 bg-[#02070e]">
@@ -42,7 +50,7 @@ export const InstitutionalPricing = () => {
                             ))}
                         </ul>
                         <button 
-                            onClick={() => setIsModalOpen(true)}
+                            onClick={() => openPartnershipModal("academic")}
                             className="w-full bg-[#C43030] hover:bg-[#A32828] text-white font-bold py-4 rounded-xl shadow-[0_4px_0_#8B1E1E] transition-all active:translate-y-[2px] active:shadow-[0_2px_0_#8B1E1E]"
                         >
                             Request Institutional Quote
@@ -74,7 +82,7 @@ export const InstitutionalPricing = () => {
                             ))}
                         </ul>
                         <button 
-                            onClick={() => setIsModalOpen(true)}
+                            onClick={() => openPartnershipModal("corporate")}
                             className="w-full bg-[#C43030] hover:bg-[#A32828] text-white font-bold py-4 rounded-xl shadow-[0_4px_0_#8B1E1E] transition-all active:translate-y-[2px] active:shadow-[0_2px_0_#8B1E1E]"
                         >
                             Request Corporate Quote
@@ -106,7 +114,7 @@ export const InstitutionalPricing = () => {
                             ))}
                         </ul>
                         <button 
-                            onClick={() => setIsModalOpen(true)}
+                            onClick={() => openPartnershipModal("white-label")}
                             className="w-full bg-[#C43030] hover:bg-[#A32828] text-white font-bold py-4 rounded-xl shadow-[0_4px_0_#8B1E1E] transition-all active:translate-y-[2px] active:shadow-[0_2px_0_#8B1E1E]"
                         >
                             Become a Partner
@@ -116,8 +124,14 @@ export const InstitutionalPricing = () => {
             </div>
 
             <PractitionerModal 
-                isOpen={isModalOpen} 
-                onClose={() => setIsModalOpen(false)} 
+                isOpen={isPractitionerModalOpen} 
+                onClose={() => setIsPractitionerModalOpen(false)} 
+            />
+
+            <PartnershipModal
+                isOpen={isPartnershipModalOpen}
+                onClose={() => setIsPartnershipModalOpen(false)}
+                type={partnershipType}
             />
         </section>
     );
