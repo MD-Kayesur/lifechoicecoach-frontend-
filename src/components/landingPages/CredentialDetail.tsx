@@ -188,21 +188,30 @@ export const CredentialDetail = () => {
                                 )}
                             >
                                 <div className="flex items-center justify-between w-full">
-                                    <div className="text-[10px] font-bold text-gold font-mono uppercase tracking-wider">C{String(i + 1).padStart(2, '0')}</div>
+                                    <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center text-[10px] font-bold text-gold font-mono uppercase tracking-wider shrink-0 shadow-[0_0_15px_rgba(196,136,14,0.1)] group-hover:bg-gold/20 transition-all">C{String(i + 1).padStart(2, '0')}</div>
                                     <div className="flex items-center gap-2">
                                         {competencyStatusMap[Number(comp.id)]?.status === 'completed' && (
-                                            <div className="px-2 py-0.5 rounded-full bg-green-500/20 border border-green-500/30 text-green-500 text-[8px] font-bold uppercase tracking-wider">
+                                            <div className="px-2 py-0.5 rounded-full bg-green-500/20 border border-green-500/30 text-green-500 text-[8px] font-bold uppercase tracking-wider flex items-center gap-1">
+                                                <div className="w-1 h-1 rounded-full bg-green-500"></div>
                                                 Completed
                                             </div>
                                         )}
                                         {competencyStatusMap[Number(comp.id)]?.status === 'in_progress' && (
-                                            <div className="px-2 py-0.5 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-500 text-[8px] font-bold uppercase tracking-wider">
+                                            <div className="px-2 py-0.5 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-500 text-[8px] font-bold uppercase tracking-wider flex items-center gap-1">
+                                                <div className="w-1 h-1 rounded-full bg-blue-500 animate-pulse"></div>
                                                 In Progress
                                             </div>
                                         )}
                                         {competencyStatusMap[Number(comp.id)]?.status === 'failed' && (
-                                            <div className="px-2 py-0.5 rounded-full bg-red-500/20 border border-red-500/30 text-red-500 text-[8px] font-bold uppercase tracking-wider">
+                                            <div className="px-2 py-0.5 rounded-full bg-red-500/20 border border-red-500/30 text-red-500 text-[8px] font-bold uppercase tracking-wider flex items-center gap-1">
+                                                <div className="w-1 h-1 rounded-full bg-red-500"></div>
                                                 Failed
+                                            </div>
+                                        )}
+                                        {competencyStatusMap[Number(comp.id)]?.status === 'pending' && (
+                                            <div className="px-2 py-0.5 rounded-full bg-yellow-500/20 border border-yellow-500/30 text-yellow-500 text-[8px] font-bold uppercase tracking-wider flex items-center gap-1">
+                                                <div className="w-1 h-1 rounded-full bg-yellow-500 animate-pulse"></div>
+                                                Pending
                                             </div>
                                         )}
                                         <div className="text-[9px] text-white/30 font-mono group-hover:text-gold/50 transition-colors">ID: {comp.code || comp.id}</div>
@@ -219,7 +228,7 @@ export const CredentialDetail = () => {
                                 {canAccess && !completedCompetencyIds.includes(Number(comp.id)) && (
                                     <div className="mt-1 flex items-center gap-1.5 text-[10px] font-bold text-white/30 uppercase tracking-tight group-hover:text-gold/60 transition-colors">
                                         <Zap size={12} />
-                                        Start Learning Session
+                                        {competencyStatusMap[Number(comp.id)]?.status === 'in_progress' ? 'Resume Learning Session' : 'Start Learning Session'}
                                     </div>
                                 )}
                             </button>
@@ -396,6 +405,7 @@ export const CredentialDetail = () => {
                     competency={selectedCompetency}
                     microCredentialId={mc.id}
                     domainId={domain?.id || 0}
+                    status={selectedCompetency ? competencyStatusMap[Number(selectedCompetency.id)]?.status : undefined}
                 />,
                 document.body
             )}

@@ -19,9 +19,10 @@ interface LearningSessionModalProps {
     } | null;
     microCredentialId: number;
     domainId: number;
+    status?: string;
 }
 
-export const LearningSessionModal = ({ isOpen, onClose, competency, microCredentialId, domainId }: LearningSessionModalProps) => {
+export const LearningSessionModal = ({ isOpen, onClose, competency, microCredentialId, domainId, status }: LearningSessionModalProps) => {
     const [startSession, { isLoading: isStarting }] = useStartSessionMutation();
     const [interactSession, { isLoading: isInteracting }] = useInteractAiSessionMutation();
     const [hasStarted, setHasStarted] = useState(false);
@@ -300,8 +301,12 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
                         {/* Content */}
                         <div className="mb-8">
                             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/10 border border-gold/20 text-gold text-[10px] font-bold uppercase tracking-widest mb-4">
-                                <Zap size={12} fill="currentColor" />
-                                Ready to Start
+                                {status === 'in_progress' ? (
+                                    <div className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse"></div>
+                                ) : (
+                                    <Zap size={12} fill="currentColor" />
+                                )}
+                                {status === 'in_progress' ? 'Session in Progress' : 'Ready to Start'}
                             </div>
                             <h3 className="text-white font-serif font-bold text-2xl mb-2">
                                 {competency.title}
@@ -350,7 +355,7 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
                             ) : (
                                 <>
                                     <PlayCircle size={20} />
-                                    Start Learning Session
+                                    {status === 'in_progress' ? 'Resume Learning Session' : 'Start Learning Session'}
                                 </>
                             )}
                         </button>
