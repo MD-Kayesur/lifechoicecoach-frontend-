@@ -61,6 +61,15 @@ export const certificateApi = baseApi.injectEndpoints({
             }),
             providesTags: (result, error, id) => [{ type: "Certificate", id }],
         }),
+
+        // Get certificate template
+        getCertificateTemplate: builder.query<{ success: boolean; message: string; data: { certificate_template: string }; error: boolean }, void>({
+            query: () => ({
+                url: "/settings/certificate-template/public/",
+                method: "GET",
+            }),
+            providesTags: ["CertificateTemplate"],
+        }),
     }),
 });
 
@@ -68,4 +77,5 @@ export const {
     useGetCertificatesQuery,
     useVerifyCertificateQuery,
     useGetCertificateByIdQuery,
+    useGetCertificateTemplateQuery,
 } = certificateApi;

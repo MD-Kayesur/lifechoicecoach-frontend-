@@ -9,9 +9,32 @@ import jsPDF from "jspdf";
 import { useRef, useMemo } from "react";
 import { useGetLessonCompetenciesQuery, MicroCredential, DomainHierarchy } from "@/redux/features/lesson/lessonCompetenciesApi";
 import { useGetProfileQuery } from "@/redux/features/profile/profileApi";
+import { useGetCertificateTemplateQuery } from "@/redux/features/progress/certificateApi";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { Download } from "lucide-react";
+import { toPng } from "html-to-image";
 import { QRCodeSVG, QRCodeCanvas } from "qrcode.react";
+
+const getImageUrl = (path: string | null | undefined) => {
+    if (!path) return "";
+    if (path.startsWith("blob:") || path.startsWith("data:")) {
+        return path;
+    }
+    
+    let absoluteUrl = path;
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://lifechoice.duckdns.org";
+    
+    // If it's a relative path starting with the base URL string, strip it to get the raw path
+    if (path.startsWith(baseUrl)) {
+        absoluteUrl = path;
+    } else if (path.startsWith("/")) {
+        absoluteUrl = `${baseUrl}${path}`;
+    } else if (!path.startsWith("http")) {
+        absoluteUrl = `${baseUrl}/${path}`;
+    }
+    
+    return `/api/proxy-image?url=${encodeURIComponent(absoluteUrl)}`;
+};
 
 export const Certificate = () => {
     const searchParams = useSearchParams();
@@ -20,6 +43,13 @@ export const Certificate = () => {
      
     // Fetch User Profile
     const { data: profileData } = useGetProfileQuery();
+    const { data: templateData } = useGetCertificateTemplateQuery();
+    console.log("Template Data:", templateData);
+    const rawUrl = templateData?.data?.certificate_template;
+    console.log("Raw URL:", rawUrl);
+
+    const certificateImageSrc = rawUrl ? getImageUrl(rawUrl) : certPhoto.src;
+
     console.log("Profile Data:", profileData);
     const userName = (profileData?.profile?.first_name || "") + " " + (profileData?.profile?.last_name || "") || "Practitioner Name";
 
@@ -63,13 +93,22 @@ export const Certificate = () => {
 
     const certRef = useRef<HTMLDivElement>(null);
 
-    const handleDownload = () => {
-        const img = new (window as any).Image();
-        img.src = certPhoto.src;
+    const handleDownload = async () => {
+        if (!certRef.current) {
+            alert("Certificate template not ready yet.");
+            return;
+        }
 
-        img.onload = () => {
+        try {
+            // Give the browser a moment to ensure images are fully rendered
+            const dataUrl = await toPng(certRef.current, { 
+                cacheBust: true,
+                pixelRatio: 2,
+                quality: 1,
+            });
+
             const pdf = new jsPDF({
-                orientation: 'portrait',
+                orientation: 'landscape',
                 unit: 'mm',
                 format: 'a4',
             });
@@ -77,62 +116,22 @@ export const Certificate = () => {
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
 
-            const imgWidth = img.width;
-            const imgHeight = img.height;
+            const imgProps = pdf.getImageProperties(dataUrl);
+            const imgWidth = imgProps.width;
+            const imgHeight = imgProps.height;
             const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
             const finalWidth = imgWidth * ratio;
             const finalHeight = imgHeight * ratio;
             const xOffset = (pdfWidth - finalWidth) / 2;
             const yOffset = (pdfHeight - finalHeight) / 2;
 
-            pdf.addImage(img, "JPEG", xOffset, yOffset, finalWidth, finalHeight);
-
-
-
-
-            // 1. Domain Name
-            pdf.setFont("serif", "bold");
-            pdf.setFontSize(13);
-            pdf.setTextColor(91, 86, 85); // Matches #5B5655
-            pdf.text(mc1?.domain_name || category.name || "", pdfWidth / 2, 52, { align: "center" });
-
-            // 1. Recipient Name
-            pdf.setFont("serif", "bold");
-            pdf.setFontSize(28);
-            pdf.setTextColor(91, 86, 85); // Matches #5B5655
-            pdf.text(userName, pdfWidth / 2, 75, { align: "center" });
-
-            // 2. Micro-Credential Names
-            pdf.setFont("serif", "normal");
-            pdf.setFontSize(22);
-            pdf.setTextColor(91, 86, 85);
-            pdf.text(mc1?.micro_credential || mc.name, pdfWidth / 2, 102, { align: "center" });
-
-            // 3. Issue Date
-            pdf.setFont("monospace", "normal");
-            pdf.setFontSize(10);
-            pdf.setTextColor(91, 86, 85);
-            const issueDate = "07 March 2026";
-            pdf.text(issueDate, 65, 124.5);
-
-            // 4. Certificate ID
-            const certId = `IKS-${mc.id}-2026-4201-XKPM7`;
-            pdf.text(certId, 122, 124.5);
-
-            // 5. QR Code
-            const qrCanvas = document.getElementById("qr-code-canvas-sample") as HTMLCanvasElement;
-            if (qrCanvas) {
-                const qrImage = qrCanvas.toDataURL("image/png");
-                const qrSize = 38;
-                pdf.addImage(qrImage, "PNG", (pdfWidth - qrSize) / 2, 152 - (qrSize / 2), qrSize, qrSize);
-            }
+            pdf.addImage(dataUrl, "PNG", xOffset, yOffset, finalWidth, finalHeight);
 
             pdf.save(`IKON-Skills-Certificate-${mc.name.replace(/\s+/g, '-')}.pdf`);
-        };
-
-        img.onerror = () => {
-            alert("Failed to load certificate template image.");
-        };
+        } catch (error) {
+            console.error("Download failed:", error);
+            alert("Failed to download the certificate. Please try again.");
+        }
     };
 
     return (
@@ -154,8 +153,8 @@ export const Certificate = () => {
                     </div>
 
                     {/* Certificate Card with Dynamic Overlays */}
-                    <div className="relative group overflow-hidden rounded-xl border border-gold/20 shadow-2xl">
-                        <Image src={certPhoto} alt="Certificate Template" className="w-full h-auto" priority />
+                    <div ref={certRef} className="relative group overflow-hidden rounded-xl border border-gold/20 shadow-2xl">
+                        <img src={certificateImageSrc} alt="Certificate Template" className="w-full h-auto" />
                         
                         {/* Dynamic Overlays */}
                         <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '22.5%' }}>
@@ -210,8 +209,8 @@ export const Certificate = () => {
 
                         <div className="cv-profile-box flex items-center gap-4 mb-6 pb-6 border-b border-[#0B1F3A]/5">
                             <div className="w-[60px] h-[60px] rounded-full border-2 border-gold overflow-hidden bg-gold/5 shrink-0">
-                                <Image
-                                    src={certPhoto}
+                                <img
+                                    src={certificateImageSrc}
                                     alt={userName}
                                     className="w-full h-full object-cover"
                                 />

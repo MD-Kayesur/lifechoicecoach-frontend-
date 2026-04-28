@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetCertificateByIdQuery } from "@/redux/features/progress/certificateApi";
+import { useGetCertificateByIdQuery, useGetCertificateTemplateQuery } from "@/redux/features/progress/certificateApi";
 import { useGetLessonCompetenciesQuery, MicroCredential, DomainHierarchy } from "@/redux/features/lesson/lessonCompetenciesApi";
 import { useGetProfileQuery } from "@/redux/features/profile/profileApi";
 import { skipToken } from "@reduxjs/toolkit/query";
@@ -10,6 +10,21 @@ import certPhoto from "@/assets/cirtificate/Untitled-2.png";
 import { Loader2, ShieldCheck, Download, CheckCircle2 } from "lucide-react";
 import { QRCodeSVG, QRCodeCanvas } from "qrcode.react";
 import jsPDF from "jspdf";
+
+const getImageUrl = (path: string | null | undefined) => {
+    if (!path) return "";
+    if (path.startsWith("blob:") || path.startsWith("data:")) {
+        return path;
+    }
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://lifechoice.duckdns.org";
+    if (path.startsWith(baseUrl)) {
+        return path.replace(baseUrl, "");
+    }
+    if (path.startsWith("http")) {
+        return path;
+    }
+    return path.startsWith("/") ? path : `/${path}`;
+};
 
 interface VerifiedCertificateViewProps {
     id: string;
@@ -36,11 +51,16 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
 
     const isLoading = certLoading || mcLoading;
 
+    const { data: templateData } = useGetCertificateTemplateQuery();
+    const rawUrl = templateData?.data?.certificate_template;
+    const certificateImageSrc = rawUrl ? getImageUrl(rawUrl) : certPhoto.src;
+
     const handleDownload = () => {
         if (!cert) return;
 
         const img = new (window as any).Image();
-        img.src = certPhoto.src;
+        // The image is proxied through Next.js, so it is treated as same-origin
+        img.src = certificateImageSrc;
 
         img.onload = () => {
             const pdf = new jsPDF({
@@ -105,6 +125,10 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
 
             pdf.save(`Verified-Certificate-${cert?.certificate_number || id}.pdf`);
         };
+
+        img.onerror = () => {
+            alert("Failed to load certificate template image.");
+        };
     };
 
     if (isLoading) {
@@ -152,7 +176,7 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
             <div className="w-full max-w-[1100px] animate-in fade-in zoom-in-95 duration-1000">
                 {/* Certificate Preview Only */}
                 <div className="relative group rounded-2xl overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.6)] border border-gold/30 bg-white/5">
-                    <Image src={certPhoto} alt="Certificate Template" className="w-full h-auto" priority />
+                    <img src={certificateImageSrc} alt="Certificate Template" className="w-full h-auto" />
                     
                     {/* Dynamic Overlays */}
                     <div className="absolute inset-0 flex flex-col items-center mt-20 pointer-events-none mt-62"  >

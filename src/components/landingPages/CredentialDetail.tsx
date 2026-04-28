@@ -49,7 +49,7 @@ export const CredentialDetail = () => {
     const competencyStatusMap = useMemo(() => {
         const map: Record<number, { status: string; sessionId: string | number }> = {};
         sessionsData?.sessions?.forEach(s => {
-            const compId = Number(s.competency);
+            const compId = Number(s.competency_id);
             // If multiple sessions exist, we might want the latest or a priority (completed > in_progress)
             // For now, let's just map it.
             if (!map[compId] || s.status === 'completed') {

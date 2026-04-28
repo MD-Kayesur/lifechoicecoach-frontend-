@@ -74,6 +74,6 @@ const baseQueryWithRefresh: BaseQueryFn = async (args, api, extraOptions) => {
 export const baseApi = createApi({
     reducerPath: "baseApi",
     baseQuery: baseQueryWithRefresh,
-    tagTypes: ["User", "Dashboard", "Credentials", "DegreeLevel", "DegreePathway", "DegreeProgress", "SubscriptionPlan", "EnrollmentTest", "ProgressPassport", "Payment", "LessonCompetency", "LessonRubric", "Badge", "Passport", "Certificate", "Notification", "Enrollment", "Subscription", "Points", "Summary", "LearningSession", "Practitioner"],
+    tagTypes: ["User", "Dashboard", "Credentials", "DegreeLevel", "DegreePathway", "DegreeProgress", "SubscriptionPlan", "EnrollmentTest", "ProgressPassport", "Payment", "LessonCompetency", "LessonRubric", "Badge", "Passport", "Certificate", "Notification", "Enrollment", "Subscription", "Points", "Summary", "LearningSession", "Practitioner","CertificateTemplate"],
     endpoints: () => ({}),
 });

@@ -42,6 +42,7 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
         try {
             const result = await startSession({
                 competency_id: competency.id,
+                mc_access_id: microCredentialId,
             }).unwrap() as any;
 
             const sessionData = result.learning_session?.session || result.session;
