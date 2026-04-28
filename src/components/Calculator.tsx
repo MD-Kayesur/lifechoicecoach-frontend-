@@ -12,7 +12,8 @@ export const Calculator = () => {
 
     return (
         <div className="bg-white rounded-[16px] border border-[#E4E4E4] p-4 md:p-6 w-full shadow-sm">
-             <div className="mb-4">
+            {/* You Send */}
+            <div className="mb-4">
                 <p className="text-sm md:text-base font-semibold text-[#666] mb-2">You Send</p>
                 <div className="flex items-center justify-between border border-[#E4E4E4] rounded-[10px] px-3 md:px-5 py-3 focus-within:border-[#11674E] transition-colors">
                     <input
@@ -54,7 +55,8 @@ export const Calculator = () => {
                 </div>
             </div>
 
-             <div className="space-y-2 mb-5">
+            {/* Rate Details */}
+            <div className="space-y-2 mb-5">
                 <div className="flex justify-between items-center">
                     <span className="text-sm md:text-base font-medium text-[#808080] mb-2">Exchange Rate</span>
                     <span className="text-sm md:text-base font-semibold text-black mb-2">1 GBP = 1.25 USD</span>
