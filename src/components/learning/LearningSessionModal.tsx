@@ -85,13 +85,14 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
                             role: 'ai', 
                             content: aiContent
                         }]);
-                    } else if (formattedMessages.length === 0) {
-                        // Fallback only if no history and no new response
-                        setMessages([{ 
-                            role: 'ai', 
-                            content: `Hello! I'm your AI guide for this competency: "${competency.title}". \n\nHow can I help you master this skill today?` 
-                        }]);
-                    }
+                    } 
+                    // else if (formattedMessages.length === 0) {
+                    //     // Fallback only if no history and no new response
+                    //     setMessages([{ 
+                    //         role: 'ai', 
+                    //         content: `Hello! I'm your AI guide for this competency: "${competency.title}". \n\nHow can I help you master this skill today?` 
+                    //     }]);
+                    // }
                 } catch (err) {
                     console.error("Initial interaction error:", err);
                     toast.error("Failed to connect with AI coach");
