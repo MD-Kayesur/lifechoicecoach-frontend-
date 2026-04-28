@@ -158,7 +158,7 @@ export const Certificate = () => {
                         
                         {/* Dynamic Overlays */}
                         <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '22.5%' }}>
-                              <div className="text-[1.2vw] lg:text-[13px] font-serif font-bold text-[#5B5655]/70   tracking-[2px] mb-[1.5%]">
+                              <div className="text-[1.2vw] lg:text-[18px] font-serif font-bold text-[#5B5655]/100   tracking-[2px] mb-[1.5%]">
                                 {mc1?.domain_name || category.name || "Official IKON Skills Domain"}
                             </div>
 
@@ -166,12 +166,12 @@ export const Certificate = () => {
                                 {userName}
                             </div>
                             
-                             <div className="text-[2.2vw] lg:text-[32px] font-serif text-[#5b5655] mt-[6.5%]">
+                             <div className="text-[2.2vw] lg:text-[32px] font-serif text-[#5b5655] mt-[5%]">
                                 {mc1?.micro_credential || mc.name}
                             </div>
 
-                             <div className="absolute md:left-[7.5%] md:top-[40.5%] w-full flex justify-center gap-[13%] text-[1vw] lg:text-[14px] font-mono text-[#5b5655]">
-                                <div className="flex text-[12px] gap-2">
+                             <div className="absolute md:left-[11.5%] md:top-[39.4%] w-full flex justify-center gap-[16%] text-[1vw] lg:text-[14px] font-mono text-[#5b5655]">
+                                <div className="flex   gap-2">
                                     
                                     <span>07 March 2026</span>
                                 </div>
@@ -181,7 +181,7 @@ export const Certificate = () => {
                                 </div>
                             </div>
 
-                             <div className="absolute  md:top-[51%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
+                             <div className="absolute  md:top-[49.6%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
                                 <QRCodeSVG 
                                     value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${id}` : ''} 
                                     size={130}
