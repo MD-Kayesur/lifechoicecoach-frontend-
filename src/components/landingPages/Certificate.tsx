@@ -157,7 +157,7 @@ export const Certificate = () => {
                         <img src={certificateImageSrc} alt="Certificate Template" className="w-full h-auto" />
                         
                         {/* Dynamic Overlays */}
-                        <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '22.5%' }}>
+                        {/* <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '22.5%' }}>
                               <div className="text-[1.2vw] lg:text-[18px] font-serif font-bold text-[#5B5655]/100   tracking-[2px] mb-[1.5%]">
                                 {mc1?.domain_name || category.name || "Official IKON Skills Domain"}
                             </div>
@@ -197,7 +197,7 @@ export const Certificate = () => {
                                     />
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 
