@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetCertificateByIdQuery, useGetCertificateTemplateQuery } from "@/redux/features/progress/certificateApi";
+import { useVerifyCertificateQuery, useGetCertificateTemplateQuery } from "@/redux/features/progress/certificateApi";
 import { useGetLessonCompetenciesQuery, MicroCredential, DomainHierarchy } from "@/redux/features/lesson/lessonCompetenciesApi";
 import { useGetProfileQuery } from "@/redux/features/profile/profileApi";
 import { skipToken } from "@reduxjs/toolkit/query";
@@ -16,14 +16,19 @@ const getImageUrl = (path: string | null | undefined) => {
     if (path.startsWith("blob:") || path.startsWith("data:")) {
         return path;
     }
+    
+    let absoluteUrl = path;
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://lifechoice.duckdns.org";
+    
     if (path.startsWith(baseUrl)) {
-        return path.replace(baseUrl, "");
+        absoluteUrl = path;
+    } else if (path.startsWith("/")) {
+        absoluteUrl = `${baseUrl}${path}`;
+    } else if (!path.startsWith("http")) {
+        absoluteUrl = `${baseUrl}/${path}`;
     }
-    if (path.startsWith("http")) {
-        return path;
-    }
-    return path.startsWith("/") ? path : `/${path}`;
+    
+    return `/api/proxy-image?url=${encodeURIComponent(absoluteUrl)}`;
 };
 
 interface VerifiedCertificateViewProps {
@@ -33,11 +38,12 @@ interface VerifiedCertificateViewProps {
 export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) => {
     // 1. Fetch User Profile (Same logic as Certificate.tsx)
     const { data: profileData } = useGetProfileQuery();
-    const userName = (profileData?.profile?.first_name || "") + " " + (profileData?.profile?.last_name || "") || "Practitioner Name";
+    const firstLast = `${profileData?.profile?.first_name || ""} ${profileData?.profile?.last_name || ""}`.trim();
+    const userName = firstLast || "Practitioner Name";
 
     // 2. Fetch Certificate Details
-    const { data: apiResponse, isLoading: certLoading, isError } = useGetCertificateByIdQuery(id);
-    const cert = (apiResponse as any)?.data || (apiResponse as any)?.certificate || apiResponse;
+    const { data: apiResponse, isLoading: certLoading, isError } = useVerifyCertificateQuery({ certificate_number: id });
+    const cert = apiResponse?.certificate || (apiResponse as any)?.data || apiResponse;
 
     // 3. Fetch Micro-Credential Details from API (Same logic as Certificate.tsx)
     // We use either the cert's credential ID or the URL id
@@ -54,6 +60,12 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
     const { data: templateData } = useGetCertificateTemplateQuery();
     const rawUrl = templateData?.data?.certificate_template;
     const certificateImageSrc = rawUrl ? getImageUrl(rawUrl) : certPhoto.src;
+
+    const displayUserName = cert?.user_name || cert?.recipient_name || userName;
+    const displayDomainName = cert?.domain_name || mc1?.domain_name || "Official IKON Skills Domain";
+    const displayCredentialName = cert?.micro_credential_name || mc1?.micro_credential || cert?.credential_name || "Micro-Credential";
+    const displayIssueDate = cert?.issued_at || cert?.issue_date ? new Date(cert?.issued_at || cert?.issue_date).toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' }) : "07 March 2026";
+    const displayCertificateNumber = cert?.certificate_number || cert?.id || id;
 
     const handleDownload = () => {
         if (!cert) return;
@@ -86,31 +98,28 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
             pdf.setFont("serif", "bold");
             pdf.setFontSize(13);
             pdf.setTextColor(91, 86, 85);
-            pdf.text(mc1?.domain_name || "Official IKON Skills Domain", pdfWidth / 2, 52, { align: "center" });
+            pdf.text(displayDomainName, pdfWidth / 2, 52, { align: "center" });
 
             // 2. Recipient Name
             pdf.setFont("serif", "bold");
             pdf.setFontSize(28);
             pdf.setTextColor(91, 86, 85);
-            pdf.text(userName, pdfWidth / 2, 75, { align: "center" });
+            pdf.text(displayUserName, pdfWidth / 2, 75, { align: "center" });
 
             // 3. Micro-Credential Name
             pdf.setFont("serif", "normal");
             pdf.setFontSize(22);
             pdf.setTextColor(91, 86, 85);
-            pdf.text(mc1?.micro_credential || cert?.credential_name || "Micro-Credential", pdfWidth / 2, 102, { align: "center" });
+            pdf.text(displayCredentialName, pdfWidth / 2, 102, { align: "center" });
 
             // 4. Issue Date
             pdf.setFont("monospace", "normal");
             pdf.setFontSize(10);
             pdf.setTextColor(91, 86, 85);
-            const formattedDate = cert?.issue_date 
-                ? new Date(cert.issue_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
-                : "07 March 2026";
-            pdf.text(formattedDate, 65, 124.5);
+            pdf.text(displayIssueDate, 65, 124.5);
 
             // 5. Certificate ID
-            pdf.text(cert?.certificate_number || `IKS-${id}-2026`, 122, 124.5);
+            pdf.text(displayCertificateNumber, 122, 124.5);
 
             // 6. QR Code
             const qrCanvas = document.getElementById("qr-code-canvas") as HTMLCanvasElement;
@@ -142,7 +151,7 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
 
     // Check if we have enough data to show a certificate
     // We can show it if we have the certificate record OR if we have the MC/Profile data
-    const hasEnoughData = (cert && (cert.recipient_name || cert.credential_name)) || (userName !== "Practitioner Name" && mc1);
+    const hasEnoughData = (cert && (cert.user_name || cert.recipient_name || cert.micro_credential_name || cert.credential_name)) || (userName !== "Practitioner Name" && mc1);
 
     if ((isError && !mc1) || (!isLoading && !hasEnoughData)) {
         return (
@@ -182,28 +191,26 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
                     <div className="absolute inset-0 flex flex-col items-center mt-20 pointer-events-none mt-62"  >
                         {/* Domain Name */}
                         <div className="text-[1.2vw] lg:text-[18px] font-serif font-bold text-[#5B5655]/70   tracking-[2px]  ">
-                            {mc1?.domain_name || "Official IKON Skills Domain"}
+                            {displayDomainName}
                         </div>
                         
                         {/* Recipient Name */}
                         <div className="text-[3vw]  mt-20 lg:text-[42px] font-serif font-bold text-[#5B5655]">
-                            {userName}
+                            {displayUserName}
                         </div>
                         
                         {/* Credential Name */}
                         <div className="text-[2.2vw] lg:text-[34px] font-serif mt-20 text-[#5B5655]  ">
-                            {mc1?.micro_credential || cert?.credential_name || "Micro-Credential"}
+                            {displayCredentialName}
                         </div>
 
                         {/* Bottom Info Row */}
                         <div className="absolute left-10 top-97 w-full flex justify-center gap-[16%] text-[1vw] lg:text-[16px] font-mono text-[#5B5655]">
                             <div className="flex gap-2">
-                               
-                                <span>{cert?.issue_date ? new Date(cert.issue_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : "07 March 2026"}</span>
+                                <span>{displayIssueDate}</span>
                             </div>
                             <div className="flex gap-2 ">
-                            
-                                <span>{cert?.certificate_number || cert?.id}</span>
+                                <span>{displayCertificateNumber}</span>
                             </div>
                         </div>
 
@@ -211,7 +218,7 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
                         <div className="absolute top-[42%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
                             <QRCodeSVG 
                                 value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${id}` : ''} 
-                                size={150}
+                                size={130}
                                 level="H"
                                 includeMargin={false}
                             />
