@@ -10,8 +10,9 @@ import { Check, CreditCard, X, ShieldCheck, Globe, BookOpen, Zap } from "lucide-
 import { skipToken } from "@reduxjs/toolkit/query";
 import { cn } from "@/lib/utils";
 import { LearningSessionModal } from "../learning/LearningSessionModal";
- import { useGetSessionsQuery } from "@/redux/features/learning/LearningSessionApi";
+ import { useGetSessionsQuery, useGetCompetencyRoadmapQuery } from "@/redux/features/learning/LearningSessionApi";
 import { LearningSessionDetailsModal } from "../learning/LearningSessionDetailsModal";
+import { toast } from "sonner";
 export const CredentialDetail = () => {
     const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
     const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
@@ -45,6 +46,18 @@ export const CredentialDetail = () => {
             ? { micro_credential: mcId } 
             : skipToken
     );
+
+    const { data: roadmapData } = useGetCompetencyRoadmapQuery(
+        canAccess && !isNaN(mcId) ? mcId : skipToken
+    );
+
+    const roadmapStatusMap = useMemo(() => {
+        const map: Record<number, string> = {};
+        roadmapData?.roadmap?.competencies?.forEach((c: any) => {
+            map[c.competency_id] = c.status;
+        });
+        return map;
+    }, [roadmapData]);
 
     const competencyStatusMap = useMemo(() => {
         const map: Record<number, { status: string; sessionId: string | number }> = {};
@@ -167,6 +180,10 @@ export const CredentialDetail = () => {
                                 key={comp.id} 
                                 onClick={() => {
                                     if (canAccess) {
+                                        if (roadmapStatusMap[Number(comp.id)] === 'locked') {
+                                            toast.error("Complete previous competency");
+                                            return;
+                                        }
                                         const sessionId = competencyToSessionMap[Number(comp.id)];
                                         if (sessionId) {
                                             setSelectedSessionId(sessionId);
@@ -190,6 +207,21 @@ export const CredentialDetail = () => {
                                 <div className="flex items-center justify-between w-full">
                                     <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center text-[10px] font-bold text-gold font-mono uppercase tracking-wider shrink-0 shadow-[0_0_15px_rgba(196,136,14,0.1)] group-hover:bg-gold/20 transition-all">C{String(i + 1).padStart(2, '0')}</div>
                                     <div className="flex items-center gap-2">
+                                        {roadmapStatusMap[Number(comp.id)] && (
+                                            <div className={cn(
+                                                "px-2 py-0.5 rounded-full border text-[8px] font-bold uppercase tracking-wider flex items-center gap-1",
+                                                roadmapStatusMap[Number(comp.id)] === 'completed' && "bg-green-500/20 border-green-500/30 text-green-500",
+                                                roadmapStatusMap[Number(comp.id)] === 'in_progress' && "bg-blue-500/20 border-blue-500/30 text-blue-500",
+                                                roadmapStatusMap[Number(comp.id)] === 'failed' && "bg-red-500/20 border-red-500/30 text-red-500",
+                                                roadmapStatusMap[Number(comp.id)] === 'available' && "bg-gold/20 border-gold/30 text-gold",
+                                                roadmapStatusMap[Number(comp.id)] === 'locked' && "bg-white/10 border-white/20 text-white/50"
+                                            )}>
+                                                {roadmapStatusMap[Number(comp.id)] === 'in_progress' && <div className="w-1 h-1 rounded-full bg-blue-500 animate-pulse"></div>}
+                                                {roadmapStatusMap[Number(comp.id)] === 'completed' && <div className="w-1 h-1 rounded-full bg-green-500"></div>}
+                                                {roadmapStatusMap[Number(comp.id)] === 'failed' && <div className="w-1 h-1 rounded-full bg-red-500"></div>}
+                                                Roadmap: {roadmapStatusMap[Number(comp.id)].replace('_', ' ')}
+                                            </div>
+                                        )}
                                         {competencyStatusMap[Number(comp.id)]?.status === 'completed' && (
                                             <div className="px-2 py-0.5 rounded-full bg-green-500/20 border border-green-500/30 text-green-500 text-[8px] font-bold uppercase tracking-wider flex items-center gap-1">
                                                 <div className="w-1 h-1 rounded-full bg-green-500"></div>
@@ -296,9 +328,9 @@ export const CredentialDetail = () => {
                                 Enroll as Practitioner
                             </button>
                         )}
-                        {canAccess && (
+                        {canAccess && roadmapData?.roadmap?.mc_status === 'completed' && (
                             <button
-                                onClick={() => router.push(`/certificate?id=${id}`)}
+                                onClick={() => router.push('/dashboard?tab=Certificates')}
                                 className="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 text-white text-[12px] font-black uppercase tracking-widest rounded-xl transition-all"
                             >
                                 View Sample Certificate

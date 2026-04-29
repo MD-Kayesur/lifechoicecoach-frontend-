@@ -50,8 +50,19 @@ export const Certificate = () => {
 
     const certificateImageSrc = rawUrl ? getImageUrl(rawUrl) : certPhoto.src;
 
+    const certDataStr = searchParams.get("certData");
+    const certData = useMemo(() => {
+        if (!certDataStr) return null;
+        try {
+            return JSON.parse(certDataStr);
+        } catch (e) {
+            return null;
+        }
+    }, [certDataStr]);
+
     console.log("Profile Data:", profileData);
-    const userName = (profileData?.profile?.first_name || "") + " " + (profileData?.profile?.last_name || "") || "Practitioner Name";
+    const firstLast = `${profileData?.profile?.first_name || ""} ${profileData?.profile?.last_name || ""}`.trim();
+    const userName = certData?.user_name || firstLast || "Practitioner Name";
 
     // Fetch Micro-Credential Details from API
     const mcId = Number(id);
@@ -138,12 +149,12 @@ export const Certificate = () => {
         <div id="page-certificate" className="page active pt-[62px] min-h-screen bg-[#0a1628]">
             <div className="cert-layout max-w-[1200px] mx-auto px-8 md:px-12 py-10 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10">
                 <div className="animate-in fade-in slide-in-from-left-4 duration-700">
-                    <div 
+                    {/* <div 
                         className="cert-bc text-sm text-white/50 hover:text-white mb-6 cursor-pointer flex items-center gap-2 transition-colors" 
                         onClick={() => router.push(`/sample-mc?id=${id}`)}
                     >
                         ← Back to Credential
-                    </div>
+                    </div> */}
                     <div className="header mb-8">
                         <div className="eyebrow text-gold font-bold text-[10.5px] tracking-[2px] uppercase font-mono mb-2">Sample Micro-Credential Certificate</div>
                         <h2 className="sec-h font-serif font-bold text-[26px] text-white leading-tight mb-4 ml-0">This is what your Proof of Skill looks like.</h2>
@@ -157,41 +168,39 @@ export const Certificate = () => {
                         <img src={certificateImageSrc} alt="Certificate Template" className="w-full h-auto" />
                         
                         {/* Dynamic Overlays */}
-                        <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '22.5%' }}>
-                              <div className="text-[1.2vw] lg:text-[18px] font-serif font-bold text-[#5B5655]/100   tracking-[2px] mb-[1.5%]">
-                                {mc1?.domain_name || category.name || "Official IKON Skills Domain"}
+                        <div className="absolute inset-0 flex flex-col items-center mt-20 pointer-events-none mt-62">
+                            <div className="text-[1.2vw] lg:text-[18px] font-serif font-bold text-[#5B5655]/70 tracking-[2px]">
+                                {certData?.domain_name || mc1?.domain_name || category.name || "Official IKON Skills Domain"}
                             </div>
 
-                             <div className="text-[3vw] lg:text-[42px] font-serif mt-[2.5%] font-bold text-[#5b5655]">
+                            <div className="text-[3vw] mt-20 lg:text-[42px] font-serif font-bold text-[#5b5655]">
                                 {userName}
                             </div>
                             
-                             <div className="text-[2.2vw] lg:text-[32px] font-serif text-[#5b5655] mt-[5%]">
-                                {mc1?.micro_credential || mc.name}
+                            <div className="text-[2.2vw] lg:text-[34px] font-serif mt-20 text-[#5b5655]">
+                                {certData?.micro_credential_name || mc1?.micro_credential || mc.name}
                             </div>
 
-                             <div className="absolute md:left-[11.5%] md:top-[39.4%] w-full flex justify-center gap-[16%] text-[1vw] lg:text-[14px] font-mono text-[#5b5655]">
-                                <div className="flex   gap-2">
-                                    
-                                    <span>07 March 2026</span>
+                            <div className="absolute left-10 top-97 w-full flex justify-center gap-[16%] text-[1vw] lg:text-[16px] font-mono text-[#5b5655]">
+                                <div className="flex gap-2">
+                                    <span>{certData?.issued_at ? new Date(certData.issued_at).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : '07 March 2026'}</span>
                                 </div>
                                 <div className="flex gap-2">
-                                
-                                    <span>IKS-{mc.id}-2026-4201-XKPM7</span>
+                                    <span>{certData?.certificate_number || `IKS-${mc.id}-2026-4201-XKPM7`}</span>
                                 </div>
                             </div>
 
-                             <div className="absolute  md:top-[49.6%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
+                            <div className="absolute top-[42%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
                                 <QRCodeSVG 
-                                    value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${id}` : ''} 
-                                    size={130}
+                                    value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${certData?.certificate_number || id}` : ''} 
+                                    size={150}
                                     level="H"
                                     includeMargin={false}
                                 />
-                                 <div style={{ display: 'none' }}>
+                                <div style={{ display: 'none' }}>
                                     <QRCodeCanvas
                                         id="qr-code-canvas-sample"
-                                        value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${id}` : ''}
+                                        value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${certData?.certificate_number || id}` : ''}
                                         size={500}
                                         level="H"
                                     />
@@ -222,15 +231,15 @@ export const Certificate = () => {
                         </div>
 
                         <div className="cv-id bg-[#F9F5EE] border border-gold/10 rounded-lg p-3 text-[11.5px] font-mono text-[#1A1A1E] break-all mb-4">
-                            IKS-{mc.id}-2026-4201-XKPM7
+                            {certData?.certificate_number || `IKS-${mc.id}-2026-4201-XKPM7`}
                         </div>
                         <div className="space-y-3">
                             {[
                                 { l: 'Practitioner', v: userName },
-                                { l: 'Credential', v: mc.name },
-                                { l: 'Domain', v: `Cat ${mc.cat} · ${category?.name}` },
-                                { l: 'ECTS', v: `${mc.ects} ECTS · EQF ${mc.level}` },
-                                { l: 'Date Issued', v: '07 March 2026' },
+                                { l: 'Credential', v: certData?.micro_credential_name || mc.name },
+                                { l: 'Domain', v: certData?.domain_name || `Cat ${mc.cat} · ${category?.name}` },
+                                { l: 'ECTS', v: `${certData?.ects_earned || mc.ects} ECTS · EQF ${certData?.eqf_level ? certData.eqf_level.replace('EQF ', '') : mc.level}` },
+                                { l: 'Date Issued', v: certData?.issued_at ? new Date(certData.issued_at).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : '07 March 2026' },
                                 { l: 'Quality Assured By', v: 'EIU-Paris' },
                                 { l: 'Status', v: '✓ Verified', color: '#0A6B45' },
                             ].map((row, i) => (

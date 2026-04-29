@@ -34,6 +34,32 @@ export interface GetSessionResponse {
     session: LearningSession;
 }
 
+export interface CompetencyRoadmapItem {
+    competency_id: number;
+    code: number;
+    title: string;
+    description: string;
+    status: string;
+    is_unlocked: boolean;
+    mastery_achieved: boolean;
+    attempts_used: number;
+    total_interactions: number;
+    total_points: number;
+}
+
+export interface GetCompetencyRoadmapResponse {
+    success: boolean;
+    message: string;
+    roadmap: {
+        micro_credential: string;
+        mc_status: string;
+        attempts_used: number;
+        max_attempts: number;
+        competencies: CompetencyRoadmapItem[];
+    };
+    error: boolean;
+}
+
 export interface StartSessionRequest {
     mc_access_id: number;
     competency_id: number;
@@ -105,6 +131,15 @@ export const LearningSessionApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: (result, error, { sessionId }) => [{ type: "LearningSession", id: sessionId }],
         }),
+
+        // Get competency roadmap for a micro-credential
+        getCompetencyRoadmap: builder.query<GetCompetencyRoadmapResponse, string | number>({
+            query: (mcId) => ({
+                url: `/learning/sessions/roadmap/${mcId}/`,
+                method: "GET",
+            }),
+            providesTags: (result, error, mcId) => [{ type: "LearningSession", id: `roadmap-${mcId}` }],
+        }),
     }),
 });
 
@@ -114,4 +149,5 @@ export const {
     useGetSessionByIdQuery,
     useAssessSessionMutation,
     useInteractWithSessionMutation,
+    useGetCompetencyRoadmapQuery,
 } = LearningSessionApi;
