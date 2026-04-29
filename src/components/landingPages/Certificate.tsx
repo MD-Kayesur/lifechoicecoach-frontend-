@@ -61,7 +61,8 @@ export const Certificate = () => {
     }, [certDataStr]);
 
     console.log("Profile Data:", profileData);
-    const userName = certData?.user_name || ((profileData?.profile?.first_name || "") + " " + (profileData?.profile?.last_name || "")) || "Practitioner Name";
+    const firstLast = `${profileData?.profile?.first_name || ""} ${profileData?.profile?.last_name || ""}`.trim();
+    const userName = certData?.user_name || firstLast || "Practitioner Name";
 
     // Fetch Micro-Credential Details from API
     const mcId = Number(id);
@@ -167,32 +168,32 @@ export const Certificate = () => {
                         <img src={certificateImageSrc} alt="Certificate Template" className="w-full h-auto" />
                         
                         {/* Dynamic Overlays */}
-                        <div className="absolute inset-0 flex flex-col items-center pointer-events-none" style={{ paddingTop: '22.5%' }}>
-                            <div className="text-[1.2vw] lg:text-[18px] font-serif font-bold text-[#5B5655]/100 tracking-[2px] mb-[1.5%]">
+                        <div className="absolute inset-0 flex flex-col items-center mt-20 pointer-events-none mt-62">
+                            <div className="text-[1.2vw] lg:text-[18px] font-serif font-bold text-[#5B5655]/70 tracking-[2px]">
                                 {certData?.domain_name || mc1?.domain_name || category.name || "Official IKON Skills Domain"}
                             </div>
 
-                            <div className="text-[3vw] lg:text-[42px] font-serif mt-[2.5%] font-bold text-[#5b5655]">
+                            <div className="text-[3vw] mt-20 lg:text-[42px] font-serif font-bold text-[#5b5655]">
                                 {userName}
                             </div>
                             
-                            <div className="text-[2.2vw] lg:text-[32px] font-serif text-[#5b5655] mt-[5%]">
+                            <div className="text-[2.2vw] lg:text-[34px] font-serif mt-20 text-[#5b5655]">
                                 {certData?.micro_credential_name || mc1?.micro_credential || mc.name}
                             </div>
 
-                            <div className="absolute md:left-[11.5%] md:top-[39.4%] w-full flex justify-center gap-[16%] text-[1vw] lg:text-[14px] font-mono text-[#5b5655]">
+                            <div className="absolute left-10 top-97 w-full flex justify-center gap-[16%] text-[1vw] lg:text-[16px] font-mono text-[#5b5655]">
                                 <div className="flex gap-2">
-                                    <span>{certData?.issued_at ? new Date(certData.issued_at).toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' }) : '07 March 2026'}</span>
+                                    <span>{certData?.issued_at ? new Date(certData.issued_at).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : '07 March 2026'}</span>
                                 </div>
                                 <div className="flex gap-2">
                                     <span>{certData?.certificate_number || `IKS-${mc.id}-2026-4201-XKPM7`}</span>
                                 </div>
                             </div>
 
-                            <div className="absolute md:top-[49.6%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
+                            <div className="absolute top-[42%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
                                 <QRCodeSVG 
                                     value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${certData?.certificate_number || id}` : ''} 
-                                    size={130}
+                                    size={150}
                                     level="H"
                                     includeMargin={false}
                                 />

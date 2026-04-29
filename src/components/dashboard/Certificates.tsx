@@ -149,7 +149,7 @@ export const Certificates = () => {
                                                 {/* QR Code - Positioned exactly in the red marked area */}
                                                 <div className="absolute top-[52%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[2px] rounded-sm shadow-sm pointer-events-auto">
                                                     <QRCodeSVG 
-                                                        value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${selectedCert.id}` : ''} 
+                                                        value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${selectedCert.certificate_number}` : ''} 
                                                         size={35}
                                                         level="H"
                                                         includeMargin={false}
@@ -186,7 +186,7 @@ export const Certificates = () => {
 
                                     <div className="grid grid-cols-1 gap-3">
                                         <a 
-                                            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${selectedCert?.id}` : '')}`}
+                                            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${selectedCert?.certificate_number}` : '')}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="flex items-center gap-4 p-4 rounded-xl bg-[#0077b5]/10 border border-[#0077b5]/30 hover:bg-[#0077b5]/20 transition-all group"
@@ -202,7 +202,7 @@ export const Certificates = () => {
                                         </a>
 
                                         <a 
-                                            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${selectedCert?.id}` : '')}`}
+                                            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${selectedCert?.certificate_number}` : '')}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="flex items-center gap-4 p-4 rounded-xl bg-[#1877f2]/10 border border-[#1877f2]/30 hover:bg-[#1877f2]/20 transition-all group"
@@ -219,7 +219,7 @@ export const Certificates = () => {
 
                                         <button 
                                             onClick={() => {
-                                                const url = `${window.location.origin}/verify-certificate/${selectedCert?.id}`;
+                                                const url = `${window.location.origin}/verify-certificate/${selectedCert?.certificate_number}`;
                                                 navigator.clipboard.writeText(url);
                                                 // Using alert as fallback if sonner toast isn't available, 
                                                 // but usually sonner is setup in layout
