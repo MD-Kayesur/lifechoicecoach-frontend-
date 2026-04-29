@@ -182,7 +182,7 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
 
     return (
         <div className="min-h-screen bg-[#0a1628] flex items-center justify-center p-6 md:p-12">
-            <div className="w-full max-w-[1100px] animate-in fade-in zoom-in-95 duration-1000">
+            <div className="w-full h-full max-w-[1100px] animate-in fade-in zoom-in-95 duration-1000">
                 {/* Certificate Preview Only */}
                 <div className="relative group rounded-2xl overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.6)] border border-gold/30 bg-white/5">
                     <img src={certificateImageSrc} alt="Certificate Template" className="w-full h-auto" />
@@ -205,7 +205,7 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
                         </div>
 
                         {/* Bottom Info Row */}
-                        <div className="absolute left-10 top-97 w-full flex justify-center gap-[16%] text-[1vw] lg:text-[16px] font-mono text-[#5B5655]">
+                        <div className="absolute left-24 top-92 w-full flex justify-center gap-[19%] text-[1vw] lg:text-[16px] font-mono text-[#5B5655]">
                             <div className="flex gap-2">
                                 <span>{displayIssueDate}</span>
                             </div>
@@ -215,7 +215,7 @@ export const VerifiedCertificateView = ({ id }: VerifiedCertificateViewProps) =>
                         </div>
 
                         {/* QR Code */}
-                        <div className="absolute top-[42%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
+                        <div className="absolute top-[40%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-white p-[4px] rounded-sm shadow-sm pointer-events-auto">
                             <QRCodeSVG 
                                 value={typeof window !== 'undefined' ? `${window.location.origin}/verify-certificate/${id}` : ''} 
                                 size={130}
