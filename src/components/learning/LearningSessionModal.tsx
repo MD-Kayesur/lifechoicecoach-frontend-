@@ -54,49 +54,55 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
 
                 // Load existing interactions if any
                 const existingInteractions = sessionData?.interactions || [];
-                const formattedMessages = existingInteractions.flatMap((int: any) => {
-                    const msgs = [];
-                    if (int.learner_input) {
-                        msgs.push({ role: 'user' as const, content: int.learner_input });
-                    }
-                    if (int.ai_response) {
-                        msgs.push({ role: 'ai' as const, content: int.ai_response });
-                    }
-                    return msgs;
-                });
-                setMessages(formattedMessages);
-
-                // First hit with only token (empty message) to get the latest state/prompt
-                try {
-                    const firstInteract = await interactSession({ sessionId: sid }).unwrap() as any;
-                    
-                    // Open chat on any successful response
+                
+                if (existingInteractions.length > 0) {
+                    const formattedMessages = existingInteractions.flatMap((int: any) => {
+                        const msgs = [];
+                        if (int.learner_input) {
+                            msgs.push({ role: 'user' as const, content: int.learner_input });
+                        }
+                        if (int.ai_response) {
+                            msgs.push({ role: 'ai' as const, content: int.ai_response });
+                        }
+                        return msgs;
+                    });
+                    setMessages(formattedMessages);
                     setHasStarted(true);
-                    toast.success("Learning session started!");
-                    
-                    const aiContent = firstInteract.ai_response || 
-                                     firstInteract.message || 
-                                     firstInteract.response || 
-                                     firstInteract.text ||
-                                     firstInteract.interaction?.ai_response ||
-                                     firstInteract.data?.ai_response;
+                    toast.success("Learning session resumed!");
+                } else {
+                    // First hit with only token (empty message) to get the latest state/prompt
+                    try {
+                        const firstInteract = await interactSession({ sessionId: sid }).unwrap() as any;
+                        
+                        // Open chat on any successful response
+                        setHasStarted(true);
+                        toast.success("Learning session started!");
+                        
+                        if (firstInteract.history && Array.isArray(firstInteract.history) && firstInteract.history.length > 0) {
+                            const historyMessages = firstInteract.history.map((msg: any) => ({
+                                role: msg.role === 'assistant' ? 'ai' : 'user',
+                                content: msg.content
+                            }));
+                            setMessages(historyMessages);
+                        } else {
+                            const aiContent = firstInteract.ai_response || 
+                                             firstInteract.message || 
+                                             firstInteract.response || 
+                                             firstInteract.text ||
+                                             firstInteract.interaction?.ai_response ||
+                                             firstInteract.data?.ai_response;
 
-                    if (aiContent) {
-                        setMessages(prev => [...prev, { 
-                            role: 'ai', 
-                            content: aiContent
-                        }]);
-                    } 
-                    // else if (formattedMessages.length === 0) {
-                    //     // Fallback only if no history and no new response
-                    //     setMessages([{ 
-                    //         role: 'ai', 
-                    //         content: `Hello! I'm your AI guide for this competency: "${competency.title}". \n\nHow can I help you master this skill today?` 
-                    //     }]);
-                    // }
-                } catch (err) {
-                    console.error("Initial interaction error:", err);
-                    toast.error("Failed to connect with AI coach");
+                            if (aiContent) {
+                                setMessages([{ 
+                                    role: 'ai', 
+                                    content: aiContent
+                                }]);
+                            }
+                        }
+                    } catch (err) {
+                        console.error("Initial interaction error:", err);
+                        toast.error("Failed to connect with AI coach");
+                    }
                 }
             } else {
                 toast.error(result.message || "Failed to start learning session");
@@ -344,10 +350,10 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
                         {/* Actions */}
                         <button 
                             onClick={handleStartSession}
-                            disabled={isStarting}
+                            disabled={isStarting || isInteracting}
                             className="w-full h-14 bg-gold hover:bg-gold2 disabled:bg-gold/50 disabled:cursor-not-allowed text-white font-bold rounded-2xl shadow-[0_4px_0_#9a7e3a] hover:translate-y-[1px] hover:shadow-[0_3px_0_#9a7e3a] transition-all flex items-center justify-center gap-3 text-[15px]"
                         >
-                            {isStarting ? (
+                            {isStarting || isInteracting ? (
                                 <>
                                     <Loader2 size={20} className="animate-spin" />
                                     Initializing Session...
@@ -362,7 +368,7 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
                         
                         <button 
                             onClick={onClose}
-                            disabled={isStarting}
+                            disabled={isStarting || isInteracting}
                             className="w-full mt-3 text-white/30 hover:text-white text-[12px] font-medium transition-all"
                         >
                             Maybe Later
