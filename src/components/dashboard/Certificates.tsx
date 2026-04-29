@@ -4,12 +4,14 @@ import { useGetCertificatesQuery, Certificate } from "@/redux/features/progress/
 import { Loader2, Award, Download, ExternalLink, ShieldCheck, Share2 } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useRouter } from "next/navigation";
 import { FaLinkedin, FaFacebook } from "react-icons/fa";
 import Image from "next/image";
 import certPhoto from "@/assets/cirtificate/Untitled-2.png";
 import { QRCodeSVG } from "qrcode.react";
 
 export const Certificates = () => {
+    const router = useRouter();
     const { data, isLoading } = useGetCertificatesQuery();
     const certificates = data?.certificates || [];
 
@@ -59,11 +61,14 @@ export const Certificates = () => {
                                         <ShieldCheck className="w-3 h-3 text-gold" />
                                         <span className="text-[9px] font-bold text-gold uppercase tracking-widest font-mono">Official EIU-Paris Credential</span>
                                     </div>
-                                    <h3 className="text-white text-[16px] font-bold mb-1 leading-tight group-hover:text-gold transition-colors">{cert.credential_name}</h3>
-                                    <div className="text-white/40 text-[11px] mb-4">Issued on {new Date(cert.issue_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+                                    <h3 className="text-white text-[16px] font-bold mb-1 leading-tight group-hover:text-gold transition-colors">{cert.micro_credential_name || (cert as any).credential_name}</h3>
+                                    <div className="text-white/40 text-[11px] mb-4">Issued on {new Date(cert.issued_at || (cert as any).issue_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
                                     
                                     <div className="flex flex-wrap gap-3">
-                                        <button className="flex items-center gap-1.5 bg-gold/10 hover:bg-gold text-gold hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all border border-gold/20">
+                                        <button 
+                                            onClick={() => router.push(`/certificate?certData=${encodeURIComponent(JSON.stringify(cert))}`)}
+                                            className="flex items-center gap-1.5 bg-gold/10 hover:bg-gold text-gold hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all border border-gold/20"
+                                        >
                                             <Download className="w-3 h-3" /> Download PDF
                                         </button>
                                         <button 
@@ -81,7 +86,7 @@ export const Certificates = () => {
                             
                             <div className="mt-6 pt-4 border-t border-white/5 flex justify-between items-center text-[9px] font-mono text-white/30 uppercase tracking-[1px]">
                                 <span>Certificate ID: {cert.certificate_number}</span>
-                                <span className={cert.is_valid ? 'text-green-500/60' : 'text-red-500/60'}>{cert.is_valid ? 'Status: Valid' : 'Status: Expired'}</span>
+                                <span className={cert.is_public !== false ? 'text-green-500/60' : 'text-red-500/60'}>{cert.is_public !== false ? 'Status: Valid' : 'Status: Invalid'}</span>
                             </div>
                         </div>
                     ))
@@ -129,13 +134,13 @@ export const Certificates = () => {
                                                     Official IKON Skills Domain
                                                 </div>
                                                 <div className="text-[12px] font-serif font-bold text-[#5B5655]">
-                                                    {selectedCert.recipient_name}
+                                                    {selectedCert.user_name || (selectedCert as any).recipient_name}
                                                 </div>
                                                 <div className="text-[10px] font-serif text-[#5B5655] mt-[2%]">
-                                                    {selectedCert.credential_name}
+                                                    {selectedCert.micro_credential_name || (selectedCert as any).credential_name}
                                                 </div>
                                                 <div className="absolute top-[59%] left-[23%] text-[4px] font-mono text-[#5B5655]">
-                                                    {new Date(selectedCert.issue_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                                    {new Date(selectedCert.issued_at || (selectedCert as any).issue_date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
                                                 </div>
                                                 <div className="absolute top-[59%] left-[41.5%] text-[4px] font-mono text-[#5B5655]">
                                                     {selectedCert.certificate_number}
@@ -155,7 +160,7 @@ export const Certificates = () => {
 
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
                                             <div className="text-[10px] text-gold font-bold uppercase tracking-wider mb-1">Preview</div>
-                                            <div className="text-white font-bold text-xs truncate">{selectedCert?.credential_name}</div>
+                                            <div className="text-white font-bold text-xs truncate">{selectedCert?.micro_credential_name || (selectedCert as any)?.credential_name}</div>
                                         </div>
                                     </div>
 
