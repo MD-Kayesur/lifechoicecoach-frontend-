@@ -3,14 +3,22 @@ import { baseApi } from "@/redux/hooks/baseApi";
 export interface Certificate {
     id: string | number;
     certificate_number: string;
-    recipient_name: string;
-    credential_name: string;
-    issue_date: string;
+    recipient_name?: string;
+    user_name?: string;
+    credential_name?: string;
+    micro_credential_name?: string;
+    domain_name?: string;
+    eqf_level?: string;
+    ects_earned?: number;
+    issue_date?: string;
+    issued_at?: string;
     expiry_date?: string | null;
     verification_url?: string;
-    is_valid: boolean;
+    is_valid?: boolean;
+    is_public?: boolean;
     image?: string | null;
     file?: string | null;
+    certificate_file?: string | null;
 }
 
 export interface CertificateListParams {
