@@ -350,10 +350,10 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
                         {/* Actions */}
                         <button 
                             onClick={handleStartSession}
-                            disabled={isStarting}
+                            disabled={isStarting || isInteracting}
                             className="w-full h-14 bg-gold hover:bg-gold2 disabled:bg-gold/50 disabled:cursor-not-allowed text-white font-bold rounded-2xl shadow-[0_4px_0_#9a7e3a] hover:translate-y-[1px] hover:shadow-[0_3px_0_#9a7e3a] transition-all flex items-center justify-center gap-3 text-[15px]"
                         >
-                            {isStarting ? (
+                            {isStarting || isInteracting ? (
                                 <>
                                     <Loader2 size={20} className="animate-spin" />
                                     Initializing Session...
@@ -368,7 +368,7 @@ export const LearningSessionModal = ({ isOpen, onClose, competency, microCredent
                         
                         <button 
                             onClick={onClose}
-                            disabled={isStarting}
+                            disabled={isStarting || isInteracting}
                             className="w-full mt-3 text-white/30 hover:text-white text-[12px] font-medium transition-all"
                         >
                             Maybe Later
